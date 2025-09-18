@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solelectric - Acceso</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">⚡ Solectric</div>
+        <p>Accede a tu cuenta para gestionar reportes</p>
+
+        <!-- Pestañas -->
+        <div class="tabs">
+            <div class="tab active" id="tab-login">Iniciar Sesión</div>
+            <div class="tab" id="tab-register">Registrarse</div>
+        </div>
+
+        <!-- Formulario de Login -->
+        <form class="form active" id="form-login">
+            <label for="tipo">Tipo de Usuario</label>
+            <select id="tipo" name="tipo">
+                <option>Ciudadano</option>
+                <option>Administrador</option>
+            </select>
+
+            <label for="email-login">Correo Electrónico</label>
+            <input type="email" id="email-login" placeholder="tu@email.com">
+
+            <label for="password-login">Contraseña</label>
+            <input type="password" id="password-login" placeholder="••••••••">
+
+            <button type="submit" class="btn btn-login">Iniciar Sesión</button>
+
+            <div class="help">
+                <a href="#">¿Olvidaste tu contraseña?</a><br>
+                ¿Necesitas ayuda? Llama al <a href="#">123</a>
+            </div>
+        </form>
+
+        <!-- Formulario de Registro -->
+        <form class="form" id="form-register">
+            <label for="nombre">Nombre Completo</label>
+            <input type="text" id="nombre" placeholder="Juan Pérez">
+
+            <label for="telefono">Teléfono</label>
+            <input type="text" id="telefono" placeholder="300 123 4567">
+
+            <label for="email-register">Correo Electrónico</label>
+            <input type="email" id="email-register" placeholder="tu@email.com">
+
+            <label for="municipio">Municipio</label>
+            <select id="municipio">
+                <option>Selecciona tu municipio</option>
+                <option>Bogotá</option>
+                <option>Medellín</option>
+                <option>Cali</option>
+            </select>
+
+            <label for="direccion">Dirección</label>
+            <input type="text" id="direccion" placeholder="Calle 45 # 23-56, Barrio Centro">
+
+            <label for="password-register">Contraseña</label>
+            <input type="password" id="password-register" placeholder="••••••••">
+
+            <button type="submit" class="btn btn-register">Crear Cuenta</button>
+
+            <div class="help">
+                Al registrarte, aceptas nuestros <a href="#">términos de servicio</a> y <a href="#">política de
+                    privacidad</a>.<br><br>
+                ¿Necesitas ayuda? Llama al <a href="#">123</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,136 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f9ff;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    width: 380px;
+    text-align: center;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2563eb;
+    margin-bottom: 10px;
+}
+
+p {
+    margin-bottom: 20px;
+    color: #374151;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #6b7280;
+    transition: 0.3s;
+}
+
+.tab.active {
+    color: #2563eb;
+    border-bottom: 2px solid #2563eb;
+}
+
+.form {
+    display: none;
+    text-align: left;
+    animation: fade 0.3s ease-in-out;
+}
+
+.form.active {
+    display: block;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+label {
+    font-size: 14px;
+    color: #374151;
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+}
+
+.btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-login {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-login:hover {
+    background: #1d4ed8;
+}
+
+.btn-register {
+    background: #f97316;
+    color: white;
+}
+
+.btn-register:hover {
+    background: #ea580c;
+}
+
+.help {
+    margin-top: 15px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.help a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.help a:hover {
+    text-decoration: underline;
+}
