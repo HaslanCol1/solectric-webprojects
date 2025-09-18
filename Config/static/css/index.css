@@ -1,0 +1,261 @@
+:root {
+    --purple: #8a2be2;
+    --yellow: #ffb400;
+    --green: #00b894;
+    --red: #e74c3c;
+    --dark: #0d0d0d;
+    --light: #fafafa;
+    --gray: #555;
+    --font: 'Inter', sans-serif;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font);
+    background-color: #fff;
+    color: #333;
+    line-height: 1.5;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 3rem;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+    position: sticky;
+    top: 0;
+}
+
+.logo .brand {
+    font-weight: 700;
+    color: var(--purple);
+    font-size: 1.2rem;
+}
+
+.logo .icon {
+    font-size: 1.3rem;
+}
+
+.navbar nav a {
+    margin-left: 1.5rem;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.btn-login {
+    border: 1px solid var(--purple);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    color: var(--purple);
+    font-weight: 600;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: #fdfbfd;
+}
+
+.hero h1 {
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.highlight-purple {
+    color: var(--purple);
+}
+
+.highlight-yellow {
+    color: var(--yellow);
+}
+
+.subtext {
+    max-width: 600px;
+    margin: 0.5rem auto 2rem;
+    color: #555;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.btn-reportar {
+    background: var(--yellow);
+    color: #000;
+    padding: 0.8rem 1.5rem;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.btn-funcionarios {
+    background: #fff;
+    border: 1px solid var(--purple);
+    color: var(--purple);
+    padding: 0.8rem 1.5rem;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* STATS */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+    text-align: center;
+}
+
+.card h3 {
+    margin: 0.5rem 0;
+}
+
+.card .icon {
+    font-size: 1.5rem;
+}
+
+/* MONITOREO */
+.monitoreo {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.monitor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 900px;
+    margin: 2rem auto;
+    gap: 2rem;
+}
+
+.lista-reportes .item {
+    background: #fff;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.mapa {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-placeholder {
+    background: linear-gradient(135deg, #f5f5ff, #fffbe6);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+}
+
+.map-placeholder .pin {
+    font-size: 2rem;
+}
+
+/* COMO FUNCIONA */
+.como-funciona {
+    background: #fdfbfd;
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 2rem auto;
+}
+
+.step .circle {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+}
+
+.circle.purple {
+    background: var(--purple);
+}
+
+.circle.yellow {
+    background: var(--yellow);
+    color: #000;
+}
+
+.circle.green {
+    background: var(--green);
+}
+
+/* EMERGENCIA */
+.emergencia {
+    background: #fff0f0;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.btn-emergencia {
+    display: inline-block;
+    background: var(--red);
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* FOOTER */
+.footer {
+    background: #0d0d0d;
+    color: #fff;
+    padding: 2rem 1rem;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer h4 {
+    margin-bottom: 0.5rem;
+}
+
+.copy {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 2rem;
+    color: #aaa;
+}
