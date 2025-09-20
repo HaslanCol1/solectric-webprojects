@@ -19,15 +19,15 @@
             <span class="icon">⚡</span> <span class="brand">Solectric</span>
         </div>
         <nav>
-            <a href="#">Servicios</a>
-            <a href="#">Estadísticas</a>
-            <a href="#">Contacto</a>
+            <a href="#Servicios">Servicios</a>
+            <a href="#Monitoreo">Estadísticas</a>
+            <a href="#Contacto">Contacto</a>
             <a href="{{ url_for('auth') }}" class="btn-login">Iniciar Sesión</a>
         </nav>
     </header>
 
     <!-- HERO -->
-    <section class="hero">
+    <section class="hero" id="Servicios">
         <h1>
             Reporta y da seguimiento a las <br>
             <span class="highlight-purple">fallas eléctricas</span> <span class="highlight-yellow">en tu sector</span>
@@ -65,7 +65,7 @@
     </section>
 
     <!-- MONITOREO -->
-    <section class="monitoreo">
+    <section class="monitoreo" id="Monitoreo">
         <h2>Monitoreo en Tiempo Real</h2>
         <p>
             Visualiza el estado de la infraestructura eléctrica en todo el departamento del Atlántico.
@@ -123,7 +123,7 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="footer">
+    <footer class="footer" id="Contacto">
         <div class="footer-grid">
             <div class="footer-brand">
                 <span class="icon">⚡</span> <span class="brand">Solectric</span>
