@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solectric - Reporta Fallas Eléctricas</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+</head>
+
+<body>
+
+    {% include 'components/index/navbar.html' %}
+    {% include 'components/index/hero.html' %}
+    {% include 'components/index/stats.html' %}
+    {% include 'components/index/monitoreo.html' %}
+    {% include 'components/index/como-funciona.html' %}
+    {% include 'components/index/emergencia.html' %}
+    {% include 'components/index/footer.html' %}
+
+</body>
+
+</html>
