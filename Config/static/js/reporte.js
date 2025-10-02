@@ -11,9 +11,53 @@ document.addEventListener('DOMContentLoaded', function () {
 function initializeForm() {
     showStep(1);
     updateProgress(1);
+    
+    // Si estamos en el paso 3, cargar datos guardados y actualizar el resumen
+    if (window.location.pathname.includes('paso3')) {
+        // Cargar datos desde localStorage
+        const savedData = localStorage.getItem('reporteFormData');
+        if (savedData) {
+            formData = JSON.parse(savedData);
+            console.log('Datos cargados:', formData); // Para debugging
+        }
+        
+        // Actualizar el resumen con un pequeño delay
+        setTimeout(updateSummary, 100);
+    }
 }
 
 function initializeEventListeners() {
+    // Limpiar errores cuando el usuario interactúe con los campos
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('input', clearFieldErrorsOnInput);
+        input.addEventListener('change', clearFieldErrorsOnInput);
+    });
+
+    // Botón de enviar reporte
+    const submitBtn = document.getElementById('submitReportBtn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showConfirmationModal();
+        });
+    }
+
+    // Botón de confirmar en modal
+    const confirmOkBtn = document.getElementById('confirmOkBtn');
+    if (confirmOkBtn) {
+        confirmOkBtn.addEventListener('click', function() {
+            const submitBtn = document.getElementById('submitReportBtn');
+            const redirectUrl = submitBtn ? submitBtn.getAttribute('data-redirect') : '/';
+            
+            // Limpiar datos guardados
+            localStorage.removeItem('reporteFormData');
+            
+            // Redirigir
+            window.location.href = redirectUrl;
+        });
+    }
+
     // Obtener ubicación
     const locationBtn = document.getElementById('getLocationBtn');
     if (locationBtn) {
@@ -25,6 +69,11 @@ function initializeEventListeners() {
     failureOptions.forEach(option => {
         option.addEventListener('click', function () {
             selectFailureType(this);
+            // Limpiar errores de tipo de falla al seleccionar
+            document.querySelectorAll('.failure-option').forEach(opt => {
+                opt.classList.remove('field-error');
+            });
+            clearFieldErrorsOnInput();
         });
     });
 
@@ -33,6 +82,11 @@ function initializeEventListeners() {
     urgencyOptions.forEach(option => {
         option.addEventListener('click', function () {
             selectUrgency(this);
+            // Limpiar errores de urgencia al seleccionar
+            document.querySelectorAll('.urgency-option').forEach(opt => {
+                opt.classList.remove('field-error');
+            });
+            clearFieldErrorsOnInput();
         });
     });
 
@@ -47,15 +101,60 @@ function initializeEventListeners() {
         fileInput.addEventListener('change', handleFileSelect);
     }
 
-    // Botones de navegación
-    const backButtons = document.querySelectorAll('.btn-back');
-    backButtons.forEach(btn => {
-        btn.addEventListener('click', () => previousStep());
-    });
-
+    // Botones de navegación con validación
     const continueButtons = document.querySelectorAll('.continue-btn');
     continueButtons.forEach(btn => {
-        btn.addEventListener('click', () => nextStep());
+        btn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevenir navegación por defecto
+            
+            // Determinar qué validación hacer según el destino del enlace
+            const href = this.getAttribute('href');
+            let validationPassed = false;
+            
+            if (href.includes('paso2')) {
+                // Estamos en paso 1, validar paso 1
+                validationPassed = validateStep1();
+                if (validationPassed) {
+                    // Guardar datos del paso 1
+                    formData.municipio = document.getElementById('municipio').value;
+                    formData.barrio = document.getElementById('barrio').value;
+                    formData.direccion = document.getElementById('direccion').value;
+                    formData.referencia = document.getElementById('referencia').value;
+                    formData.failureType = document.querySelector('.failure-option.selected')?.dataset.type;
+                    
+                    // Guardar en localStorage
+                    localStorage.setItem('reporteFormData', JSON.stringify(formData));
+                }
+            } else if (href.includes('paso3')) {
+                // Estamos en paso 2, validar paso 2
+                validationPassed = validateStep2();
+                if (validationPassed) {
+                    // Cargar datos previos
+                    const savedData = localStorage.getItem('reporteFormData');
+                    if (savedData) {
+                        formData = JSON.parse(savedData);
+                    }
+                    
+                    // Guardar datos del paso 2
+                    formData.descripcion = document.getElementById('descripcion').value;
+                    formData.fechaInicio = document.getElementById('fechaInicio').value;
+                    formData.personasAfectadas = document.getElementById('personasAfectadas').value;
+                    formData.urgency = document.querySelector('.urgency-option.selected')?.dataset.urgency;
+                    
+                    // Guardar en localStorage
+                    localStorage.setItem('reporteFormData', JSON.stringify(formData));
+                }
+            } else {
+                // Cualquier otro caso, permitir navegación
+                validationPassed = true;
+            }
+            
+            // Si la validación pasó, navegar
+            if (validationPassed) {
+                // Navegar usando el href del enlace
+                window.location.href = href;
+            }
+        });
     });
 }
 
@@ -133,16 +232,39 @@ function validateCurrentStep() {
 }
 
 function validateStep1() {
-    const address = document.getElementById('address').value.trim();
-    const failureType = document.querySelector('.failure-option.selected');
+    // Limpiar errores previos
+    clearFieldErrors();
 
-    if (!address) {
-        alert('Por favor, ingresa la dirección');
+    // Validar municipio (top down)
+    const municipio = document.getElementById('municipio');
+    if (!municipio.value.trim()) {
+        showFieldError(municipio, 'Por favor, selecciona un municipio');
         return false;
     }
 
+    // Validar barrio/sector
+    const barrio = document.getElementById('barrio');
+    if (!barrio.value.trim()) {
+        showFieldError(barrio, 'Por favor, ingresa el barrio o sector');
+        return false;
+    }
+
+    // Validar dirección exacta
+    const direccion = document.getElementById('direccion');
+    if (!direccion.value.trim()) {
+        showFieldError(direccion, 'Por favor, ingresa la dirección exacta');
+        return false;
+    }
+
+    // Validar tipo de falla
+    const failureType = document.querySelector('.failure-option.selected');
     if (!failureType) {
-        alert('Por favor, selecciona el tipo de falla');
+        const failureContainer = document.querySelector('.failure-grid');
+        showFieldError(failureContainer, 'Por favor, selecciona el tipo de falla');
+        // Resaltar todas las opciones de falla
+        document.querySelectorAll('.failure-option').forEach(option => {
+            option.classList.add('field-error');
+        });
         return false;
     }
 
@@ -150,16 +272,39 @@ function validateStep1() {
 }
 
 function validateStep2() {
-    const description = document.getElementById('description').value.trim();
-    const urgency = document.querySelector('.urgency-option.selected');
+    // Limpiar errores previos
+    clearFieldErrors();
 
-    if (!description) {
-        alert('Por favor, describe la falla');
+    // Validar descripción detallada (top down)
+    const descripcion = document.getElementById('descripcion');
+    if (!descripcion.value.trim()) {
+        showFieldError(descripcion, 'Por favor, describe la falla detalladamente');
         return false;
     }
 
+    // Validar cuándo comenzó
+    const fechaInicio = document.getElementById('fechaInicio');
+    if (!fechaInicio.value) {
+        showFieldError(fechaInicio, 'Por favor, indica cuándo comenzó la falla');
+        return false;
+    }
+
+    // Validar personas afectadas
+    const personasAfectadas = document.getElementById('personasAfectadas');
+    if (!personasAfectadas.value) {
+        showFieldError(personasAfectadas, 'Por favor, indica las personas afectadas aproximadamente');
+        return false;
+    }
+
+    // Validar nivel de urgencia
+    const urgency = document.querySelector('.urgency-option.selected');
     if (!urgency) {
-        alert('Por favor, selecciona el nivel de urgencia');
+        const urgencyContainer = document.querySelector('.urgency-grid');
+        showFieldError(urgencyContainer, 'Por favor, selecciona el nivel de urgencia');
+        // Resaltar todas las opciones de urgencia
+        document.querySelectorAll('.urgency-option').forEach(option => {
+            option.classList.add('field-error');
+        });
         return false;
     }
 
@@ -170,20 +315,18 @@ function validateStep2() {
 function saveCurrentStepData() {
     switch (currentStep) {
         case 1:
-            formData.address = document.getElementById('address').value;
-            formData.reference = document.getElementById('reference').value;
-            formData.latitude = document.getElementById('latitude').value;
-            formData.longitude = document.getElementById('longitude').value;
+            formData.municipio = document.getElementById('municipio').value;
+            formData.barrio = document.getElementById('barrio').value;
+            formData.direccion = document.getElementById('direccion').value;
+            formData.referencia = document.getElementById('referencia').value;
             formData.failureType = document.querySelector('.failure-option.selected')?.dataset.type;
             break;
 
         case 2:
-            formData.description = document.getElementById('description').value;
-            formData.details = document.getElementById('details').value;
+            formData.descripcion = document.getElementById('descripcion').value;
+            formData.fechaInicio = document.getElementById('fechaInicio').value;
+            formData.personasAfectadas = document.getElementById('personasAfectadas').value;
             formData.urgency = document.querySelector('.urgency-option.selected')?.dataset.urgency;
-            formData.contactName = document.getElementById('contactName').value;
-            formData.contactPhone = document.getElementById('contactPhone').value;
-            formData.contactEmail = document.getElementById('contactEmail').value;
             break;
     }
 
@@ -321,42 +464,121 @@ function removeFile(button) {
 
 // Actualizar resumen
 function updateSummary() {
-    // Dirección
-    document.getElementById('summaryAddress').textContent =
-        formData.address || 'No especificado';
+    console.log('Actualizando resumen con datos:', formData); // Para debugging
+    
+    // Ubicación (combinar municipio, barrio y dirección)
+    let ubicacionParts = [];
+    if (formData.municipio) ubicacionParts.push(formData.municipio);
+    if (formData.barrio) ubicacionParts.push(formData.barrio);
+    if (formData.direccion) ubicacionParts.push(formData.direccion);
+    
+    const ubicacion = ubicacionParts.length > 0 ? ubicacionParts.join(', ') : 'No especificado';
+    const ubicacionElement = document.getElementById('summaryUbicacion');
+    if (ubicacionElement) {
+        ubicacionElement.textContent = ubicacion;
+    }
 
     // Tipo de falla
     const failureTypes = {
-        'outage': 'Corte de energía',
-        'voltage': 'Problemas de voltaje',
-        'equipment': 'Falla en equipos',
-        'wiring': 'Problemas de cableado',
-        'meter': 'Problema con medidor',
-        'other': 'Otro'
+        'corte-total': 'Corte Total de Energía',
+        'fluctuaciones': 'Fluctuaciones de Voltaje',
+        'transformador': 'Transformador Dañado',
+        'cables': 'Cables Caídos',
+        'alumbrado': 'Alumbrado Público',
+        'medidor': 'Problema con Medidor'
     };
-    document.getElementById('summaryFailureType').textContent =
-        failureTypes[formData.failureType] || 'No especificado';
+    const tipoFallaElement = document.getElementById('summaryTipoFalla');
+    if (tipoFallaElement) {
+        tipoFallaElement.textContent = failureTypes[formData.failureType] || 'No especificado';
+    }
 
     // Urgencia
     const urgencyLevels = {
-        'low': 'Baja',
-        'medium': 'Media',
-        'high': 'Alta',
-        'critical': 'Crítica'
+        'bajo': 'Bajo',
+        'medio': 'Medio',
+        'alto': 'Alto',
+        'critico': 'Crítico'
     };
-    document.getElementById('summaryUrgency').textContent =
-        urgencyLevels[formData.urgency] || 'No especificado';
+    const urgenciaElement = document.getElementById('summaryUrgencia');
+    if (urgenciaElement) {
+        urgenciaElement.textContent = urgencyLevels[formData.urgency] || 'No especificado';
+    }
 
     // Descripción
-    document.getElementById('summaryDescription').textContent =
-        formData.description || 'No especificado';
+    const descripcionElement = document.getElementById('summaryDescripcion');
+    if (descripcionElement) {
+        descripcionElement.textContent = formData.descripcion || 'No especificado';
+    }
 
-    // Contacto
-    document.getElementById('summaryContact').textContent =
-        formData.contactName || 'No especificado';
+    // Evidencia (archivos subidos)
+    const fileCount = document.querySelectorAll('#filesPreview .file-item').length;
+    const evidenciaElement = document.getElementById('summaryEvidencia');
+    if (evidenciaElement) {
+        evidenciaElement.textContent = fileCount > 0 ? `${fileCount} archivo(s) adjunto(s)` : 'Sin evidencia fotográfica';
+    }
+}
 
-    // Archivos
-    const fileCount = document.querySelectorAll('#fileList .file-item').length;
-    document.getElementById('summaryFiles').textContent =
-        fileCount > 0 ? `${fileCount} archivo(s) adjunto(s)` : 'Sin archivos';
+// Funciones para manejo de errores de campo
+function showFieldError(element, message) {
+    // Agregar clase de error al elemento
+    element.classList.add('field-error');
+    
+    // Crear mensaje de error
+    const errorMessage = document.createElement('div');
+    errorMessage.className = 'field-error-message';
+    errorMessage.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+    
+    // Insertar el mensaje después del elemento
+    if (element.parentNode) {
+        element.parentNode.insertBefore(errorMessage, element.nextSibling);
+    }
+    
+    // Scroll suave hacia el campo con error
+    element.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center',
+        inline: 'nearest'
+    });
+    
+    // Enfocar el campo si es posible
+    if (element.focus && (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA')) {
+        setTimeout(() => element.focus(), 300);
+    }
+}
+
+function clearFieldErrors() {
+    // Remover clases de error
+    document.querySelectorAll('.field-error').forEach(element => {
+        element.classList.remove('field-error');
+    });
+    
+    // Remover mensajes de error
+    document.querySelectorAll('.field-error-message').forEach(message => {
+        message.remove();
+    });
+}
+
+function clearFieldErrorsOnInput() {
+    // Función para limpiar errores cuando el usuario comience a escribir/seleccionar
+    document.querySelectorAll('.field-error-message').forEach(message => {
+        message.remove();
+    });
+}
+
+// Función para mostrar el modal de confirmación
+function showConfirmationModal() {
+    // Generar número de ticket aleatorio
+    const ticketNumber = 'RPT' + Date.now().toString().slice(-6);
+    
+    // Mostrar número de ticket
+    const ticketElement = document.getElementById('ticketNumber');
+    if (ticketElement) {
+        ticketElement.textContent = ticketNumber;
+    }
+    
+    // Mostrar modal
+    const modal = document.getElementById('confirmationModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
 }

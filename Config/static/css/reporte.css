@@ -778,3 +778,144 @@
                 justify-content: center;
             }
         }
+
+        /* Estilos para campos con error */
+        .field-error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+            background-color: #fef2f2 !important;
+        }
+
+        .failure-option.field-error {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+
+        .urgency-option.field-error {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+
+        /* Mensaje de error específico */
+        .field-error-message {
+            color: #ef4444;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            animation: fadeInError 0.3s ease;
+        }
+
+        .field-error-message i {
+            font-size: 12px;
+        }
+
+        @keyframes fadeInError {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilos para modal de confirmación */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeInModal 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideInModal 0.3s ease;
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            color: #10b981;
+            margin-bottom: 16px;
+        }
+
+        .modal-header h3 {
+            color: #1f2937;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-body {
+            margin-bottom: 32px;
+        }
+
+        .modal-body p {
+            color: #6b7280;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .ticket-info {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 16px;
+            color: #0c4a6e;
+            font-size: 18px;
+        }
+
+        .confirm-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .confirm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInModal {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }

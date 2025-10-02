@@ -47,15 +47,34 @@
     <div class="button-container">
         <a href="{{ url_for('reporte_paso2') }}" class="btn-back">Anterior</a>
         {% if session.user_id %}
-            <a href="{{ url_for('ciudadano') }}" class="submit-btn">
+            <a href="#" class="submit-btn" id="submitReportBtn" data-redirect="{{ url_for('ciudadano') }}">
                 <i class="fas fa-paper-plane"></i>
                 Enviar Reporte
             </a>
         {% else %}
-            <a href="{{ url_for('main') }}" class="submit-btn">
+            <a href="#" class="submit-btn" id="submitReportBtn" data-redirect="{{ url_for('main') }}">
                 <i class="fas fa-paper-plane"></i>
                 Enviar Reporte
             </a>
         {% endif %}
+    </div>
+
+    <!-- Modal de confirmación de envío -->
+    <div id="confirmationModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h3>¡Reporte Enviado Exitosamente!</h3>
+            </div>
+            <div class="modal-body">
+                <p>Tu reporte ha sido enviado correctamente. Recibirás un número de ticket para hacer seguimiento.</p>
+                <div class="ticket-info">
+                    <strong>Número de Ticket: #<span id="ticketNumber"></span></strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="confirm-btn" id="confirmOkBtn">Aceptar</button>
+            </div>
+        </div>
     </div>
 </div>
