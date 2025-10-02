@@ -1,0 +1,42 @@
+<!-- Login Form -->
+<div class="form-section active" id="loginSection">
+    <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+            <label for="userType">Tipo de Usuario</label>
+            <div class="input-wrapper">
+                <span class="material-icons input-icon">person</span>
+                <select id="userType" required>
+                    <option value="">Selecciona tipo de usuario</option>
+                    <option value="ciudadano">Ciudadano</option>
+                    <option value="tecnico">Técnico</option>
+                    <option value="administrador">Administrador</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="loginEmail">Correo Electrónico</label>
+            <div class="input-wrapper">
+                <span class="material-icons input-icon">email</span>
+                <input type="email" id="loginEmail" placeholder="tu@email.com" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="loginPassword">Contraseña</label>
+            <div class="input-wrapper">
+                <span class="material-icons input-icon">lock</span>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login">
+            <span class="material-icons">login</span>
+            Iniciar Sesión
+        </button>
+
+        <div class="forgot-link">
+            <a onclick="showForgotPassword()">¿Olvidaste tu contraseña?</a>
+        </div>
+    </form>
+</div>

@@ -1,21 +1,65 @@
-<section class="monitoreo" id="Monitoreo">
-    <h2>Monitoreo en Tiempo Real</h2>
-    <p>
-        Visualiza el estado de la infraestructura eléctrica en todo el departamento del Atlántico.
-        Nuestro sistema de monitoreo te permite conocer las zonas afectadas y el progreso de las reparaciones.
-    </p>
-    <div class="monitor-grid">
-        <div class="lista-reportes">
-            <div class="item green">🟢 Barranquilla <span>89 reportes</span></div>
-            <div class="item red">🔴 Soledad <span>34 reportes</span></div>
-            <div class="item green">🟢 Malambo <span>12 reportes</span></div>
-            <div class="item green">🟢 Galapa <span>8 reportes</span></div>
-            <div class="item red">🔴 Puerto Colombia <span>23 reportes</span></div>
-            <div class="item green">🟢 Sabanagrande <span>15 reportes</span></div>
-        </div>
-        <div class="mapa">
+<section class="monitoring">
+    <div class="container">
+        <h2>Monitoreo en Tiempo Real</h2>
+        <p class="monitoring-description">
+            Visualiza el estado de la infraestructura eléctrica en todo el departamento del Atlántico.
+            Nuestro sistema de monitoreo te permite conocer las zonas afectadas y el progreso de las reparaciones.
+        </p>
+
+        <div class="monitoring-content">
+            <div class="city-list">
+                <div class="city-item">
+                    <div class="city-name">
+                        <span class="status-dot status-green"></span>
+                        Barranquilla
+                    </div>
+                    <span class="report-count">89 reportes</span>
+                </div>
+
+                <div class="city-item">
+                    <div class="city-name">
+                        <span class="status-dot status-red"></span>
+                        Soledad
+                    </div>
+                    <span class="report-count">34 reportes</span>
+                </div>
+
+                <div class="city-item">
+                    <div class="city-name">
+                        <span class="status-dot status-green"></span>
+                        Malambo
+                    </div>
+                    <span class="report-count">12 reportes</span>
+                </div>
+
+                <div class="city-item">
+                    <div class="city-name">
+                        <span class="status-dot status-green"></span>
+                        Galapa
+                    </div>
+                    <span class="report-count">8 reportes</span>
+                </div>
+
+                <div class="city-item">
+                    <div class="city-name">
+                        <span class="status-dot status-red"></span>
+                        Puerto Colombia
+                    </div>
+                    <span class="report-count">23 reportes</span>
+                </div>
+
+                <div class="city-item">
+                    <div class="city-name">
+                        <span class="status-dot status-green"></span>
+                        Sabanagrande
+                    </div>
+                    <span class="report-count">15 reportes</span>
+                </div>
+            </div>
+
             <div class="map-placeholder">
-                <span class="pin">📍</span>
+                <div class="map-icon">📍</div>
+                <h3>Mapa Interactivo</h3>
                 <p>Mapa del departamento del Atlántico mostrando reportes en tiempo real</p>
             </div>
         </div>

@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solectric - Reportar Falla</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f7f7f7;
+            color: #2c2c2c;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background-color: #ffffff;
+            padding: 18px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #ebebeb;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 6px 0;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #8b5cf6;
+        }
+
+        .material-icons {
+            font-size: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.3px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .share-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            color: #666;
+            transition: color 0.2s;
+        }
+
+        .share-btn:hover {
+            color: #8b5cf6;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 56px 24px 80px;
+        }
+
+        /* Progress Steps */
+        .progress-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .step-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .step-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .step-circle.completed {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+        }
+
+        .step-circle.active {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+        }
+
+        .step-circle.inactive {
+            background: #e5e5e5;
+            color: #aaa;
+        }
+
+        .step-line {
+            width: 100px;
+            height: 2px;
+            background: #e5e5e5;
+            margin: 0 -2px;
+        }
+
+        .step-line.completed {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+        }
+
+        .step-title-text {
+            text-align: center;
+            color: #777;
+            font-size: 15px;
+            margin-bottom: 48px;
+            font-weight: 400;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 48px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 36px;
+            padding-bottom: 4px;
+        }
+
+        .card-icon {
+            color: #8b5cf6;
+            font-size: 26px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c2c2c;
+            letter-spacing: -0.2px;
+        }
+
+        /* Form Fields */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
+            margin-bottom: 28px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c2c2c;
+            letter-spacing: -0.1px;
+        }
+
+        .required {
+            color: #e74c3c;
+            margin-left: 2px;
+        }
+
+        .field-input,
+        .field-select,
+        .field-textarea {
+            padding: 13px 16px;
+            border: 1px solid #d9d9d9;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: #2c2c2c;
+            background: #fafafa;
+            transition: all 0.2s ease;
+        }
+
+        .field-input:hover,
+        .field-select:hover,
+        .field-textarea:hover {
+            background: #ffffff;
+            border-color: #bbb;
+        }
+
+        .field-input:focus,
+        .field-select:focus,
+        .field-textarea:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.08);
+        }
+
+        .field-input::placeholder,
+        .field-textarea::placeholder {
+            color: #aaa;
+        }
+
+        .field-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath fill='%23666' d='M7 10L2 5h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 42px;
+        }
+
+        .field-textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.6;
+        }
+
+        /* Location Button */
+        .location-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 22px;
+            background: #ffffff;
+            border: 1px solid #d9d9d9;
+            border-radius: 8px;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 6px;
+        }
+
+        .location-btn:hover {
+            border-color: #8b5cf6;
+            background: #faf5ff;
+            color: #8b5cf6;
+        }
+
+        /* Failure Types Grid */
+        .failure-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 28px;
+        }
+
+        .failure-option {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 26px 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .failure-option:hover {
+            border-color: #c4b5fd;
+            background: #faf5ff;
+            transform: translateY(-1px);
+        }
+
+        .failure-option.selected {
+            border-color: #8b5cf6;
+            border-width: 2px;
+            background: #faf5ff;
+            padding: 25px 23px;
+        }
+
+        .failure-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+
+        .failure-emoji {
+            font-size: 26px;
+            line-height: 1;
+        }
+
+        .failure-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2c2c2c;
+            line-height: 1.4;
+            letter-spacing: -0.1px;
+        }
+
+        .failure-desc {
+            font-size: 13px;
+            color: #777;
+            margin-left: 40px;
+            line-height: 1.5;
+        }
+
+        /* Urgency Levels */
+        .urgency-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .urgency-option {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .urgency-option:hover {
+            border-color: #c4b5fd;
+            background: #faf5ff;
+        }
+
+        .urgency-option.selected {
+            border-color: #8b5cf6;
+            border-width: 2px;
+            background: #faf5ff;
+            padding: 19px 23px;
+        }
+
+        .urgency-badge {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .urgency-badge.low {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .urgency-badge.medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .urgency-badge.high {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .urgency-badge.critical {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .urgency-content {
+            flex: 1;
+        }
+
+        .urgency-label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #2c2c2c;
+            margin-bottom: 4px;
+        }
+
+        .urgency-desc {
+            font-size: 13px;
+            color: #777;
+            line-height: 1.5;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #d9d9d9;
+            border-radius: 10px;
+            padding: 48px 24px;
+            text-align: center;
+            background: #fafafa;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 28px;
+        }
+
+        .upload-area:hover {
+            border-color: #8b5cf6;
+            background: #faf5ff;
+        }
+
+        .upload-icon {
+            color: #8b5cf6;
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .select-files-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #d9d9d9;
+            border-radius: 8px;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 16px;
+        }
+
+        .select-files-btn:hover {
+            border-color: #8b5cf6;
+            color: #8b5cf6;
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .summary-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 24px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .summary-item {
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 6px;
+        }
+
+        .summary-value {
+            font-size: 15px;
+            font-weight: 500;
+            color: #2c2c2c;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+
+        .info-box-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .info-box-icon {
+            color: #2563eb;
+            font-size: 24px;
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1e40af;
+        }
+
+        .info-box-list {
+            list-style: none;
+            padding-left: 36px;
+        }
+
+        .info-box-list li {
+            font-size: 13px;
+            color: #1e40af;
+            margin-bottom: 6px;
+            position: relative;
+        }
+
+        .info-box-list li:before {
+            content: "•";
+            position: absolute;
+            left: -12px;
+        }
+
+        /* Buttons */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            gap: 16px;
+        }
+
+        .btn-back {
+            padding: 12px 24px;
+            background: white;
+            border: 1px solid #d9d9d9;
+            border-radius: 8px;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            border-color: #bbb;
+            background: #f5f5f5;
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+        }
+
+        /* Steps */
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 16px 24px;
+            }
+
+            .header-left {
+                gap: 20px;
+            }
+
+            .main-container {
+                padding: 40px 20px 60px;
+            }
+
+            .form-card {
+                padding: 32px 24px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .failure-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step-line {
+                width: 60px;
+            }
+
+            .button-container {
+                flex-direction: column-reverse;
+            }
+
+            .btn-back, .continue-btn, .submit-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="window.history.back()">
+                <span class="material-icons">arrow_back</span>
+                <span>Volver</span>
+            </button>
+            <div class="logo">
+                <div class="logo-icon">⚡</div>
+                <div class="logo-text">Solectric</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <span class="material-icons">person</span>
+                <span>Juan Pérez</span>
+            </div>
+            <button class="share-btn">
+                <span class="material-icons">share</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Progress Steps -->
+        <div class="progress-container">
+            <div class="progress-steps" id="progressSteps">
+                <div class="step-wrapper">
+                    <div class="step-circle active" id="stepCircle1">1</div>
+                </div>
+                <div class="step-line" id="stepLine1"></div>
+                <div class="step-wrapper">
+                    <div class="step-circle inactive" id="stepCircle2">2</div>
+                </div>
+                <div class="step-line" id="stepLine2"></div>
+                <div class="step-wrapper">
+                    <div class="step-circle inactive" id="stepCircle3">3</div>
+                </div>
+            </div>
+        </div>
+        <div class="step-title-text" id="stepTitle">Paso 1 de 3: Ubicación y Tipo de Falla</div>
+
+        <!-- STEP 1: Location and Failure Type -->
+        <div class="step active" id="step1">
+            <div class="form-card">
+                <div class="card-header">
+                    <span class="material-icons card-icon">location_on</span>
+                    <h2 class="card-title">Ubicación de la Falla</h2>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label class="field-label">Municipio <span class="required">*</span></label>
+                        <select class="field-select" id="municipio">
+                            <option value="">Selecciona tu municipio</option>
+                            <option value="barranquilla">Barranquilla</option>
+                            <option value="soledad">Soledad</option>
+                            <option value="malambo">Malambo</option>
+                            <option value="puerto-colombia">Puerto Colombia</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="field-label">Barrio/Sector</label>
+                        <input type="text" class="field-input" id="barrio" placeholder="Ej: Barrio Centro">
+                    </div>
+
+                    <div class="form-field full">
+                        <label class="field-label">Dirección Exacta <span class="required">*</span></label>
+                        <input type="text" class="field-input" id="direccion" placeholder="Ej: Calle 45 # 23-56">
+                    </div>
+
+                    <div class="form-field full">
+                        <label class="field-label">Puntos de Referencia</label>
+                        <textarea class="field-textarea" id="referencia" placeholder="Ej: Cerca del parque principal, frente a la farmacia"></textarea>
+                    </div>
+                </div>
+
+                <button class="location-btn" id="locationBtn">
+                    <span class="material-icons">my_location</span>
+                    Usar Mi Ubicación Actual
+                </button>
+            </div>
+
+            <div class="form-card">
+                <div class="card-header">
+                    <span class="material-icons card-icon">warning</span>
+                    <h2 class="card-title">Tipo de Falla <span class="required">*</span></h2>
+                </div>
+
+                <div class="failure-grid">
+                    <div class="failure-option" data-type="corte-total">
+                        <div class="failure-header">
+                            <span class="failure-emoji">⚡</span>
+                            <div class="failure-title">Corte Total de Energía</div>
+                        </div>
+                        <div class="failure-desc">Sin electricidad en toda la zona</div>
+                    </div>
+
+                    <div class="failure-option" data-type="fluctuaciones">
+                        <div class="failure-header">
+                            <span class="failure-emoji">📊</span>
+                            <div class="failure-title">Fluctuaciones de Voltaje</div>
+                        </div>
+                        <div class="failure-desc">Variaciones en el suministro eléctrico</div>
+                    </div>
+
+                    <div class="failure-option" data-type="transformador">
+                        <div class="failure-header">
+                            <span class="failure-emoji">🔧</span>
+                            <div class="failure-title">Transformador Dañado</div>
+                        </div>
+                        <div class="failure-desc">Falla en transformador eléctrico</div>
+                    </div>
+
+                    <div class="failure-option" data-type="cables">
+                        <div class="failure-header">
+                            <span class="failure-emoji">⚠️</span>
+                            <div class="failure-title">Cables Caídos</div>
+                        </div>
+                        <div class="failure-desc">Cables de electricidad en el suelo</div>
+                    </div>
+
+                    <div class="failure-option" data-type="alumbrado">
+                        <div class="failure-header">
+                            <span class="failure-emoji">💡</span>
+                            <div class="failure-title">Alumbrado Público</div>
+                        </div>
+                        <div class="failure-desc">Falla en iluminación de calles</div>
+                    </div>
+
+                    <div class="failure-option" data-type="medidor">
+                        <div class="failure-header">
+                            <span class="failure-emoji">📟</span>
+                            <div class="failure-title">Problema con Medidor</div>
+                        </div>
+                        <div class="failure-desc">Falla en medidor de energía</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <div></div>
+                <button class="continue-btn" onclick="goToStep(2)">Continuar</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: Details and Evidence -->
+        <div class="step" id="step2">
+            <div class="form-card">
+                <div class="card-header">
+                    <span class="material-icons card-icon">description</span>
+                    <h2 class="card-title">Detalles de la Falla</h2>
+                </div>
+
+                <div class="form-field full">
+                    <label class="field-label">Descripción Detallada <span class="required">*</span></label>
+                    <textarea class="field-textarea" id="descripcion" placeholder="Describe con el mayor detalle posible lo que está sucediendo..." style="min-height: 120px;"></textarea>
+                </div>
+
+                <div class="form-grid" style="margin-top: 28px;">
+                    <div class="form-field">
+                        <label class="field-label">¿Cuándo comenzó?</label>
+                        <input type="datetime-local" class="field-input" id="fechaInicio">
+                    </div>
+
+                    <div class="form-field">
+                        <label class="field-label">Personas Afectadas (aprox.)</label>
+                        <input type="number" class="field-input" id="personasAfectadas" placeholder="Ej: 50">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <div class="card-header">
+                    <span class="material-icons card-icon">priority_high</span>
+                    <h2 class="card-title">Nivel de Urgencia <span class="required">*</span></h2>
+                </div>
+
+                <div class="urgency-grid">
+                    <div class="urgency-option" data-urgency="bajo">
+                        <span class="urgency-badge low">Bajo</span>
+                        <div class="urgency-content">
+                            <div class="urgency-label">No hay riesgo inmediato</div>
+                            <div class="urgency-desc">La situación puede esperar, no afecta actividades esenciales</div>
+                        </div>
+                    </div>
+
+                    <div class="urgency-option" data-urgency="medio">
+                        <span class="urgency-badge medium">Medio</span>
+                        <div class="urgency-content">
+                            <div class="urgency-label">Causa inconvenientes menores</div>
+                            <div class="urgency-desc">Afecta algunas actividades pero no hay peligro inmediato</div>
+                        </div>
+                    </div>
+
+                    <div class="urgency-option" data-urgency="alto">
+                        <span class="urgency-badge high">Alto</span>
+                        <div class="urgency-content">
+                            <div class="urgency-label">Afecta actividades esenciales</div>
+                            <div class="urgency-desc">Requiere atención pronta, impacta operaciones importantes</div>
+                        </div>
+                    </div>
+
+                    <div class="urgency-option" data-urgency="critico">
+                        <span class="urgency-badge critical">Crítico</span>
+                        <div class="urgency-content">
+                            <div class="urgency-label">Riesgo para la seguridad</div>
+                            <div class="urgency-desc">Situación peligrosa que requiere atención inmediata</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <div class="card-header">
+                    <span class="material-icons card-icon">photo_camera</span>
+                    <h2 class="card-title">Evidencia Fotográfica (Opcional)</h2>
+                </div>
+
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <span class="material-icons" style="font-size: 48px;">cloud_upload</span>
+                    </div>
+                    <div class="upload-text">Sube hasta 5 fotos para ayudarnos a entender mejor la situación</div>
+                    <div class="upload-subtext">Formatos soportados: JPG, PNG, HEIC (Máx. 5MB por foto)</div>
+                    <button class="select-files-btn" type="button" onclick="document.getElementById('fileInput').click()">
+                        <span class="material-icons">add_photo_alternate</span>
+                        Seleccionar Fotos
+                    </button>
+                    <input type="file" id="fileInput" multiple accept="image/*" style="display: none;" onchange="handleFiles(this.files)">
+                </div>
+                <div id="filesPreview" style="margin-top: 16px; display: none;"></div>
+            </div>
+
+            <div class="button-container">
+                <button class="btn-back" onclick="goToStep(1)">Anterior</button>
+                <button class="continue-btn" onclick="goToStep(3)">Continuar</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: Confirmation -->
+        <div class="step" id="step3">
+            <div class="summary-card">
+                <h2 class="summary-title">Confirma Tu Reporte</h2>
+                
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">Ubicación</div>
+                        <div class="summary-value" id="summaryUbicacion">-</div>
+                    </div>
+
+                    <div class="summary-item">
+                        <div class="summary-label">Tipo de Falla</div>
+                        <div class="summary-value" id="summaryTipoFalla">-</div>
+                    </div>
+
+                    <div class="summary-item">
+                        <div class="summary-label">Nivel de Urgencia</div>
+                        <div class="summary-value" id="summaryUrgencia">-</div>
+                    </div>
+
+                    <div class="summary-item">
+                        <div class="summary-label">Evidencia</div>
+                        <div class="summary-value" id="summaryEvidencia">-</div>
+                    </div>
+
+                    <div class="summary-item" style="grid-column: 1 / -1;">
+                        <div class="summary-label">Descripción</div>
+                        <div class="summary-value" id="summaryDescripcion">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-header">
+                    <span class="material-icons info-box-icon">info</span>
+                    <div class="info-box-title">¿Qué sigue?</div>
+                </div>
+                <ul class="info-box-list">
+                    <li>Recibirás un número de ticket para hacer seguimiento</li>
+                    <li>Nuestro equipo evaluará tu reporte en menos de 1 hora</li>
+                    <li>Te notificaremos cada actualización del estado</li>
+                    <li>Tiempo estimado de resolución: 2-6 horas</li>
+                </ul>
+            </div>
+
+            <div class="button-container">
+                <button class="btn-back" onclick="goToStep(2)">Anterior</button>
+                <button class="submit-btn" onclick="submitReport()">
+                    <span class="material-icons">send</span>
+                    Enviar Reporte
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Estado de la aplicación
+        const reportData = {
+            municipio: '',
+            barrio: '',
+            direccion: '',
+            referencia: '',
+            tipoFalla: '',
+            descripcion: '',
+            fechaInicio: '',
+            personasAfectadas: '',
+            urgencia: '',
+            fotos: []
+        };
+
+        let currentStep = 1;
+
+        // Navegación entre pasos
+        function goToStep(step) {
+            // Validar antes de avanzar
+            if (step > currentStep) {
+                if (!validateCurrentStep()) {
+                    return;
+                }
+            }
+
+            // Ocultar paso actual
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+
+            // Mostrar nuevo paso
+            document.getElementById(`step${step}`).classList.add('active');
+
+            // Actualizar progress
+            updateProgress(step);
+
+            // Actualizar título
+            const titles = [
+                'Paso 1 de 3: Ubicación y Tipo de Falla',
+                'Paso 2 de 3: Detalles y Evidencia',
+                'Paso 3 de 3: Confirmación y Envío'
+            ];
+            document.getElementById('stepTitle').textContent = titles[step - 1];
+
+            // Si vamos al paso 3, actualizar resumen
+            if (step === 3) {
+                updateSummary();
+            }
+
+            currentStep = step;
+
+            // Scroll al inicio
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Actualizar barra de progreso
+        function updateProgress(step) {
+            for (let i = 1; i <= 3; i++) {
+                const circle = document.getElementById(`stepCircle${i}`);
+                
+                if (i < step) {
+                    circle.classList.remove('active', 'inactive');
+                    circle.classList.add('completed');
+                } else if (i === step) {
+                    circle.classList.remove('completed', 'inactive');
+                    circle.classList.add('active');
+                } else {
+                    circle.classList.remove('completed', 'active');
+                    circle.classList.add('inactive');
+                }
+            }
+
+            // Actualizar líneas
+            for (let i = 1; i <= 2; i++) {
+                const line = document.getElementById(`stepLine${i}`);
+                if (i < step) {
+                    line.classList.add('completed');
+                } else {
+                    line.classList.remove('completed');
+                }
+            }
+        }
+
+        // Validar paso actual
+        function validateCurrentStep() {
+            if (currentStep === 1) {
+                const municipio = document.getElementById('municipio').value;
+                const direccion = document.getElementById('direccion').value;
+
+                if (!municipio) {
+                    alert('⚠️ Por favor selecciona un municipio');
+                    document.getElementById('municipio').focus();
+                    return false;
+                }
+
+                if (!direccion.trim()) {
+                    alert('⚠️ Por favor ingresa una dirección exacta');
+                    document.getElementById('direccion').focus();
+                    return false;
+                }
+
+                if (!reportData.tipoFalla) {
+                    alert('⚠️ Por favor selecciona un tipo de falla');
+                    return false;
+                }
+
+                // Guardar datos
+                reportData.municipio = municipio;
+                reportData.direccion = direccion;
+                reportData.barrio = document.getElementById('barrio').value;
+                reportData.referencia = document.getElementById('referencia').value;
+
+                return true;
+            }
+
+            if (currentStep === 2) {
+                const descripcion = document.getElementById('descripcion').value;
+
+                if (!descripcion.trim()) {
+                    alert('⚠️ Por favor ingresa una descripción detallada');
+                    document.getElementById('descripcion').focus();
+                    return false;
+                }
+
+                if (!reportData.urgencia) {
+                    alert('⚠️ Por favor selecciona un nivel de urgencia');
+                    return false;
+                }
+
+                // Guardar datos
+                reportData.descripcion = descripcion;
+                reportData.fechaInicio = document.getElementById('fechaInicio').value;
+                reportData.personasAfectadas = document.getElementById('personasAfectadas').value;
+
+                return true;
+            }
+
+            return true;
+        }
+
+        // Selección de tipo de falla
+        document.querySelectorAll('.failure-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.failure-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                reportData.tipoFalla = this.dataset.type;
+            });
+        });
+
+        // Selección de nivel de urgencia
+        document.querySelectorAll('.urgency-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.urgency-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                reportData.urgencia = this.dataset.urgency;
+            });
+        });
+
+        // Geolocalización
+        document.getElementById('locationBtn').addEventListener('click', function() {
+            if (!("geolocation" in navigator)) {
+                alert('❌ Tu navegador no soporta geolocalización.');
+                return;
+            }
+
+            const originalHTML = this.innerHTML;
+            this.innerHTML = '<span class="material-icons">hourglass_empty</span>Obteniendo ubicación...';
+            this.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    console.log('Ubicación obtenida:', {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    });
+                    
+                    this.innerHTML = '<span class="material-icons">check_circle</span>Ubicación obtenida';
+                    this.style.borderColor = '#10b981';
+                    this.style.color = '#10b981';
+                    this.disabled = false;
+
+                    setTimeout(() => {
+                        this.innerHTML = originalHTML;
+                        this.style.borderColor = '';
+                        this.style.color = '';
+                    }, 3000);
+                },
+                (error) => {
+                    alert('❌ No se pudo obtener la ubicación. Por favor, ingresa la dirección manualmente.');
+                    this.innerHTML = originalHTML;
+                    this.disabled = false;
+                }
+            );
+        });
+
+        // Manejo de archivos
+        function handleFiles(files) {
+            if (files.length > 5) {
+                alert('⚠️ Puedes subir máximo 5 fotos');
+                return;
+            }
+
+            reportData.fotos = Array.from(files);
+            
+            const preview = document.getElementById('filesPreview');
+            preview.innerHTML = '';
+            preview.style.display = 'block';
+
+            Array.from(files).forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border-radius: 8px; margin-bottom: 8px;';
+                
+                fileItem.innerHTML = `
+                    <span class="material-icons" style="color: #10b981;">check_circle</span>
+                    <span style="flex: 1; font-size: 14px; color: #2c2c2c;">${file.name}</span>
+                    <span style="font-size: 12px; color: #999;">${(file.size / 1024).toFixed(1)} KB</span>
+                `;
+                
+                preview.appendChild(fileItem);
+            });
+        }
+
+        // Actualizar resumen
+        function updateSummary() {
+            // Ubicación
+            const ubicacionParts = [reportData.direccion];
+            if (reportData.barrio) ubicacionParts.push(reportData.barrio);
+            ubicacionParts.push(getMunicipioName(reportData.municipio));
+            document.getElementById('summaryUbicacion').textContent = ubicacionParts.join(', ');
+
+            // Tipo de falla
+            document.getElementById('summaryTipoFalla').textContent = getFailureTypeName(reportData.tipoFalla);
+
+            // Urgencia
+            document.getElementById('summaryUrgencia').textContent = getUrgencyName(reportData.urgencia);
+
+            // Evidencia
+            const fotosText = reportData.fotos.length > 0 
+                ? `${reportData.fotos.length} foto(s) adjunta(s)` 
+                : '0 foto(s) adjunta(s)';
+            document.getElementById('summaryEvidencia').textContent = fotosText;
+
+            // Descripción
+            document.getElementById('summaryDescripcion').textContent = reportData.descripcion;
+        }
+
+        // Helpers
+        function getMunicipioName(value) {
+            const municipios = {
+                'barranquilla': 'Barranquilla',
+                'soledad': 'Soledad',
+                'malambo': 'Malambo',
+                'puerto-colombia': 'Puerto Colombia'
+            };
+            return municipios[value] || value;
+        }
+
+        function getFailureTypeName(value) {
+            const types = {
+                'corte-total': 'Corte Total de Energía',
+                'fluctuaciones': 'Fluctuaciones de Voltaje',
+                'transformador': 'Transformador Dañado',
+                'cables': 'Cables Caídos',
+                'alumbrado': 'Alumbrado Público',
+                'medidor': 'Problema con Medidor'
+            };
+            return types[value] || value;
+        }
+
+        function getUrgencyName(value) {
+            const urgencies = {
+                'bajo': 'Bajo - No hay riesgo inmediato',
+                'medio': 'Medio - Causa inconvenientes menores',
+                'alto': 'Alto - Afecta actividades esenciales',
+                'critico': 'Crítico - Riesgo para la seguridad'
+            };
+            return urgencies[value] || value;
+        }
+
+        // Enviar reporte
+        function submitReport() {
+            console.log('Datos del reporte:', reportData);
+
+            // Aquí se enviaría al backend
+            // fetch('/api/reportes', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify(reportData)
+            // })
+            // .then(response => response.json())
+            // .then(data => {
+            //     if (data.success) {
+            //         window.location.href = `/reporte/${data.ticketId}`;
+            //     }
+            // });
+
+            alert('✅ Reporte enviado exitosamente!\n\nNúmero de ticket: #' + Math.floor(Math.random() * 100000) + '\n\nSerás redirigido al panel de seguimiento...');
+            
+            // Simular redirección
+            setTimeout(() => {
+                console.log('Redirigiendo a panel de usuario...');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solectric - Autenticación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/auth.css')}}">
+</head>
+
+<body>
+    {% include 'components/auth/navbar.html' %}
+
+    <!-- Main Container -->
+    <div class="auth-container">
+        <div class="auth-wrapper">
+            {% include 'components/auth/logo.html' %}
+
+            <!-- Auth Card -->
+            <div class="auth-card">
+                {% include 'components/auth/header.html' %}
+
+                <!-- Forms Container -->
+                <div class="form-container">
+                    {% include 'components/auth/login-form.html' %}
+                    {% include 'components/auth/register-form.html' %}
+                    {% include 'components/auth/forgot-form.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'components/auth/footer.html' %}
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+
+</html>

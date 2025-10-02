@@ -1,0 +1,40 @@
+<!-- Forgot Password Form -->
+<div class="form-section" id="forgotSection">
+    <div id="successMessage" class="success-message">
+        <div class="success-message-content">
+            <span class="material-icons success-message-icon">check_circle</span>
+            <div class="success-message-text">
+                <div class="success-message-title">Correo Enviado</div>
+                <div class="success-message-desc">Hemos enviado las instrucciones para recuperar tu
+                    contraseña a tu correo electrónico.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-text">
+        Ingresa tu correo electrónico y te enviaremos las instrucciones para recuperar tu
+        contraseña.
+    </div>
+
+    <form onsubmit="handleForgotPassword(event)">
+        <div class="form-group">
+            <label for="forgotEmail">Correo Electrónico</label>
+            <div class="input-wrapper">
+                <span class="material-icons input-icon">email</span>
+                <input type="email" id="forgotEmail" placeholder="tu@email.com" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-forgot">
+            <span class="material-icons">send</span>
+            Enviar Instrucciones
+        </button>
+
+        <div class="back-to-login">
+            <a onclick="backToLogin()">
+                <span class="material-icons" style="font-size: 16px;">arrow_back</span>
+                Volver a Iniciar Sesión
+            </a>
+        </div>
+    </form>
+</div>

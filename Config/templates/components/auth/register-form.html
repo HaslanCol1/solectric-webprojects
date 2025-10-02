@@ -1,0 +1,72 @@
+<!-- Register Form -->
+<div class="form-section" id="registerSection">
+    <form onsubmit="handleRegister(event)">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="registerName">Nombre Completo</label>
+                <div class="input-wrapper">
+                    <span class="material-icons input-icon">person</span>
+                    <input type="text" id="registerName" placeholder="Juan Pérez" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="registerPhone">Teléfono</label>
+                <div class="input-wrapper">
+                    <span class="material-icons input-icon">phone</span>
+                    <input type="tel" id="registerPhone" placeholder="300 123 4567" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="registerEmail">Correo Electrónico</label>
+            <div class="input-wrapper">
+                <span class="material-icons input-icon">email</span>
+                <input type="email" id="registerEmail" placeholder="tu@email.com" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="registerMunicipio">Municipio</label>
+            <div class="input-wrapper">
+                <span class="material-icons input-icon">location_on</span>
+                <select id="registerMunicipio" required>
+                    <option value="">Selecciona tu municipio</option>
+                    <option value="barranquilla">Barranquilla</option>
+                    <option value="soledad">Soledad</option>
+                    <option value="malambo">Malambo</option>
+                    <option value="puerto-colombia">Puerto Colombia</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="registerAddress">Dirección</label>
+            <div class="input-wrapper">
+                <span class="material-icons input-icon">home</span>
+                <input type="text" id="registerAddress"
+                    placeholder="Calle 45 # 23-56, Barrio Centro" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="registerPassword">Contraseña</label>
+            <div class="input-wrapper">
+                <span class="material-icons input-icon">lock</span>
+                <input type="password" id="registerPassword" placeholder="••••••••" required
+                    minlength="8">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-register">
+            <span class="material-icons">person_add</span>
+            Crear Cuenta
+        </button>
+
+        <div class="terms-text">
+            Al registrarte, aceptas nuestros <a href="#">términos de servicio</a> y <a
+                href="#">política de privacidad</a>
+        </div>
+    </form>
+</div>
