@@ -10,14 +10,14 @@
             Atlántico. Conectamos ciudadanos con equipos técnicos para una respuesta rápida y eficiente.
         </p>
         <div class="hero-buttons">
-            <button class="btn-primary btn-report">
+            <a href="{{ url_for('reporte') }}" class="btn-primary btn-report">
                 <span>⚠️</span>
                 Reportar Falla
-            </button>
-            <button class="btn-primary btn-portal">
+            </a>
+            <a href="{{ url_for('auth') }}" class="btn-primary btn-portal">
                 <span>👤</span>
                 Portal Funcionarios
-            </button>
+            </a>
         </div>
     </div>
 </section>

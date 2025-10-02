@@ -1,0 +1,104 @@
+<!-- STEP 1: Location and Failure Type -->
+<div class="step active" id="step1">
+    <div class="form-card">
+        <div class="card-header">
+            <i class="fas fa-map-marker-alt card-icon"></i>
+            <h2 class="card-title">Ubicación de la Falla</h2>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-field">
+                <label class="field-label">Municipio <span class="required">*</span></label>
+                <select class="field-select" id="municipio">
+                    <option value="">Selecciona tu municipio</option>
+                    <option value="barranquilla">Barranquilla</option>
+                    <option value="soledad">Soledad</option>
+                    <option value="malambo">Malambo</option>
+                    <option value="puerto-colombia">Puerto Colombia</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label class="field-label">Barrio/Sector</label>
+                <input type="text" class="field-input" id="barrio" placeholder="Ej: Barrio Centro">
+            </div>
+
+            <div class="form-field full">
+                <label class="field-label">Dirección Exacta <span class="required">*</span></label>
+                <input type="text" class="field-input" id="direccion" placeholder="Ej: Calle 45 # 23-56">
+            </div>
+
+            <div class="form-field full">
+                <label class="field-label">Puntos de Referencia</label>
+                <textarea class="field-textarea" id="referencia" placeholder="Ej: Cerca del parque principal, frente a la farmacia"></textarea>
+            </div>
+        </div>
+
+        <button class="location-btn" id="locationBtn">
+            <i class="fas fa-crosshairs"></i>
+            Usar Mi Ubicación Actual
+        </button>
+    </div>
+
+    <div class="form-card">
+        <div class="card-header">
+            <i class="fas fa-exclamation-triangle card-icon"></i>
+            <h2 class="card-title">Tipo de Falla <span class="required">*</span></h2>
+        </div>
+
+        <div class="failure-grid">
+            <div class="failure-option" data-type="corte-total">
+                <div class="failure-header">
+                    <span class="failure-emoji">⚡</span>
+                    <div class="failure-title">Corte Total de Energía</div>
+                </div>
+                <div class="failure-desc">Sin electricidad en toda la zona</div>
+            </div>
+
+            <div class="failure-option" data-type="fluctuaciones">
+                <div class="failure-header">
+                    <span class="failure-emoji">📊</span>
+                    <div class="failure-title">Fluctuaciones de Voltaje</div>
+                </div>
+                <div class="failure-desc">Variaciones en el suministro eléctrico</div>
+            </div>
+
+            <div class="failure-option" data-type="transformador">
+                <div class="failure-header">
+                    <span class="failure-emoji">🔧</span>
+                    <div class="failure-title">Transformador Dañado</div>
+                </div>
+                <div class="failure-desc">Falla en transformador eléctrico</div>
+            </div>
+
+            <div class="failure-option" data-type="cables">
+                <div class="failure-header">
+                    <span class="failure-emoji">⚠️</span>
+                    <div class="failure-title">Cables Caídos</div>
+                </div>
+                <div class="failure-desc">Cables de electricidad en el suelo</div>
+            </div>
+
+            <div class="failure-option" data-type="alumbrado">
+                <div class="failure-header">
+                    <span class="failure-emoji">💡</span>
+                    <div class="failure-title">Alumbrado Público</div>
+                </div>
+                <div class="failure-desc">Falla en iluminación de calles</div>
+            </div>
+
+            <div class="failure-option" data-type="medidor">
+                <div class="failure-header">
+                    <span class="failure-emoji">📟</span>
+                    <div class="failure-title">Problema con Medidor</div>
+                </div>
+                <div class="failure-desc">Falla en medidor de energía</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <div></div>
+        <button class="continue-btn" onclick="goToStep(2)">Continuar</button>
+    </div>
+</div>

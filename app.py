@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, redirect, render_template
 from Config.db import app
 
 @app.route("/")
-
 @app.route("/main")
 def main():
     return render_template("index.html")
@@ -14,6 +13,14 @@ def auth():
 @app.route("/reporte")
 def reporte():
     return render_template("main/reporte.html")
+
+@app.route("/ciudadano")
+def ciudadano():
+    return render_template("main/ciudadano.html")
+
+@app.route("/funcionario")
+def funcionario():
+    return render_template("main/funcionario.html")
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000, host='0.0.0.0')

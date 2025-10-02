@@ -1,0 +1,93 @@
+<!-- STEP 2: Details and Evidence -->
+<div class="step" id="step2">
+    <div class="form-card">
+        <div class="card-header">
+            <i class="fas fa-file-alt card-icon"></i>
+            <h2 class="card-title">Detalles de la Falla</h2>
+        </div>
+
+        <div class="form-field full">
+            <label class="field-label">Descripción Detallada <span class="required">*</span></label>
+            <textarea class="field-textarea" id="descripcion" placeholder="Describe con el mayor detalle posible lo que está sucediendo..." style="min-height: 120px;"></textarea>
+        </div>
+
+        <div class="form-grid" style="margin-top: 28px;">
+            <div class="form-field">
+                <label class="field-label">¿Cuándo comenzó?</label>
+                <input type="datetime-local" class="field-input" id="fechaInicio">
+            </div>
+
+            <div class="form-field">
+                <label class="field-label">Personas Afectadas (aprox.)</label>
+                <input type="number" class="field-input" id="personasAfectadas" placeholder="Ej: 50">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-card">
+        <div class="card-header">
+            <i class="fas fa-exclamation card-icon"></i>
+            <h2 class="card-title">Nivel de Urgencia <span class="required">*</span></h2>
+        </div>
+
+        <div class="urgency-grid">
+            <div class="urgency-option" data-urgency="bajo">
+                <span class="urgency-badge low">Bajo</span>
+                <div class="urgency-content">
+                    <div class="urgency-label">No hay riesgo inmediato</div>
+                    <div class="urgency-desc">La situación puede esperar, no afecta actividades esenciales</div>
+                </div>
+            </div>
+
+            <div class="urgency-option" data-urgency="medio">
+                <span class="urgency-badge medium">Medio</span>
+                <div class="urgency-content">
+                    <div class="urgency-label">Causa inconvenientes menores</div>
+                    <div class="urgency-desc">Afecta algunas actividades pero no hay peligro inmediato</div>
+                </div>
+            </div>
+
+            <div class="urgency-option" data-urgency="alto">
+                <span class="urgency-badge high">Alto</span>
+                <div class="urgency-content">
+                    <div class="urgency-label">Afecta actividades esenciales</div>
+                    <div class="urgency-desc">Requiere atención pronta, impacta operaciones importantes</div>
+                </div>
+            </div>
+
+            <div class="urgency-option" data-urgency="critico">
+                <span class="urgency-badge critical">Crítico</span>
+                <div class="urgency-content">
+                    <div class="urgency-label">Riesgo para la seguridad</div>
+                    <div class="urgency-desc">Situación peligrosa que requiere atención inmediata</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-card">
+        <div class="card-header">
+            <i class="fas fa-camera card-icon"></i>
+            <h2 class="card-title">Evidencia Fotográfica (Opcional)</h2>
+        </div>
+
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 48px;"></i>
+            </div>
+            <div class="upload-text">Sube hasta 5 fotos para ayudarnos a entender mejor la situación</div>
+            <div class="upload-subtext">Formatos soportados: JPG, PNG, HEIC (Máx. 5MB por foto)</div>
+            <button class="select-files-btn" type="button" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-plus"></i>
+                Seleccionar Fotos
+            </button>
+            <input type="file" id="fileInput" multiple accept="image/*" style="display: none;" onchange="handleFiles(this.files)">
+        </div>
+        <div id="filesPreview" style="margin-top: 16px; display: none;"></div>
+    </div>
+
+    <div class="button-container">
+        <button class="btn-back" onclick="goToStep(1)">Anterior</button>
+        <button class="continue-btn" onclick="goToStep(3)">Continuar</button>
+    </div>
+</div>

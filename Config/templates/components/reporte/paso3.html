@@ -1,0 +1,61 @@
+<!-- STEP 3: Confirmation -->
+<div class="step" id="step3">
+    <div class="summary-card">
+        <h2 class="summary-title">Confirma Tu Reporte</h2>
+        
+        <div class="summary-grid">
+            <div class="summary-item">
+                <div class="summary-label">Ubicación</div>
+                <div class="summary-value" id="summaryUbicacion">-</div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-label">Tipo de Falla</div>
+                <div class="summary-value" id="summaryTipoFalla">-</div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-label">Nivel de Urgencia</div>
+                <div class="summary-value" id="summaryUrgencia">-</div>
+            </div>
+
+            <div class="summary-item">
+                <div class="summary-label">Evidencia</div>
+                <div class="summary-value" id="summaryEvidencia">-</div>
+            </div>
+
+            <div class="summary-item" style="grid-column: 1 / -1;">
+                <div class="summary-label">Descripción</div>
+                <div class="summary-value" id="summaryDescripcion">-</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-box-header">
+            <i class="fas fa-info-circle info-box-icon"></i>
+            <div class="info-box-title">¿Qué sigue?</div>
+        </div>
+        <ul class="info-box-list">
+            <li>Recibirás un número de ticket para hacer seguimiento</li>
+            <li>Nuestro equipo evaluará tu reporte en menos de 1 hora</li>
+            <li>Te notificaremos cada actualización del estado</li>
+            <li>Tiempo estimado de resolución: 2-6 horas</li>
+        </ul>
+    </div>
+
+    <div class="button-container">
+        <button class="btn-back">Anterior</button>
+        {% if session.user_id %}
+            <a href="{{ url_for('ciudadano') }}" class="submit-btn">
+                <i class="fas fa-paper-plane"></i>
+                Enviar Reporte
+            </a>
+        {% else %}
+            <a href="{{ url_for('main') }}" class="submit-btn">
+                <i class="fas fa-paper-plane"></i>
+                Enviar Reporte
+            </a>
+        {% endif %}
+    </div>
+</div>

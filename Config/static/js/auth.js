@@ -62,6 +62,12 @@ function handleLogin(event) {
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
 
+  // Validación básica
+  if (!userType || !email || !password) {
+    alert('Por favor, completa todos los campos');
+    return;
+  }
+
   const loginData = {
     userType,
     email,
@@ -70,14 +76,19 @@ function handleLogin(event) {
 
   console.log('Login Data:', loginData);
 
-  // Aquí enviarás los datos al backend
-  // fetch('/api/auth/login', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify(loginData)
-  // })
-
-  alert('✅ Iniciando sesión...\n\nDatos capturados (ver consola)');
+  // Simular login exitoso y redirigir según tipo de usuario
+  alert('✅ Iniciando sesión...');
+  
+  // Redirigir según el tipo de usuario
+  setTimeout(() => {
+    if (userType === 'ciudadano') {
+      window.location.href = '/ciudadano';
+    } else if (userType === 'tecnico' || userType === 'administrador') {
+      window.location.href = '/funcionario';
+    } else {
+      window.location.href = '/ciudadano'; // default
+    }
+  }, 1000);
 }
 
 // Handle Register
