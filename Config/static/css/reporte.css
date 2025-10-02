@@ -41,6 +41,7 @@
             font-weight: 500;
             transition: all 0.2s;
             border-radius: 6px;
+            text-decoration: none;
         }
 
         .back-btn:hover {
@@ -180,7 +181,8 @@
             margin: 0 -2px;
         }
 
-        .step-line.completed {
+        .step-line.completed,
+        .step-line.active {
             background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
         }
 
@@ -622,6 +624,7 @@
             font-family: 'Inter', sans-serif;
             cursor: pointer;
             transition: all 0.2s;
+            text-decoration: none;
         }
 
         .btn-back:hover {
@@ -641,6 +644,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+            text-decoration: none;
         }
 
         .continue-btn:hover {
@@ -672,7 +676,8 @@
 
         /* Steps */
         .step {
-            display: none;
+            display: block;
+            animation: fadeIn 0.3s ease;
         }
 
         .step.active {

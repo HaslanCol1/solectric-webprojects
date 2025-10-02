@@ -1,10 +1,10 @@
 <!-- Header dinámico que cambia según autenticación -->
 <header class="header">
     <div class="header-left">
-        <button class="back-btn" onclick="window.history.back()">
+        <a href="{{ url_for('main') }}" class="back-btn">
             <i class="fas fa-arrow-left"></i>
             <span>Volver</span>
-        </button>
+        </a>
         <div class="logo">
             <div class="logo-icon">⚡</div>
             <div class="logo-text">Solectric</div>

@@ -87,7 +87,7 @@
     </div>
 
     <div class="button-container">
-        <button class="btn-back" onclick="goToStep(1)">Anterior</button>
-        <button class="continue-btn" onclick="goToStep(3)">Continuar</button>
+        <a href="{{ url_for('reporte_paso1') }}" class="btn-back">Anterior</a>
+        <a href="{{ url_for('reporte_paso3') }}" class="continue-btn">Continuar</a>
     </div>
 </div>

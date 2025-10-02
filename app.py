@@ -12,7 +12,19 @@ def auth():
 
 @app.route("/reporte")
 def reporte():
-    return render_template("main/reporte.html")
+    return render_template("main/reporte.html", step=1)
+
+@app.route("/reporte/paso1")
+def reporte_paso1():
+    return render_template("main/reporte.html", step=1)
+
+@app.route("/reporte/paso2")
+def reporte_paso2():
+    return render_template("main/reporte.html", step=2)
+
+@app.route("/reporte/paso3")
+def reporte_paso3():
+    return render_template("main/reporte.html", step=3)
 
 @app.route("/ciudadano")
 def ciudadano():

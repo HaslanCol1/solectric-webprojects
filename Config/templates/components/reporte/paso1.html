@@ -1,5 +1,5 @@
 <!-- STEP 1: Location and Failure Type -->
-<div class="step active" id="step1">
+<div class="step" id="step1">
     <div class="form-card">
         <div class="card-header">
             <i class="fas fa-map-marker-alt card-icon"></i>
@@ -99,6 +99,6 @@
 
     <div class="button-container">
         <div></div>
-        <button class="continue-btn" onclick="goToStep(2)">Continuar</button>
+        <a href="{{ url_for('reporte_paso2') }}" class="continue-btn">Continuar</a>
     </div>
 </div>

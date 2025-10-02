@@ -2,16 +2,24 @@
 <div class="progress-container">
     <div class="progress-steps" id="progressSteps">
         <div class="step-wrapper">
-            <div class="step-circle active" id="stepCircle1">1</div>
+            <div class="step-circle {% if step >= 1 %}active{% else %}inactive{% endif %}" id="stepCircle1">1</div>
         </div>
-        <div class="step-line" id="stepLine1"></div>
+        <div class="step-line {% if step >= 2 %}active{% endif %}" id="stepLine1"></div>
         <div class="step-wrapper">
-            <div class="step-circle inactive" id="stepCircle2">2</div>
+            <div class="step-circle {% if step >= 2 %}active{% else %}inactive{% endif %}" id="stepCircle2">2</div>
         </div>
-        <div class="step-line" id="stepLine2"></div>
+        <div class="step-line {% if step >= 3 %}active{% endif %}" id="stepLine2"></div>
         <div class="step-wrapper">
-            <div class="step-circle inactive" id="stepCircle3">3</div>
+            <div class="step-circle {% if step >= 3 %}active{% else %}inactive{% endif %}" id="stepCircle3">3</div>
         </div>
     </div>
 </div>
-<div class="step-title-text" id="stepTitle">Paso 1 de 3: Ubicación y Tipo de Falla</div>
+<div class="step-title-text" id="stepTitle">
+    {% if step == 1 %}
+        Paso 1 de 3: Ubicación y Tipo de Falla
+    {% elif step == 2 %}
+        Paso 2 de 3: Detalles y Evidencia
+    {% elif step == 3 %}
+        Paso 3 de 3: Confirmación
+    {% endif %}
+</div>
