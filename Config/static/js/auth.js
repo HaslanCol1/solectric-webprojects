@@ -150,23 +150,3 @@ function handleForgotPassword(event) {
     backToLogin();
   }, 5000);
 }
-
-// Función para detectar parámetros URL y pre-seleccionar tipo de usuario
-function initializeUserType() {
-  // Obtener parámetros de la URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const tipo = urlParams.get('tipo');
-  
-  // Si hay parámetro 'tipo', pre-seleccionar en el select
-  if (tipo) {
-    const userTypeSelect = document.getElementById('userType');
-    if (userTypeSelect) {
-      userTypeSelect.value = tipo;
-    }
-  }
-}
-
-// Inicializar cuando se carga la página
-document.addEventListener('DOMContentLoaded', function() {
-  initializeUserType();
-});

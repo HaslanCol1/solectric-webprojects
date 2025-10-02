@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Ciudadano - Solectric</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafafa;
+            color: #1a1a1a;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: white;
+            border-bottom: 1px solid #e8e8e8;
+            height: 70px;
+        }
+
+        .navbar-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            background: #8b5cf6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .brand-text h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+
+        .brand-text p {
+            font-size: 11px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .navbar-center {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+        }
+
+        .nav-btn.active {
+            background-color: #8b5cf6;
+            color: white;
+        }
+
+        .nav-btn:not(.active) {
+            color: #666;
+        }
+
+        .nav-btn:not(.active):hover {
+            background-color: #f5f5f5;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background-color: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background-color: #f5f5f5;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 9px;
+            right: 9px;
+            width: 7px;
+            height: 7px;
+            background-color: #ef4444;
+            border-radius: 50%;
+        }
+
+        .user-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+            position: relative;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a1a1a;
+            cursor: pointer;
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 75px;
+            right: 40px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            min-width: 180px;
+            display: none;
+            overflow: hidden;
+            border: 1px solid #e8e8e8;
+        }
+
+        .user-menu.active {
+            display: block;
+        }
+
+        .user-menu-item {
+            padding: 11px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            color: #666;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .user-menu-item:hover {
+            background-color: #fafafa;
+        }
+
+        .user-menu-item.logout {
+            color: #ef4444;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 28px 40px;
+        }
+
+        .welcome-section {
+            margin-bottom: 24px;
+        }
+
+        .welcome-section h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #1a1a1a;
+        }
+
+        .welcome-section p {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .btn-primary {
+            background: #fbbf24;
+            color: #1a1a1a;
+            padding: 18px 22px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-primary:hover {
+            background: #f59e0b;
+        }
+
+        .btn-primary-content {
+            flex: 1;
+        }
+
+        .btn-primary-title {
+            font-size: 14px;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .btn-primary-subtitle {
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            border: 1px solid #e8e8e8;
+            padding: 18px 22px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-secondary:hover {
+            border-color: #d4d4d4;
+        }
+
+        .btn-secondary-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: #1a1a1a;
+        }
+
+        .btn-secondary-subtitle {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 10px;
+            color: #999;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .stat-value.red {
+            color: #ef4444;
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 20px;
+        }
+
+        /* Reports Section */
+        .reports-section {
+            background-color: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .search-box {
+            padding: 7px 14px;
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+            font-size: 12px;
+            width: 220px;
+            font-family: 'Inter', sans-serif;
+            color: #666;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #d4d4d4;
+        }
+
+        .search-box::placeholder {
+            color: #bbb;
+        }
+
+        /* Report Card */
+        .report-card {
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .report-id {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 3px;
+            font-size: 13px;
+        }
+
+        .priority-badge {
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .priority-alto {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        .priority-medio {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .priority-bajo {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+
+        .report-type {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .report-location {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 14px;
+        }
+
+        .progress-section {
+            margin-bottom: 14px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .progress-label {
+            color: #999;
+            font-weight: 500;
+        }
+
+        .progress-percentage {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #8b5cf6;
+            border-radius: 3px;
+        }
+
+        .report-status {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 14px;
+        }
+
+        .report-status strong {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .report-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .report-estimate {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .report-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-progreso {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .status-revision {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .status-resuelto {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .report-date {
+            font-size: 11px;
+            color: #bbb;
+        }
+
+        .btn-details {
+            padding: 6px 14px;
+            background-color: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            color: #666;
+        }
+
+        .btn-details:hover {
+            border-color: #d4d4d4;
+            background-color: #fafafa;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-card {
+            background-color: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: #1a1a1a;
+        }
+
+        .nearby-report {
+            padding: 12px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .nearby-report:hover {
+            background-color: #fafafa;
+        }
+
+        .nearby-type {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a1a1a;
+            margin-bottom: 3px;
+        }
+
+        .nearby-location {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .nearby-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nearby-distance {
+            font-size: 11px;
+            color: #8b5cf6;
+            font-weight: 600;
+        }
+
+        .nearby-time {
+            font-size: 11px;
+            color: #bbb;
+        }
+
+        .safety-tip {
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .safety-tip.blue {
+            background-color: #dbeafe;
+        }
+
+        .safety-tip.green {
+            background-color: #d1fae5;
+        }
+
+        .safety-tip.orange {
+            background-color: #fed7aa;
+        }
+
+        .safety-tip-title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .safety-tip.blue .safety-tip-title {
+            color: #1e40af;
+        }
+
+        .safety-tip.green .safety-tip-title {
+            color: #065f46;
+        }
+
+        .safety-tip.orange .safety-tip-title {
+            color: #92400e;
+        }
+
+        .safety-tip-text {
+            font-size: 12px;
+        }
+
+        .safety-tip.blue .safety-tip-text {
+            color: #1e3a8a;
+        }
+
+        .safety-tip.green .safety-tip-text {
+            color: #064e3b;
+        }
+
+        .safety-tip.orange .safety-tip-text {
+            color: #78350f;
+        }
+
+        /* Community View */
+        .community-view {
+            display: none;
+        }
+
+        .community-view.active {
+            display: block;
+        }
+
+        .community-container {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+
+        .community-sidebar {
+            background-color: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 20px;
+            height: fit-content;
+        }
+
+        .community-header {
+            background: #8b5cf6;
+            color: white;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+        }
+
+        .community-header h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .groups-header {
+            font-size: 11px;
+            font-weight: 600;
+            color: #999;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .group-item {
+            padding: 11px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .group-item:hover {
+            background-color: #fafafa;
+        }
+
+        .group-item.active {
+            background-color: #f3e8ff;
+            border-color: #e9d5ff;
+        }
+
+        .group-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a1a1a;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .group-status {
+            width: 7px;
+            height: 7px;
+            background-color: #10b981;
+            border-radius: 50%;
+        }
+
+        .group-preview {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .group-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #bbb;
+        }
+
+        .join-group-btn {
+            width: 100%;
+            padding: 10px;
+            background: #fbbf24;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 18px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+        }
+
+        .join-group-btn:hover {
+            background: #f59e0b;
+        }
+
+        .community-main {
+            background-color: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 20px;
+            height: 560px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #e8e8e8;
+            margin-bottom: 18px;
+        }
+
+        .chat-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .chat-members {
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 500;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 18px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 6px;
+        }
+
+        .message-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #8b5cf6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        .message-author {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a1a1a;
+        }
+
+        .message-content {
+            margin-left: 35px;
+            background-color: #f5f5f5;
+            padding: 10px 13px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .message-time {
+            margin-left: 35px;
+            font-size: 11px;
+            color: #bbb;
+            margin-top: 3px;
+        }
+
+        .message.own .message-content {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #e8e8e8;
+            padding-top: 14px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #d4d4d4;
+        }
+
+        .send-btn {
+            padding: 10px 20px;
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+        }
+
+        .send-btn:hover {
+            background: #7c3aed;
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .community-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar-center {
+                display: none;
+            }
+
+            .container {
+                padding: 20px 20px;
+            }
+
+            .navbar-container {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <div class="logo">⚡</div>
+                <div class="brand-text">
+                    <h1>Solectric</h1>
+                    <p>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        Portal Ciudadano
+                    </p>
+                </div>
+            </div>
+
+            <div class="navbar-center">
+                <button class="nav-btn active" onclick="showView('dashboard')">Dashboard</button>
+                <button class="nav-btn" onclick="showView('comunidad')">Comunidad</button>
+            </div>
+
+            <div class="navbar-right">
+                <button class="icon-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-badge"></span>
+                </button>
+                <button class="user-btn" onclick="toggleUserMenu()">JP</button>
+                <span class="user-name" onclick="toggleUserMenu()">Juan Pérez ▼</span>
+                <div class="user-menu" id="userMenu">
+                    <button class="user-menu-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Mi Perfil
+                    </button>
+                    <button class="user-menu-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M12 1v6m0 6v6"></path>
+                            <path d="M21 12h-6m-6 0H3"></path>
+                        </svg>
+                        Configuración
+                    </button>
+                    <button class="user-menu-item logout" onclick="handleLogout()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard View -->
+    <div id="dashboardView" class="dashboard-view">
+        <div class="container">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h2>¡Bienvenido, Juan!</h2>
+                <p>Gestiona tus reportes y mantente informado sobre el estado eléctrico de tu sector</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-primary">
+                    <span style="font-size: 22px;">➕</span>
+                    <div class="btn-primary-content">
+                        <div class="btn-primary-title">Nuevo Reporte</div>
+                        <div class="btn-primary-subtitle">Reporta una falla eléctrica</div>
+                    </div>
+                </button>
+                <button class="btn-secondary">
+                    <div class="btn-secondary-title">Ver Mapa</div>
+                    <div class="btn-secondary-subtitle">Reportes en tu sector</div>
+                </button>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        Mis Reportes
+                    </div>
+                    <div class="stat-value">12</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Activos
+                    </div>
+                    <div class="stat-value">3</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Resueltos
+                    </div>
+                    <div class="stat-value">9</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Tiempo Promedio
+                    </div>
+                    <div class="stat-value red">2.3 horas</div>
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="main-grid">
+                <!-- Reports Section -->
+                <div class="reports-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Mis Reportes</h3>
+                        <input type="text" class="search-box" placeholder="🔍 Buscar reportes...">
+                    </div>
+
+                    <!-- Report Card 1 -->
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div>
+                                <div class="report-id">#SOL-2024-001247</div>
+                                <div class="report-type">Corte total</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <span class="priority-badge priority-alto">Alto</span>
+                                <div class="report-date" style="margin-top: 4px;">2024-01-15</div>
+                            </div>
+                        </div>
+                        <div class="report-location">📍 Calle 45 # 23-56, Barrio Centro</div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Progreso</span>
+                                <span class="progress-percentage">75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="report-status">
+                            <strong>Última actualización:</strong> Técnico asignado y en camino al lugar
+                        </div>
+                        <div class="report-footer">
+                            <div class="report-estimate">⏱️ Estimado: 2 horas</div>
+                            <div class="report-right">
+                                <span class="status-badge status-progreso">En Progreso</span>
+                                <button class="btn-details">Ver Detalles</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Report Card 2 -->
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div>
+                                <div class="report-id">#SOL-2024-001089</div>
+                                <div class="report-type">Fluctuaciones</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <span class="priority-badge priority-medio">Medio</span>
+                                <div class="report-date" style="margin-top: 4px;">2024-01-14</div>
+                            </div>
+                        </div>
+                        <div class="report-location">📍 Carrera 30 # 67-12</div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Progreso</span>
+                                <span class="progress-percentage">25%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                        </div>
+                        <div class="report-status">
+                            <strong>Última actualización:</strong> Reporte recibido y en evaluación
+                        </div>
+                        <div class="report-footer">
+                            <div class="report-estimate">⏱️ Estimado: 4 horas</div>
+                            <div class="report-right">
+                                <span class="status-badge status-revision">En Revisión</span>
+                                <button class="btn-details">Ver Detalles</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Report Card 3 -->
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div>
+                                <div class="report-id">#SOL-2024-000934</div>
+                                <div class="report-type">Alumbrado público</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <span class="priority-badge priority-bajo">Bajo</span>
+                                <div class="report-date" style="margin-top: 4px;">2024-01-12</div>
+                            </div>
+                        </div>
+                        <div class="report-location">📍 Avenida Circunvalar # 45-23</div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Progreso</span>
+                                <span class="progress-percentage">100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="report-status">
+                            <strong>Última actualización:</strong> Problema resuelto satisfactoriamente
+                        </div>
+                        <div class="report-footer">
+                            <div class="report-estimate">⏱️ Estimado: Completado</div>
+                            <div class="report-right">
+                                <span class="status-badge status-resuelto">Resuelto</span>
+                                <button class="btn-details">Ver Detalles</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Nearby Reports -->
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">📍 Reportes Cercanos</h3>
+                        
+                        <div class="nearby-report">
+                            <div class="nearby-type">⚠️ Corte total</div>
+                            <div class="nearby-location">Calle 47 # 25-30</div>
+                            <div class="nearby-footer">
+                                <span class="nearby-distance">150m</span>
+                                <span class="nearby-time">hace 2h</span>
+                            </div>
+                        </div>
+
+                        <div class="nearby-report">
+                            <div class="nearby-type">⚠️ Transformador</div>
+                            <div class="nearby-location">Carrera 32 # 68-45</div>
+                            <div class="nearby-footer">
+                                <span class="nearby-distance">300m</span>
+                                <span class="nearby-time">hace 4h</span>
+                            </div>
+                        </div>
+
+                        <div class="nearby-report">
+                            <div class="nearby-type">⚠️ Cables caídos</div>
+                            <div class="nearby-location">Calle 50 # 28-10</div>
+                            <div class="nearby-footer">
+                                <span class="nearby-distance">500m</span>
+                                <span class="nearby-time">hace 6h</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Safety Tips -->
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">📈 Consejos de Seguridad</h3>
+
+                        <div class="safety-tip blue">
+                            <div class="safety-tip-title">Reporta cables caídos</div>
+                            <div class="safety-tip-text">Mantén distancia de 10 metros y reporta inmediatamente</div>
+                        </div>
+
+                        <div class="safety-tip green">
+                            <div class="safety-tip-title">Ahorra energía</div>
+                            <div class="safety-tip-text">Desconecta aparatos durante fluctuaciones</div>
+                        </div>
+
+                        <div class="safety-tip orange">
+                            <div class="safety-tip-title">Emergencias</div>
+                            <div class="safety-tip-text">Llama al 123 para situaciones críticas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Community View -->
+    <div id="comunidadView" class="community-view">
+        <div class="container">
+            <div class="welcome-section">
+                <h2>Comunidad Solectric</h2>
+                <p>Conéctate con otros ciudadanos de tu sector y comparte información sobre el servicio eléctrico</p>
+            </div>
+
+            <div class="community-container">
+                <!-- Community Sidebar -->
+                <div class="community-sidebar">
+                    <div class="community-header">
+                        <h3>Comunidad</h3>
+                        <input type="text" class="search-input" placeholder="🔍 Buscar grupos...">
+                    </div>
+
+                    <div class="groups-header"># Grupos por Sector</div>
+
+                    <div class="group-item active">
+                        <div class="group-name">
+                            <span class="group-status"></span>
+                            Barranquilla Centro
+                        </div>
+                        <div class="group-preview">Parece que ya se restableció la energía en la Calle 45</div>
+                        <div class="group-meta">
+                            <span>👥 145 miembros</span>
+                            <span>2 min</span>
+                        </div>
+                    </div>
+
+                    <div class="group-item">
+                        <div class="group-name">
+                            <span class="group-status"></span>
+                            Villa Country
+                        </div>
+                        <div class="group-preview">Siguen los cables caídos en la Carrera 30</div>
+                        <div class="group-meta">
+                            <span>👥 89 miembros</span>
+                            <span>15 min</span>
+                        </div>
+                    </div>
+
+                    <div class="group-item">
+                        <div class="group-name">
+                            El Prado
+                        </div>
+                        <div class="group-preview">Gracias al equipo técnico por la rápida respuesta</div>
+                        <div class="group-meta">
+                            <span>👥 67 miembros</span>
+                            <span>1 hora</span>
+                        </div>
+                    </div>
+
+                    <div class="group-item">
+                        <div class="group-name">
+                            <span class="group-status"></span>
+                            Boston
+                        </div>
+                        <div class="group-preview">Alguien más tiene fluctuaciones en el voltaje?</div>
+                        <div class="group-meta">
+                            <span>👥 34 miembros</span>
+                            <span>2 horas</span>
+                        </div>
+                    </div>
+
+                    <div class="group-item">
+                        <div class="group-name">
+                            Soledad Centro
+                        </div>
+                        <div class="group-preview">Reporté el transformador dañado esta mañana</div>
+                        <div class="group-meta">
+                            <span>👥 92 miembros</span>
+                            <span>3 horas</span>
+                        </div>
+                    </div>
+
+                    <button class="join-group-btn">👥 Unirse a Grupo</button>
+                </div>
+
+                <!-- Chat Area -->
+                <div class="community-main">
+                    <div class="chat-header">
+                        <h3>📍 Barranquilla Centro</h3>
+                        <span class="chat-members">145 miembros</span>
+                    </div>
+
+                    <div class="chat-messages">
+                        <div class="message">
+                            <div class="message-header">
+                                <div class="message-avatar">MG</div>
+                                <span class="message-author">María González</span>
+                            </div>
+                            <div class="message-content">
+                                Buenos días comunidad, ¿alguien más tiene corte de energía en la Calle 45?
+                            </div>
+                            <div class="message-time">9:15 AM</div>
+                        </div>
+
+                        <div class="message">
+                            <div class="message-header">
+                                <div class="message-avatar">CR</div>
+                                <span class="message-author">Carlos Ruiz</span>
+                            </div>
+                            <div class="message-content">
+                                Sí, aquí en el 45-23 tampoco hay luz desde las 8:30
+                            </div>
+                            <div class="message-time">9:17 AM</div>
+                        </div>
+
+                        <div class="message own">
+                            <div class="message-header">
+                                <div class="message-avatar">JP</div>
+                                <span class="message-author">Juan Pérez</span>
+                            </div>
+                            <div class="message-content">
+                                Ya reporté la falla al sistema. Dice que el técnico llegará pronto
+                            </div>
+                            <div class="message-time">9:20 AM</div>
+                        </div>
+
+                        <div class="message">
+                            <div class="message-header">
+                                <div class="message-avatar">AT</div>
+                                <span class="message-author">Ana Torres</span>
+                            </div>
+                            <div class="message-content">
+                                Excelente Juan! Yo también voy a reportar desde mi dirección
+                            </div>
+                            <div class="message-time">9:22 AM</div>
+                        </div>
+
+                        <div class="message">
+                            <div class="message-header">
+                                <div class="message-avatar">LM</div>
+                                <span class="message-author">Luis Mendoza</span>
+                            </div>
+                            <div class="message-content">
+                                📷 Acá se ve el transformador que está chisporroteando
+                            </div>
+                            <div class="message-time">9:25 AM</div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input" placeholder="Escribe un mensaje...">
+                        <button class="send-btn">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('userMenu');
+            const userBtn = document.querySelector('.user-btn');
+            const userName = document.querySelector('.user-name');
+            
+            if (!menu.contains(event.target) && !userBtn.contains(event.target) && !userName.contains(event.target)) {
+                menu.classList.remove('active');
+            }
+        });
+
+        function handleLogout() {
+            if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
+                alert('Cerrando sesión...');
+            }
+        }
+
+        function showView(view) {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if ((view === 'dashboard' && btn.textContent === 'Dashboard') ||
+                    (view === 'comunidad' && btn.textContent === 'Comunidad')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const dashboardView = document.getElementById('dashboardView');
+            const comunidadView = document.getElementById('comunidadView');
+
+            if (view === 'dashboard') {
+                dashboardView.style.display = 'block';
+                comunidadView.classList.remove('active');
+            } else if (view === 'comunidad') {
+                dashboardView.style.display = 'none';
+                comunidadView.classList.add('active');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            showView('dashboard');
+        });
+    </script>
+</body>
+</html>
