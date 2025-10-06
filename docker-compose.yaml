@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   app:
-    container_name: flask_app
+    container_name: flask_app-solectric
     build:
       context: .
       dockerfile: Dockerfile  # Asegúrate de que se llama así o cámbialo aquí
@@ -20,7 +20,7 @@ services:
       - DB_NAME=mysql
 
   db:
-    container_name: mysql_db
+    container_name: mysql_db-solectric
     image: mysql:8.0
     restart: always
     ports:

@@ -663,6 +663,8 @@ svg {
     overflow-y: auto;
     padding-right: 8px;
     margin-right: -8px;
+    /* espacio extra para que la última tarjeta no quede pegada al borde */
+    padding-bottom: 32px;
 }
 
 /* Custom scrollbar for notifications */
