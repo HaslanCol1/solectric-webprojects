@@ -10,16 +10,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/ciudadano.css') }}">
 </head>
 <body>
-    <!-- Include Navbar Component -->
     {% include 'components/ciudadano/navbar.html' %}
-
-    <!-- Include Dashboard Component -->
+    {% include 'components/global/notificacion.html' %}
+    {% include 'components/global/perfil.html' %}
     {% include 'components/ciudadano/dashboard.html' %}
-
-    <!-- Include Community Component -->
+    {% include 'components/ciudadano/sidebar.html' %}
     {% include 'components/ciudadano/comunidad.html' %}
-
-    <!-- Include JavaScript -->
     <script src="{{ url_for('static', filename='js/ciudadano.js') }}"></script>
 </body>
 </html>

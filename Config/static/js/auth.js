@@ -75,20 +75,22 @@ function handleLogin(event) {
   };
 
   console.log('Login Data:', loginData);
-
-  // Simular login exitoso y redirigir según tipo de usuario
-  alert('✅ Iniciando sesión...');
   
-  // Redirigir según el tipo de usuario
-  setTimeout(() => {
-    if (userType === 'ciudadano') {
-      window.location.href = '/ciudadano';
-    } else if (userType === 'tecnico' || userType === 'administrador') {
-      window.location.href = '/funcionario';
-    } else {
-      window.location.href = '/ciudadano'; // default
-    }
-  }, 1000);
+  // Verificar si hay un parámetro 'next' en la URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const nextPage = urlParams.get('next');
+  
+  // Redirigir según el contexto inmediatamente
+  if (nextPage === 'reporte' && userType === 'ciudadano') {
+    // Si viene del botón "Reportar Falla" y es ciudadano, ir directo al reporte
+    window.location.href = '/reporte';
+  } else if (userType === 'ciudadano') {
+    window.location.href = '/ciudadano';
+  } else if (userType === 'funcionario') {
+    window.location.href = '/funcionario';
+  } else {
+    window.location.href = '/ciudadano'; // default
+  }
 }
 
 // Handle Register
@@ -150,3 +152,61 @@ function handleForgotPassword(event) {
     backToLogin();
   }, 5000);
 }
+
+// Función para inicializar la página de autenticación
+function initializeAuthPage() {
+  // Verificar si hay un parámetro 'next' en la URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const nextPage = urlParams.get('next');
+  const tipo = urlParams.get('tipo');
+  
+  if (nextPage === 'reporte') {
+    // Mostrar mensaje específico para reportar falla
+    showReportMessage();
+    // Pre-seleccionar ciudadano como tipo de usuario
+    const userTypeSelect = document.getElementById('userType');
+    if (userTypeSelect) {
+      userTypeSelect.value = 'ciudadano';
+    }
+  }
+  
+  // Pre-seleccionar tipo de usuario si viene en la URL
+  if (tipo) {
+    const userTypeSelect = document.getElementById('userType');
+    if (userTypeSelect) {
+      userTypeSelect.value = tipo;
+    }
+  }
+}
+
+// Función para mostrar mensaje cuando viene del reporte
+function showReportMessage() {
+  const cardTitle = document.getElementById('cardTitle');
+  if (cardTitle) {
+    cardTitle.innerHTML = 'Iniciar Sesión';
+  }
+  
+  // Agregar mensaje informativo
+  const loginSection = document.getElementById('loginSection');
+  if (loginSection && !document.getElementById('reportMessage')) {
+    const messageDiv = document.createElement('div');
+    messageDiv.id = 'reportMessage';
+    messageDiv.style.cssText = `
+      background: #fef3c7;
+      border: 1px solid #fbbf24;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 20px;
+      color: #92400e;
+      font-size: 13px;
+      text-align: center;
+    `;
+    messageDiv.innerHTML = '⚠️ Necesitas iniciar sesión para reportar una falla eléctrica';
+    loginSection.insertBefore(messageDiv, loginSection.firstChild);
+  }
+}
+
+// Inicializar cuando se cargue la página
+document.addEventListener('DOMContentLoaded', function() {
+  initializeAuthPage();
+});

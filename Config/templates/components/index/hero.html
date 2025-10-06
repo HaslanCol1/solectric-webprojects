@@ -10,11 +10,11 @@
             Atlántico. Conectamos ciudadanos con equipos técnicos para una respuesta rápida y eficiente.
         </p>
         <div class="hero-buttons">
-            <a href="{{ url_for('reporte') }}" class="btn-primary btn-report">
+            <a href="{{ url_for('auth', next='reporte') }}" class="btn-primary btn-report">
                 <span>⚠️</span>
                 Reportar Falla
             </a>
-            <a href="{{ url_for('auth') }}" class="btn-primary btn-portal">
+            <a href="{{ url_for('auth', tipo='funcionario') }}" class="btn-primary btn-portal">
                 <span>👤</span>
                 Portal Funcionarios
             </a>

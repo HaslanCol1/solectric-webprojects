@@ -1,7 +1,7 @@
-<!-- Header dinámico que cambia según autenticación -->
+<!-- Header simplificado para navegación básica -->
 <header class="header">
     <div class="header-left">
-        <a href="{{ url_for('main') }}" class="back-btn">
+        <a href="{{ url_for('ciudadano') }}" class="back-btn">
             <i class="fas fa-arrow-left"></i>
             <span>Volver</span>
         </a>
@@ -10,15 +10,13 @@
             <div class="logo-text">Solectric</div>
         </div>
     </div>
-    {% if session.user_id %}
     <div class="header-right" id="headerRight">
         <div class="user-info" id="userInfo">
             <i class="fas fa-user-circle"></i>
-            <span id="userName">{{ session.username or 'Usuario' }}</span>
+            <span id="userName">Usuario</span>
         </div>
         <a href="{{ url_for('main') }}" class="logout-btn" id="logoutBtn">
             <i class="fas fa-sign-out-alt"></i>
         </a>
     </div>
-    {% endif %}
 </header>
