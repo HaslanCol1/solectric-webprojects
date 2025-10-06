@@ -41,7 +41,7 @@
                 </svg>
                 <span>Mis Reportes</span>
             </div>
-            <div class="stat-value purple">12</div>
+            <div class="stat-value purple">5</div>
         </div>
         <div class="stat-card">
             <div class="stat-header">
@@ -62,7 +62,7 @@
                 </svg>
                 <span>Resueltos</span>
             </div>
-            <div class="stat-value green">9</div>
+            <div class="stat-value green">2</div>
         </div>
         <div class="stat-card">
             <div class="stat-header">
@@ -72,7 +72,7 @@
                 </svg>
                 <span>Tiempo Promedio</span>
             </div>
-            <div class="stat-value red">2.3 horas</div>
+            <div class="stat-value red">2.8 horas</div>
         </div>
     </div>
 
@@ -80,172 +80,341 @@
     <div class="main-grid">
         <!-- Reports Section -->
         <div class="reports-section">
-            <div class="section-title">Mis Reportes</div>
-
-            <div class="search-bar">
-                <input type="text" placeholder="Buscar reportes...">
-                <svg style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
+            <div class="section-title">
+                Mis Reportes
+                <span id="resultsCounter" class="results-counter"></span>
             </div>
 
-            <!-- Report Card 1 -->
-            <div class="report-card">
-                <div class="report-header">
-                    <div>
-                        <div class="report-id">
-                            #SOL-2024-001247
-                            <span class="priority-badge alto">Alto</span>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div class="status-badge progreso">En Progreso</div>
-                        <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">2024-01-15</div>
-                    </div>
+            <!-- Search and Filters Container -->
+            <div class="search-filters-container">
+                <div class="search-bar">
+                    <input type="text" id="searchReports" placeholder="Buscar reportes...">
+                    <svg style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
                 </div>
-                <div class="report-info">
-                    <div class="report-title">Corte total</div>
-                    <div class="report-location">
+
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <label for="priorityFilter">Prioridad:</label>
+                        <select id="priorityFilter">
+                            <option value="">Todas</option>
+                            <option value="alto">Alto</option>
+                            <option value="medio">Medio</option>
+                            <option value="bajo">Bajo</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="statusFilter">Estado:</label>
+                        <select id="statusFilter">
+                            <option value="">Todos</option>
+                            <option value="progreso">En Progreso</option>
+                            <option value="revision">En Revisión</option>
+                            <option value="resuelto">Resuelto</option>
+                        </select>
+                    </div>
+
+                    <button id="clearFilters" class="btn-clear-filters">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                            </path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
-                        Calle 45 # 23-56, Barrio Centro
-                    </div>
-                </div>
-                <div class="progress-section">
-                    <div class="progress-header">
-                        <span class="progress-label">Progreso</span>
-                        <span style="font-size: 14px; font-weight: 600; color: #7c3aed;">75%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 75%;"></div>
-                    </div>
-                </div>
-                <div class="report-update">
-                    <div class="update-label">Última actualización:</div>
-                    <div class="update-text">Técnico asignado y en camino al lugar</div>
-                </div>
-                <div class="report-footer">
-                    <div class="report-time">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Estimado: 2 horas
-                    </div>
-                    <button class="btn-ver-detalles">Ver Detalles</button>
+                        Limpiar
+                    </button>
                 </div>
             </div>
 
-            <!-- Report Card 2 -->
-            <div class="report-card">
-                <div class="report-header">
-                    <div>
-                        <div class="report-id">
-                            #SOL-2024-001089
-                            <span class="priority-badge medio">Medio</span>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div class="status-badge revision">En Revisión</div>
-                        <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">2024-01-14</div>
-                    </div>
-                </div>
-                <div class="report-info">
-                    <div class="report-title">Fluctuaciones</div>
-                    <div class="report-location">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+            <!-- Reports Container -->
+            <div id="reportsContainer" class="reports-scrollable">
+                <!-- No results message (hidden by default) -->
+                <div id="noResultsMessage" class="no-results" style="display: none;">
+                    <div class="no-results-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                             </path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        Carrera 30 # 67-12
                     </div>
+                    <h3>No se encontraron reportes</h3>
+                    <p>Intenta ajustar tus filtros de búsqueda o crear un nuevo reporte.</p>
                 </div>
-                <div class="progress-section">
-                    <div class="progress-header">
-                        <span class="progress-label">Progreso</span>
-                        <span style="font-size: 14px; font-weight: 600; color: #7c3aed;">25%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 25%;"></div>
-                    </div>
-                </div>
-                <div class="report-update">
-                    <div class="update-label">Última actualización:</div>
-                    <div class="update-text">Reporte recibido y en evaluación</div>
-                </div>
-                <div class="report-footer">
-                    <div class="report-time">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Estimado: 4 horas
-                    </div>
-                    <button class="btn-ver-detalles">Ver Detalles</button>
-                </div>
-            </div>
 
-            <!-- Report Card 3 -->
-            <div class="report-card">
-                <div class="report-header">
-                    <div>
-                        <div class="report-id">
-                            #SOL-2024-000934
-                            <span class="priority-badge bajo">Bajo</span>
+                    <!-- Report Card 1 -->
+                    <div class="report-card" data-priority="alto" data-status="progreso"
+                        data-search="sol-2024-001247 corte total calle 45 # 23-56 barrio centro">
+                        <div class="report-header">
+                            <div>
+                                <div class="report-id">
+                                    #SOL-2024-001247
+                                    <span class="priority-badge alto">Alto</span>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="status-badge progreso">En Progreso</div>
+                                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">2024-01-15</div>
+                            </div>
+                        </div>
+                        <div class="report-info">
+                            <div class="report-title">Corte total</div>
+                            <div class="report-location">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Calle 45 # 23-56, Barrio Centro
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Progreso</span>
+                                <span style="font-size: 14px; font-weight: 600; color: #7c3aed;">75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                        <div class="report-update">
+                            <div class="update-label">Última actualización:</div>
+                            <div class="update-text">Técnico asignado y en camino al lugar</div>
+                        </div>
+                        <div class="report-footer">
+                            <div class="report-time">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Estimado: 2 horas
+                            </div>
+                            <button class="btn-ver-detalles">Ver Detalles</button>
                         </div>
                     </div>
-                    <div style="text-align: right;">
-                        <div class="status-badge resuelto">Resuelto</div>
-                        <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">2024-01-12</div>
+
+                    <!-- Report Card 2 -->
+                    <div class="report-card" data-priority="medio" data-status="revision"
+                        data-search="sol-2024-001089 fluctuaciones carrera 30 # 67-12">
+                        <div class="report-header">
+                            <div>
+                                <div class="report-id">
+                                    #SOL-2024-001089
+                                    <span class="priority-badge medio">Medio</span>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="status-badge revision">En Revisión</div>
+                                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">2024-01-14</div>
+                            </div>
+                        </div>
+                        <div class="report-info">
+                            <div class="report-title">Fluctuaciones</div>
+                            <div class="report-location">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Carrera 30 # 67-12
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Progreso</span>
+                                <span style="font-size: 14px; font-weight: 600; color: #7c3aed;">25%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%;"></div>
+                            </div>
+                        </div>
+                        <div class="report-update">
+                            <div class="update-label">Última actualización:</div>
+                            <div class="update-text">Reporte recibido y en evaluación</div>
+                        </div>
+                        <div class="report-footer">
+                            <div class="report-time">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Estimado: 4 horas
+                            </div>
+                            <button class="btn-ver-detalles">Ver Detalles</button>
+                        </div>
                     </div>
-                </div>
-                <div class="report-info">
-                    <div class="report-title">Alumbrado público</div>
-                    <div class="report-location">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                            </path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                        Avenida Circunvalar # 45-23
+
+                    <!-- Report Card 3 -->
+                    <div class="report-card" data-priority="bajo" data-status="resuelto"
+                        data-search="sol-2024-000934 alumbrado público avenida circunvalar # 45-23">
+                        <div class="report-header">
+                            <div>
+                                <div class="report-id">
+                                    #SOL-2024-000934
+                                    <span class="priority-badge bajo">Bajo</span>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="status-badge resuelto">Resuelto</div>
+                                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">2024-01-12</div>
+                            </div>
+                        </div>
+                        <div class="report-info">
+                            <div class="report-title">Alumbrado público</div>
+                            <div class="report-location">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Avenida Circunvalar # 45-23
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Progreso</span>
+                                <span style="font-size: 14px; font-weight: 600; color: #10b981;">100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%; background: #10b981;"></div>
+                            </div>
+                        </div>
+                        <div class="report-update">
+                            <div class="update-label">Última actualización:</div>
+                            <div class="update-text">Problema resuelto satisfactoriamente</div>
+                        </div>
+                        <div class="report-footer">
+                            <div class="report-time">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Completado
+                            </div>
+                            <button class="btn-ver-detalles">Ver Detalles</button>
+                        </div>
                     </div>
-                </div>
-                <div class="progress-section">
-                    <div class="progress-header">
-                        <span class="progress-label">Progreso</span>
-                        <span style="font-size: 14px; font-weight: 600; color: #10b981;">100%</span>
+
+                    <!-- Report Card 4 - Adicional para probar filtros -->
+                    <div class="report-card" data-priority="alto" data-status="resuelto"
+                        data-search="sol-2024-000678 poste dañado carrera 15 # 82-34 zona norte">
+                        <div class="report-header">
+                            <div>
+                                <div class="report-id">
+                                    #SOL-2024-000678
+                                    <span class="priority-badge alto">Alto</span>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="status-badge resuelto">Resuelto</div>
+                                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">2024-01-10</div>
+                            </div>
+                        </div>
+                        <div class="report-info">
+                            <div class="report-title">Poste dañado</div>
+                            <div class="report-location">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Carrera 15 # 82-34, Zona Norte
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Progreso</span>
+                                <span style="font-size: 14px; font-weight: 600; color: #10b981;">100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%; background: #10b981;"></div>
+                            </div>
+                        </div>
+                        <div class="report-update">
+                            <div class="update-label">Última actualización:</div>
+                            <div class="update-text">Poste reemplazado y servicio restablecido</div>
+                        </div>
+                        <div class="report-footer">
+                            <div class="report-time">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Completado
+                            </div>
+                            <button class="btn-ver-detalles">Ver Detalles</button>
+                        </div>
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%; background: #10b981;"></div>
+
+                    <!-- Report Card 5 - Adicional para probar filtros -->
+                    <div class="report-card" data-priority="medio" data-status="progreso"
+                        data-search="sol-2024-001156 cable caído transversal 45 # 67-89 sector sur">
+                        <div class="report-header">
+                            <div>
+                                <div class="report-id">
+                                    #SOL-2024-001156
+                                    <span class="priority-badge medio">Medio</span>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="status-badge progreso">En Progreso</div>
+                                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">2024-01-13</div>
+                            </div>
+                        </div>
+                        <div class="report-info">
+                            <div class="report-title">Cable caído</div>
+                            <div class="report-location">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Transversal 45 # 67-89, Sector Sur
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Progreso</span>
+                                <span style="font-size: 14px; font-weight: 600; color: #7c3aed;">60%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                        <div class="report-update">
+                            <div class="update-label">Última actualización:</div>
+                            <div class="update-text">Cuadrilla en sitio trabajando en reparación</div>
+                        </div>
+                        <div class="report-footer">
+                            <div class="report-time">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    style="width: 16px; height: 16px;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Estimado: 3 horas
+                            </div>
+                            <button class="btn-ver-detalles">Ver Detalles</button>
+                        </div>
                     </div>
-                </div>
-                <div class="report-update">
-                    <div class="update-label">Última actualización:</div>
-                    <div class="update-text">Problema resuelto satisfactoriamente</div>
-                </div>
-                <div class="report-footer">
-                    <div class="report-time">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        Completado
-                    </div>
-                    <button class="btn-ver-detalles">Ver Detalles</button>
-                </div>
             </div>
         </div>
-
-        

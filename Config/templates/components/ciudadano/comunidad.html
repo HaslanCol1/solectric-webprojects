@@ -11,80 +11,129 @@
             <div class="community-sidebar">
                 <div class="community-header">
                     <h3>Comunidad</h3>
-                    <input type="text" class="search-input" placeholder="🔍 Buscar grupos...">
+                    <div class="search-filter-container">
+                        <input type="text" id="searchGroups" class="search-input" placeholder="🔍 Buscar grupos...">
+                        <select id="groupFilter" class="filter-select">
+                            <option value="todos">Todos</option>
+                            <option value="recientes">Recientes</option>
+                            <option value="sin-leer">Sin leer</option>
+                            <option value="unidos">Mis grupos</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="groups-header"># Grupos por Sector</div>
 
-                <div class="group-item active">
-                    <div class="group-name">
-                        <span class="group-status"></span>
-                        Barranquilla Centro
+                <div class="groups-container" id="groupsContainer">
+                    <div class="group-item active" data-group-id="1" data-status="unido" data-unread="true" data-search="barranquilla centro">
+                        <div class="group-name">
+                            <span class="group-status online"></span>
+                            Barranquilla Centro
+                            <span class="group-badge unido">Unido</span>
+                            <span class="unread-indicator"></span>
+                        </div>
+                        <div class="group-preview">Parece que ya se restableció la energía en la Calle 45</div>
+                        <div class="group-meta">
+                            <span>👥 145 miembros</span>
+                            <span>2 min</span>
+                        </div>
+                        <div class="group-actions">
+                            <button class="leave-group-btn" onclick="leaveGroup(1)" title="Salir del grupo">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    <div class="group-preview">Parece que ya se restableció la energía en la Calle 45</div>
-                    <div class="group-meta">
-                        <span>👥 145 miembros</span>
-                        <span>2 min</span>
+
+                    <div class="group-item" data-group-id="2" data-status="pendiente" data-unread="false" data-search="villa country">
+                        <div class="group-name">
+                            <span class="group-status offline"></span>
+                            Villa Country
+                            <span class="group-badge pendiente">Pendiente</span>
+                        </div>
+                        <div class="group-preview">Solicitud de unión enviada</div>
+                        <div class="group-meta">
+                            <span>👥 89 miembros</span>
+                            <span>15 min</span>
+                        </div>
+                        <div class="group-actions">
+                            <button class="cancel-request-btn" onclick="cancelRequest(2)" title="Cancelar solicitud">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="group-item" data-group-id="3" data-status="no-unido" data-unread="false" data-search="el prado">
+                        <div class="group-name">
+                            El Prado
+                        </div>
+                        <div class="group-preview">👥 Únete para ver los mensajes</div>
+                        <div class="group-meta">
+                            <span>👥 67 miembros</span>
+                            <span>1 hora</span>
+                        </div>
+                        <div class="group-actions">
+                            <button class="join-group-btn" onclick="requestJoinGroup(3)">Unirse</button>
+                        </div>
+                    </div>
+
+                    <div class="group-item" data-group-id="4" data-status="unido" data-unread="true" data-search="boston">
+                        <div class="group-name">
+                            <span class="group-status online"></span>
+                            Boston
+                            <span class="group-badge unido">Unido</span>
+                            <span class="unread-indicator"></span>
+                        </div>
+                        <div class="group-preview">Alguien más tiene fluctuaciones en el voltaje?</div>
+                        <div class="group-meta">
+                            <span>👥 34 miembros</span>
+                            <span>2 horas</span>
+                        </div>
+                        <div class="group-actions">
+                            <button class="leave-group-btn" onclick="leaveGroup(4)" title="Salir del grupo">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="group-item" data-group-id="5" data-status="no-unido" data-unread="false" data-search="soledad centro">
+                        <div class="group-name">
+                            Soledad Centro
+                        </div>
+                        <div class="group-preview">👥 Únete para ver los mensajes</div>
+                        <div class="group-meta">
+                            <span>👥 92 miembros</span>
+                            <span>3 horas</span>
+                        </div>
+                        <div class="group-actions">
+                            <button class="join-group-btn" onclick="requestJoinGroup(5)">Unirse</button>
+                        </div>
                     </div>
                 </div>
-
-                <div class="group-item">
-                    <div class="group-name">
-                        <span class="group-status"></span>
-                        Villa Country
-                    </div>
-                    <div class="group-preview">Siguen los cables caídos en la Carrera 30</div>
-                    <div class="group-meta">
-                        <span>👥 89 miembros</span>
-                        <span>15 min</span>
-                    </div>
-                </div>
-
-                <div class="group-item">
-                    <div class="group-name">
-                        El Prado
-                    </div>
-                    <div class="group-preview">Gracias al equipo técnico por la rápida respuesta</div>
-                    <div class="group-meta">
-                        <span>👥 67 miembros</span>
-                        <span>1 hora</span>
-                    </div>
-                </div>
-
-                <div class="group-item">
-                    <div class="group-name">
-                        <span class="group-status"></span>
-                        Boston
-                    </div>
-                    <div class="group-preview">Alguien más tiene fluctuaciones en el voltaje?</div>
-                    <div class="group-meta">
-                        <span>👥 34 miembros</span>
-                        <span>2 horas</span>
-                    </div>
-                </div>
-
-                <div class="group-item">
-                    <div class="group-name">
-                        Soledad Centro
-                    </div>
-                    <div class="group-preview">Reporté el transformador dañado esta mañana</div>
-                    <div class="group-meta">
-                        <span>👥 92 miembros</span>
-                        <span>3 horas</span>
-                    </div>
-                </div>
-
-                <button class="join-group-btn">👥 Unirse a Grupo</button>
             </div>
 
             <!-- Chat Area -->
             <div class="community-main">
                 <div class="chat-header">
-                    <h3>📍 Barranquilla Centro</h3>
-                    <span class="chat-members">145 miembros</span>
+                    <div class="chat-header-info">
+                        <h3 id="currentGroupName">📍 Barranquilla Centro</h3>
+                        <span id="currentGroupMembers" class="chat-members">145 miembros</span>
+                    </div>
+                    <div class="chat-header-actions">
+                        <button id="currentLeaveBtn" class="header-leave-btn" onclick="leaveGroup(1)" title="Salir del grupo">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="chat-messages">
+                <div class="chat-messages" id="chatMessages">
                     <div class="message">
                         <div class="message-header">
                             <div class="message-avatar">MG</div>
@@ -141,9 +190,33 @@
                     </div>
                 </div>
 
-                <div class="chat-input-container">
-                    <input type="text" class="chat-input" placeholder="Escribe un mensaje...">
-                    <button class="send-btn">Enviar</button>
+                <div class="chat-input-container" id="chatInputContainer">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Escribe un mensaje..." disabled>
+                    <button id="sendBtn" class="send-btn" disabled>Enviar</button>
+                </div>
+
+                <!-- Estado para grupos no unidos -->
+                <div class="group-not-joined" id="groupNotJoined" style="display: none;">
+                    <div class="not-joined-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                    </div>
+                    <h3>Grupo Privado</h3>
+                    <p>Necesitas unirte a este grupo para ver los mensajes y participar en las conversaciones.</p>
+                    <button class="join-from-chat-btn" onclick="requestJoinFromChat()">Solicitar Unirse</button>
+                </div>
+
+                <!-- Estado para solicitud pendiente -->
+                <div class="group-pending" id="groupPending" style="display: none;">
+                    <div class="pending-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3>Solicitud Enviada</h3>
+                    <p>Tu solicitud para unirte a este grupo está pendiente de aprobación por un funcionario.</p>
+                    <button class="cancel-from-chat-btn" onclick="cancelRequestFromChat()">Cancelar Solicitud</button>
                 </div>
             </div>
         </div>

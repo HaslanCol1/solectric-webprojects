@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solectric - Portal Funcionarios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        .navbar {
+            background: white;
+            padding: 0 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #8b5cf6;
+        }
+
+        .portal-label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-left: 1rem;
+            padding-left: 1rem;
+            border-left: 1px solid #e5e7eb;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        .icon-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #ef4444;
+            color: white;
+            border-radius: 10px;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .user-button:hover {
+            background: #f3f4f6;
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .metric-warning {
+            color: #f59e0b;
+        }
+
+        .metric-info {
+            color: #8b5cf6;
+        }
+
+        .metric-success {
+            color: #10b981;
+        }
+
+        .metric-trend {
+            color: #3b82f6;
+        }
+
+        .metric-users {
+            color: #8b5cf6;
+        }
+
+        .metric-critical {
+            color: #ef4444;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            top: 2px;
+        }
+
+        .tab:hover {
+            color: #8b5cf6;
+        }
+
+        .tab.active {
+            color: #8b5cf6;
+            border-bottom-color: #8b5cf6;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .filters-bar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .filters-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .select-input {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+        }
+
+        .reports-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .report-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .report-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .report-id-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .report-id {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-progress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-review {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-resolved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .priority-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .priority-medium {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .priority-low {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .report-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .report-info {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .report-info strong {
+            color: #1f2937;
+        }
+
+        .report-date {
+            text-align: right;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .report-type {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-location {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 1rem;
+        }
+
+        .report-description {
+            color: #4b5563;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .progress-section {
+            margin: 1rem 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%);
+            transition: width 0.3s;
+        }
+
+        .report-update {
+            background: #f9fafb;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #4b5563;
+            margin-bottom: 1rem;
+        }
+
+        .update-label {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-contact {
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-contact:hover {
+            background: #f9fafb;
+        }
+
+        .btn-details {
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-details:hover {
+            background: #f9fafb;
+        }
+
+        .btn-update {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .btn-update:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .team-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .team-name {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 0.25rem;
+        }
+
+        .team-location {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .team-status {
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-field {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-available {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-returning {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .team-reports {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .map-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .map-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 40px;
+        }
+
+        .map-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .map-subtitle {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .analytics-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .analytics-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .chart-label {
+            min-width: 150px;
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        .chart-bar {
+            flex: 1;
+            height: 24px;
+            background: #f3f4f6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .chart-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+
+        .chart-value {
+            min-width: 40px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .metric-number {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .community-section {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1.5rem;
+        }
+
+        .groups-sidebar {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            color: white;
+        }
+
+        .sidebar-header {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 1rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .groups-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .group-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .group-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .group-item.active {
+            background: white;
+            color: #8b5cf6;
+        }
+
+        .group-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .group-info {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .chat-area {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .chat-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 0.25rem;
+        }
+
+        .chat-members {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .messages-container {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 14px;
+        }
+
+        .message-content {
+            background: #f3f4f6;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 14px;
+            max-width: 70%;
+        }
+
+        .message.own .message-content {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            margin-left: auto;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 0.25rem;
+        }
+
+        .chat-input-area {
+            padding: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .notification-panel {
+            position: fixed;
+            right: 0;
+            top: 70px;
+            width: 400px;
+            height: calc(100vh - 70px);
+            background: white;
+            box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            z-index: 50;
+        }
+
+        .notification-panel.show {
+            transform: translateX(0);
+        }
+
+        .notification-header {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-title {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .notification-tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .notification-tab {
+            flex: 1;
+            padding: 1rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+        }
+
+        .notification-tab.active {
+            color: #8b5cf6;
+            border-bottom-color: #8b5cf6;
+        }
+
+        .notifications-list {
+            padding: 1rem;
+            height: calc(100vh - 220px);
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .notification-item:hover {
+            background: #f3f4f6;
+        }
+
+        .notification-item.critical {
+            border-left-color: #ef4444;
+        }
+
+        .notification-item.high {
+            border-left-color: #f59e0b;
+        }
+
+        .notification-item.medium {
+            border-left-color: #3b82f6;
+        }
+
+        .notification-item.success {
+            border-left-color: #10b981;
+        }
+
+        .notification-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-item-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .notification-item-content {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-item-location {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .user-menu {
+            position: fixed;
+            top: 70px;
+            right: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 0.5rem;
+            min-width: 200px;
+            display: none;
+            z-index: 60;
+        }
+
+        .user-menu.show {
+            display: block;
+        }
+
+        .user-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 14px;
+        }
+
+        .user-menu-item:hover {
+            background: #f3f4f6;
+        }
+
+        .user-menu-item.danger {
+            color: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .community-section {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .notification-panel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo-section">
+                <div class="logo">⚡</div>
+                <span class="brand-name">Solectric</span>
+                <span class="portal-label">⚙️ Portal Funcionarios</span>
+            </div>
+            <div class="nav-actions">
+                <button class="btn-primary" onclick="setView('panel')">Gestión</button>
+                <button class="icon-btn" onclick="toggleNotifications()">
+                    🔔
+                    <span class="notification-badge">8</span>
+                </button>
+                <button class="btn-primary" onclick="setView('community')"
+                    style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                    💬 Comunidad
+                </button>
+                <button class="user-button" onclick="toggleUserMenu()">
+                    <div class="user-avatar">RS</div>
+                    <span>Ing. Roberto Silva</span>
+                    <span>▼</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- User Menu -->
+    <div class="user-menu" id="userMenu">
+        <div class="user-menu-item">
+            👤 Mi Perfil
+        </div>
+        <div class="user-menu-item">
+            ⚙️ Configuración
+        </div>
+        <div class="user-menu-item danger">
+            🚪 Cerrar Sesión
+        </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notification-header">
+            <span class="notification-title">🔔 Centro de Operaciones</span>
+            <button class="close-btn" onclick="toggleNotifications()">×</button>
+        </div>
+        <div class="notification-tabs">
+            <button class="notification-tab active">Notificaciones</button>
+            <button class="notification-tab">Tiempo Real</button>
+        </div>
+        <div class="notifications-list">
+            <div class="notification-item critical">
+                <div class="notification-item-header">
+                    <span class="notification-item-title">🚨 Alerta crítica - Cables caídos</span>
+                    <span class="notification-time">1 min</span>
+                </div>
+                <div class="notification-item-content">
+                    Equipo Beta requiere apoyo inmediato en Villa Country. Cables de alta tensión en el suelo.
+                </div>
+                <div class="notification-item-location">📍 Villa Country · 👥 Equipo Beta</div>
+            </div>
+
+            <div class="notification-item high">
+                <div class="notification-item-header">
+                    <span class="notification-item-title">⚠️ Nuevo reporte asignado</span>
+                    <span class="notification-time">15 min</span>
+                </div>
+                <div class="notification-item-content">
+                    Reporte #SOL-2024-001248 asignado a tu equipo - Transformador sobrecargado
+                </div>
+                <div class="notification-item-location">📍 El Prado · 👥 Equipo Alpha</div>
+            </div>
+
+            <div class="notification-item success">
+                <div class="notification-item-header">
+                    <span class="notification-item-title">✅ Reparación completada</span>
+                    <span class="notification-time">1 hora</span>
+                </div>
+                <div class="notification-item-content">
+                    Equipo Delta completó exitosamente reparación en Boston - 200 usuarios reconectados
+                </div>
+                <div class="notification-item-location">📍 Boston · 👥 Equipo Delta</div>
+            </div>
+
+            <div class="notification-item medium">
+                <div class="notification-item-header">
+                    <span class="notification-item-title">📊 Mantenimiento programado</span>
+                    <span class="notification-time">3 horas</span>
+                </div>
+                <div class="notification-item-content">
+                    Recordatorio: Mantenimiento preventivo programado para mañana 08:00
+                </div>
+                <div class="notification-item-location">📍 Sector Norte · 👥 Todos los equipos</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Panel Operativo View -->
+        <div id="panelView" class="content-section active">
+            <div class="page-header">
+                <h1 class="page-title">Panel Operativo</h1>
+                <p class="page-subtitle">Gestión y seguimiento de reportes eléctricos en tiempo real</p>
+            </div>
+
+            <!-- Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span>⚠️</span>
+                        <span>Pendientes</span>
+                    </div>
+                    <div class="metric-value metric-warning">47</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span>🔄</span>
+                        <span>En Progreso</span>
+                    </div>
+                    <div class="metric-value metric-info">23</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span>✅</span>
+                        <span>Resueltos Hoy</span>
+                    </div>
+                    <div class="metric-value metric-success">89</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span>⏱️</span>
+                        <span>Tiempo Promedio</span>
+                    </div>
+                    <div class="metric-value metric-trend">2.3 horas</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span>👥</span>
+                        <span>Equipos Activos</span>
+                    </div>
+                    <div class="metric-value metric-users">12</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span>🚨</span>
+                        <span>Críticos</span>
+                    </div>
+                    <div class="metric-value metric-critical">3</div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('reportes')">Gestión de Reportes</button>
+                <button class="tab" onclick="switchTab('equipos')">Equipos de Trabajo</button>
+                <button class="tab" onclick="switchTab('analytics')">Análisis y Métricas</button>
+            </div>
+
+            <!-- Gestión de Reportes Tab -->
+            <div id="reportesTab" class="content-section active">
+                <div class="filters-bar">
+                    <div class="filters-title">Filtros y Búsqueda</div>
+                    <div class="filters-row">
+                        <input type="text" class="search-input"
+                            placeholder="🔍 Buscar por ticket, dirección o reportante...">
+                        <select class="select-input" id="statusFilter" onchange="filterReports()">
+                            <option value="todos">Todos los Estados</option>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="progreso">En Progreso</option>
+                            <option value="revision">En Revisión</option>
+                            <option value="resuelto">Resuelto</option>
+                        </select>
+                        <select class="select-input" id="priorityFilter" onchange="filterReports()">
+                            <option value="todas">Todas las Prioridades</option>
+                            <option value="alto">Alto</option>
+                            <option value="medio">Medio</option>
+                            <option value="bajo">Bajo</option>
+                        </select>
+                        <button class="btn-secondary">
+                            <span>📥</span>
+                            Exportar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reports-list">
+                    <!-- Report 1 -->
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-id-section">
+                                <div class="report-id">#SOL-2024-001247</div>
+                                <span class="status-badge status-progress">En Progreso</span>
+                                <span class="priority-badge priority-high">Alto</span>
+                            </div>
+                            <div class="report-date">
+                                2024-01-15 14:30<br>
+                                <small style="color: #6b7280;">150 personas afectadas</small>
+                            </div>
+                        </div>
+
+                        <div class="report-meta">
+                            <div>
+                                <div class="report-info">
+                                    <strong>Reportado por:</strong> Juan Pérez<br>
+                                    <strong>📞</strong> 300 123 4567
+                                </div>
+                            </div>
+                            <div>
+                                <div class="report-info">
+                                    <strong>Asignado a:</strong> Equipo Alpha<br>
+                                    <strong>⏰ Resolución estimada:</strong> 2024-01-15 18:30
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="report-type">Corte total</div>
+                        <div class="report-location">📍 Calle 45 # 23-56, Barrio Centro, Barranquilla</div>
+                        <div class="report-description">
+                            Corte total de energía en toda la manzana. Posible falla en transformador.
+                        </div>
+
+                        <div class="progress-section">
+                            <div class="progress-label">
+                                <span>Progreso</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+
+                        <div class="report-update">
+                            <span class="update-label">Última actualización:</span> Técnico en sitio, identificada falla
+                            en transformador
+                        </div>
+
+                        <div class="report-actions">
+                            <button class="btn-action btn-contact">💬 Contactar</button>
+                            <button class="btn-action btn-details">📋 Ver Detalles</button>
+                            <button class="btn-action btn-update">🔄 Actualizar</button>
+                        </div>
+                    </div>
+
+                    <!-- Report 2 -->
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-id-section">
+                                <div class="report-id">#SOL-2024-001245</div>
+                                <span class="status-badge status-review">En Revisión</span>
+                                <span class="priority-badge priority-medium">Medio</span>
+                            </div>
+                            <div class="report-date">
+                                2024-01-15 12:00<br>
+                                <small style="color: #6b7280;">45 personas afectadas</small>
+                            </div>
+                        </div>
+
+                        <div class="report-meta">
+                            <div>
+                                <div class="report-info">
+                                    <strong>Reportado por:</strong> Carlos Ruiz<br>
+                                    <strong>📞</strong> 302 345 6789
+                                </div>
+                            </div>
+                            <div>
+                                <div class="report-info">
+                                    <strong>Asignado a:</strong> Equipo Gamma<br>
+                                    <strong>⏰ Resolución estimada:</strong> 2024-01-15 20:00
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="report-type">Fluctuaciones</div>
+                        <div class="report-location">📍 Calle 72 # 45-30, El Prado, Barranquilla</div>
+                        <div class="report-description">
+                            Fluctuaciones de voltaje afectando electrodomésticos.
+                        </div>
+
+                        <div class="progress-section">
+                            <div class="progress-label">
+                                <span>Progreso</span>
+                                <span>25%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                        </div>
+
+                        <div class="report-update">
+                            <span class="update-label">Última actualización:</span> Programada inspección para esta
+                            tarde
+                        </div>
+
+                        <div class="report-actions">
+                            <button class="btn-action btn-contact">💬 Contactar</button>
+                            <button class="btn-action btn-details">📋 Ver Detalles</button>
+                            <button class="btn-action btn-update">🔄 Actualizar</button>
+                        </div>
+                    </div>
+
+                    <!-- Report 3 -->
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-id-section">
+                                <div class="report-id">#SOL-2024-001244</div>
+                                <span class="status-badge status-resolved">Resuelto</span>
+                                <span class="priority-badge priority-low">Bajo</span>
+                            </div>
+                            <div class="report-date">
+                                2024-01-15 10:30<br>
+                                <small style="color: #6b7280;">200 personas afectadas</small>
+                            </div>
+                        </div>
+
+                        <div class="report-meta">
+                            <div>
+                                <div class="report-info">
+                                    <strong>Reportado por:</strong> Ana Torres<br>
+                                    <strong>📞</strong> 303 456 7890
+                                </div>
+                            </div>
+                            <div>
+                                <div class="report-info">
+                                    <strong>Asignado a:</strong> Equipo Delta<br>
+                                    <strong>✅ Resuelto:</strong> 2024-01-15 15:00
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="report-type">Alumbrado público</div>
+                        <div class="report-location">📍 Avenida Murillo # 58-76, Boston, Barranquilla</div>
+                        <div class="report-description">
+                            Varias luminarias del alumbrado público sin funcionar.
+                        </div>
+
+                        <div class="progress-section">
+                            <div class="progress-label">
+                                <span>Progreso</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <div class="report-update">
+                            <span class="update-label">Última actualización:</span> Luminarias reemplazadas y
+                            funcionando correctamente
+                        </div>
+
+                        <div class="report-actions">
+                            <button class="btn-action btn-contact">💬 Contactar</button>
+                            <button class="btn-action btn-details">📋 Ver Detalles</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipos de Trabajo Tab -->
+            <div id="equiposTab" class="content-section">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <h3 style="margin-bottom: 1.5rem; font-size: 20px; font-weight: 700;">Estado de Equipos</h3>
+                        <div class="teams-grid">
+                            <div class="team-card">
+                                <div class="team-header">
+                                    <div>
+                                        <div class="team-name">Equipo Alpha</div>
+                                        <div class="team-location">📍 Barranquilla Centro</div>
+                                    </div>
+                                    <span class="team-status status-active">Activo</span>
+                                </div>
+                                <div class="team-reports">3 reportes</div>
+                            </div>
+
+                            <div class="team-card">
+                                <div class="team-header">
+                                    <div>
+                                        <div class="team-name">Equipo Beta</div>
+                                        <div class="team-location">📍 Villa Country</div>
+                                    </div>
+                                    <span class="team-status status-field">En Campo</span>
+                                </div>
+                                <div class="team-reports">2 reportes</div>
+                            </div>
+
+                            <div class="team-card">
+                                <div class="team-header">
+                                    <div>
+                                        <div class="team-name">Equipo Gamma</div>
+                                        <div class="team-location">📍 Base Norte</div>
+                                    </div>
+                                    <span class="team-status status-available">Disponible</span>
+                                </div>
+                                <div class="team-reports">1 reportes</div>
+                            </div>
+
+                            <div class="team-card">
+                                <div class="team-header">
+                                    <div>
+                                        <div class="team-name">Equipo Delta</div>
+                                        <div class="team-location">📍 Boston</div>
+                                    </div>
+                                    <span class="team-status status-returning">Regresando</span>
+                                </div>
+                                <div class="team-reports">0 reportes</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="map-section">
+                            <div class="map-icon">📍</div>
+                            <h3 class="map-title">Mapa Operativo</h3>
+                            <p class="map-subtitle">Ubicación de equipos y reportes activos</p>
+                            <button class="btn-primary">🗺️ Abrir Mapa Completo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analyticsTab" class="content-section">
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3 class="analytics-title">📊 Reportes por Tipo (Últimos 7 días)</h3>
+                        <div class="chart-item">
+                            <div class="chart-bar-container">
+                                <div class="chart-label">Corte total</div>
+                                <div class="chart-bar">
+                                    <div class="chart-fill"
+                                        style="width: 89%; background: linear-gradient(90deg, #ef4444, #dc2626);"></div>
+                                </div>
+                            </div>
+                            <div class="chart-value">89</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-bar-container">
+                                <div class="chart-label">Fluctuaciones</div>
+                                <div class="chart-bar">
+                                    <div class="chart-fill"
+                                        style="width: 56%; background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
+                                </div>
+                            </div>
+                            <div class="chart-value">56</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-bar-container">
+                                <div class="chart-label">Alumbrado público</div>
+                                <div class="chart-bar">
+                                    <div class="chart-fill"
+                                        style="width: 34%; background: linear-gradient(90deg, #3b82f6, #2563eb);"></div>
+                                </div>
+                            </div>
+                            <div class="chart-value">34</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-bar-container">
+                                <div class="chart-label">Cables caídos</div>
+                                <div class="chart-bar">
+                                    <div class="chart-fill"
+                                        style="width: 23%; background: linear-gradient(90deg, #f97316, #ea580c);"></div>
+                                </div>
+                            </div>
+                            <div class="chart-value">23</div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3 class="analytics-title">⚡ Rendimiento del Equipo</h3>
+                        <div class="metric-row" style="background: #d1fae5;">
+                            <div>
+                                <div class="metric-label">Reportes resueltos hoy</div>
+                                <div class="metric-number metric-success">89</div>
+                            </div>
+                        </div>
+                        <div class="metric-row" style="background: #dbeafe;">
+                            <div>
+                                <div class="metric-label">Tiempo promedio</div>
+                                <div class="metric-number metric-trend">2.3h</div>
+                            </div>
+                        </div>
+                        <div class="metric-row" style="background: #e0e7ff;">
+                            <div>
+                                <div class="metric-label">Satisfacción ciudadana</div>
+                                <div class="metric-number metric-users">94%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Community View -->
+        <div id="communityView" class="content-section">
+            <div class="page-header">
+                <h1 class="page-title">Comunidad de Funcionarios</h1>
+                <p class="page-subtitle">Coordinación y comunicación entre equipos técnicos por sector operativo</p>
+            </div>
+
+            <div class="community-section">
+                <div class="groups-sidebar">
+                    <div class="sidebar-header">Comunidad</div>
+                    <input type="text" class="search-box" placeholder="🔍 Buscar grupos...">
+                    <div style="margin-bottom: 1rem; font-size: 14px; opacity: 0.9;"># Grupos por Sector</div>
+                    <div class="groups-list">
+                        <div class="group-item active">
+                            <div class="group-name">📍 Barranquilla Centro</div>
+                            <div class="group-info">Parece que ya se restableció la energía en la Calle 45<br>👥 145
+                                miembros · ⏰ 2 min</div>
+                        </div>
+                        <div class="group-item">
+                            <div class="group-name">📍 Villa Country</div>
+                            <div class="group-info">Siguen los cables caídos en la Carrera 30<br>👥 89 miembros · ⏰ 15
+                                min</div>
+                        </div>
+                        <div class="group-item">
+                            <div class="group-name">📍 El Prado</div>
+                            <div class="group-info">Gracias al equipo técnico por la rápida respuesta<br>👥 67 miembros
+                                · ⏰ 1 hora</div>
+                        </div>
+                        <div class="group-item">
+                            <div class="group-name">📍 Boston</div>
+                            <div class="group-info">Alguien más tiene fluctuaciones en el voltaje?<br>👥 34 miembros · ⏰
+                                2 horas</div>
+                        </div>
+                        <div class="group-item">
+                            <div class="group-name">📍 Soledad Centro</div>
+                            <div class="group-info">Reporté el transformador dañado esta mañana<br>👥 92 miembros · ⏰ 3
+                                horas</div>
+                        </div>
+                    </div>
+                    <button class="btn-primary"
+                        style="width: 100%; margin-top: 1rem; background: #fbbf24; color: #78350f;">👥 Unirse a
+                        Grupo</button>
+                </div>
+
+                <div class="chat-area">
+                    <div class="chat-header">
+                        <div class="chat-title">Barranquilla Centro</div>
+                        <div class="chat-members">💚 145 miembros</div>
+                    </div>
+                    <div class="messages-container">
+                        <div class="message">
+                            <div class="message-sender">María González</div>
+                            <div class="message-content">
+                                Buenos días comunidad, ¿alguien más tiene corte de energía en la Calle 45?
+                            </div>
+                            <div class="message-time">9:15 AM</div>
+                        </div>
+
+                        <div class="message">
+                            <div class="message-sender">Carlos Ruiz</div>
+                            <div class="message-content">
+                                Sí, aquí en el 45-23 tampoco hay luz desde las 8:30
+                            </div>
+                            <div class="message-time">9:17 AM</div>
+                        </div>
+
+                        <div class="message own">
+                            <div class="message-sender">Juan Pérez (Tú)</div>
+                            <div class="message-content">
+                                Ya identifiqué el problema. Estamos trabajando en ello. Espero tenerlo listo en 1 hora
+                            </div>
+                            <div class="message-time">9:20 AM</div>
+                        </div>
+
+                        <div class="message">
+                            <div class="message-sender">Ana Torres</div>
+                            <div class="message-content">
+                                Excelente Juan! Yo también voy a reportar desde mi dirección
+                            </div>
+                            <div class="message-time">9:22 AM</div>
+                        </div>
+
+                        <div class="message">
+                            <div class="message-sender">Luis Mendoza</div>
+                            <div class="message-content">
+                                🖼️ Acá se ve el transformador que está chisporroteando
+                            </div>
+                            <div class="message-time">9:25 AM</div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" class="chat-input" placeholder="💬 Escribe un mensaje...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setView(view) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            if (view === 'panel') {
+                document.getElementById('panelView').classList.add('active');
+            } else if (view === 'community') {
+                document.getElementById('communityView').classList.add('active');
+            }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('#reportesTab, #equiposTab, #analyticsTab').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            event.target.classList.add('active');
+
+            if (tab === 'reportes') {
+                document.getElementById('reportesTab').classList.add('active');
+            } else if (tab === 'equipos') {
+                document.getElementById('equiposTab').classList.add('active');
+            } else if (tab === 'analytics') {
+                document.getElementById('analyticsTab').classList.add('active');
+            }
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationPanel');
+            panel.classList.toggle('show');
+        }
+
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.classList.toggle('show');
+        }
+
+        function filterReports() {
+            const status = document.getElementById('statusFilter').value;
+            const priority = document.getElementById('priorityFilter').value;
+            console.log('Filtering by:', status, priority);
+        }
+
+        // Close menus when clicking outside
+        document.addEventListener('click', function (event) {
+            const userMenu = document.getElementById('userMenu');
+            const notificationPanel = document.getElementById('notificationPanel');
+
+            if (!event.target.closest('.user-button') && !event.target.closest('#userMenu')) {
+                userMenu.classList.remove('show');
+            }
+
+            if (!event.target.closest('.icon-btn') && !event.target.closest('#notificationPanel')) {
+                notificationPanel.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+
+</html>

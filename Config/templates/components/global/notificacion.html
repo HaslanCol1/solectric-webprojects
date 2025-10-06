@@ -22,103 +22,304 @@
         <!-- Historial Tab -->
         <div class="tab-content active" id="historialTab">
             <div class="notification-search">
-                <input type="text" placeholder="Buscar notificaciones...">
+                <input type="text" id="searchNotifications" placeholder="Buscar notificaciones...">
             </div>
 
             <div class="notification-filter">
-                <select>
+                <select id="notificationFilter">
                     <option value="todas">Todas</option>
                     <option value="nuevas">Nuevas</option>
                     <option value="leidas">Leídas</option>
                 </select>
             </div>
 
-            <div class="notification-item">
-                <div class="notif-icon info">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <div class="notification-actions">
+                <button id="markAllAsRead" class="btn-action">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
-                </div>
-                <div class="notif-content-wrapper">
-                    <div class="notif-content">
-                        <div class="notif-title">Estado de reporte actualizado</div>
-                        <div class="notif-text">Tu reporte #SOL-2024-001247 ha cambiado a "En Progreso"</div>
-                        <span class="notif-badge">Nueva</span>
-                    </div>
-                    <div class="notif-time">5 min</div>
-                </div>
-                <button class="notif-menu-btn">⋮</button>
+                    Marcar todas como leídas
+                </button>
+                <button id="clearAllNotifications" class="btn-action btn-danger">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    Limpiar todas
+                </button>
             </div>
 
-            <div class="notification-item">
-                <div class="notif-icon success">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <div class="notif-content-wrapper">
-                    <div class="notif-content">
-                        <div class="notif-title">Reporte resuelto</div>
-                        <div class="notif-text">Tu reporte #SOL-2024-001089 ha sido resuelto satisfactoriamente</div>
-                        <span class="notif-badge">Nueva</span>
+            <div id="notificationsList" class="notifications-list">
+                <!-- No results message -->
+                <div id="noNotificationsMessage" class="no-notifications" style="display: none;">
+                    <div class="no-notifications-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                            </path>
+                        </svg>
                     </div>
-                    <div class="notif-time">2 horas</div>
+                    <h3>No se encontraron notificaciones</h3>
+                    <p>Intenta ajustar tus filtros de búsqueda.</p>
                 </div>
-                <button class="notif-menu-btn">⋮</button>
-            </div>
 
-            <div class="notification-item">
-                <div class="notif-icon warning">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                        </path>
-                    </svg>
-                </div>
-                <div class="notif-content-wrapper">
-                    <div class="notif-content">
-                        <div class="notif-title">Corte programado</div>
-                        <div class="notif-text">Mantenimiento programado en tu sector mañana de 8:00 AM a 12:00 PM</div>
+                <div class="notification-item" data-id="1" data-status="nueva" data-search="estado de reporte actualizado sol-2024-001247 en progreso" onclick="toggleNotificationRead(1, event)">
+                    <div class="notif-icon info">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
                     </div>
-                    <div class="notif-time">6 horas</div>
+                    <div class="notif-content-wrapper">
+                        <!-- Área superior: contenido + estado y menú a la derecha -->
+                        <div class="notif-content">
+                            <div class="notif-content-main">
+                                <div class="notif-title">Estado de reporte actualizado</div>
+                                <div class="notif-text">Tu reporte #SOL-2024-001247 ha cambiado a "En Progreso"</div>
+                            </div>
+                            <div class="notif-top-actions">
+                                <span class="notif-badge nueva">Nueva</span>
+                                <button class="notif-menu-btn" onclick="event.stopPropagation(); toggleNotifMenu(1)">⋮</button>
+                                <div class="notif-dropdown" id="dropdown-1">
+                                    <button onclick="markAsRead(1)" class="dropdown-action">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Marcar como leída
+                                    </button>
+                                    <button onclick="deleteNotification(1)" class="dropdown-action danger">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Área inferior: tiempo + botones de acción a la derecha -->
+                        <div class="notif-bottom">
+                            <div class="notif-time">5 min</div>
+                            <div class="notif-actions">
+                                <button class="notif-action-btn read-btn" onclick="event.stopPropagation(); markAsRead(1)" title="Marcar como leída">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </button>
+                                <button class="notif-action-btn delete-btn" onclick="event.stopPropagation(); deleteNotification(1)" title="Eliminar">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button class="notif-menu-btn">⋮</button>
-            </div>
 
-            <div class="notification-item">
-                <div class="notif-icon purple">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                </div>
-                <div class="notif-content-wrapper">
-                    <div class="notif-content">
-                        <div class="notif-title">Nueva funcionalidad</div>
-                        <div class="notif-text">Ahora puedes unirte a grupos de chat comunitarios por sector</div>
+                <div class="notification-item" data-id="2" data-status="nueva" data-search="reporte resuelto sol-2024-001089 resuelto satisfactoriamente" onclick="toggleNotificationRead(2, event)">
+                    <div class="notif-icon success">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
                     </div>
-                    <div class="notif-time">1 día</div>
+                    <div class="notif-content-wrapper">
+                        <!-- Área superior: contenido + estado y menú a la derecha -->
+                        <div class="notif-content">
+                            <div class="notif-content-main">
+                                <div class="notif-title">Reporte resuelto</div>
+                                <div class="notif-text">Tu reporte #SOL-2024-001089 ha sido resuelto satisfactoriamente</div>
+                            </div>
+                            <div class="notif-top-actions">
+                                <span class="notif-badge nueva">Nueva</span>
+                                <button class="notif-menu-btn" onclick="event.stopPropagation(); toggleNotifMenu(2)">⋮</button>
+                                <div class="notif-dropdown" id="dropdown-2">
+                                    <button onclick="markAsRead(2)" class="dropdown-action">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Marcar como leída
+                                    </button>
+                                    <button onclick="deleteNotification(2)" class="dropdown-action danger">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Área inferior: tiempo + botones de acción a la derecha -->
+                        <div class="notif-bottom">
+                            <div class="notif-time">2 horas</div>
+                            <div class="notif-actions">
+                                <button class="notif-action-btn read-btn" onclick="event.stopPropagation(); markAsRead(2)" title="Marcar como leída">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </button>
+                                <button class="notif-action-btn delete-btn" onclick="event.stopPropagation(); deleteNotification(2)" title="Eliminar">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button class="notif-menu-btn">⋮</button>
-            </div>
 
-            <div class="notification-item">
-                <div class="notif-icon info">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
-                </div>
-                <div class="notif-content-wrapper">
-                    <div class="notif-content">
-                        <div class="notif-title">Técnico asignado</div>
-                        <div class="notif-text">El Equipo Alpha ha sido asignado a tu reporte #SOL-2024-001247</div>
+                <div class="notification-item" data-id="3" data-status="leida" data-search="corte programado mantenimiento programado sector mañana" onclick="toggleNotificationRead(3, event)">
+                    <div class="notif-icon warning">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                            </path>
+                        </svg>
                     </div>
-                    <div class="notif-time">2 días</div>
+                    <div class="notif-content-wrapper">
+                        <!-- Área superior: contenido + estado y menú a la derecha -->
+                        <div class="notif-content">
+                            <div class="notif-content-main">
+                                <div class="notif-title">Corte programado</div>
+                                <div class="notif-text">Mantenimiento programado en tu sector mañana de 8:00 AM a 12:00 PM</div>
+                            </div>
+                            <div class="notif-top-actions">
+                                <button class="notif-menu-btn" onclick="event.stopPropagation(); toggleNotifMenu(3)">⋮</button>
+                                <div class="notif-dropdown" id="dropdown-3">
+                                    <button onclick="markAsUnread(3)" class="dropdown-action">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                        </svg>
+                                        Marcar como no leída
+                                    </button>
+                                    <button onclick="deleteNotification(3)" class="dropdown-action danger">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Área inferior: tiempo + botones de acción a la derecha -->
+                        <div class="notif-bottom">
+                            <div class="notif-time">6 horas</div>
+                            <div class="notif-actions">
+                                <button class="notif-action-btn unread-btn" onclick="event.stopPropagation(); markAsUnread(3)" title="Marcar como no leída">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                    </svg>
+                                </button>
+                                <button class="notif-action-btn delete-btn" onclick="event.stopPropagation(); deleteNotification(3)" title="Eliminar">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button class="notif-menu-btn">⋮</button>
+
+                <div class="notification-item" data-id="4" data-status="leida" data-search="nueva funcionalidad grupos chat comunitarios sector" onclick="toggleNotificationRead(4, event)">
+                    <div class="notif-icon purple">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <div class="notif-content-wrapper">
+                        <!-- Área superior: contenido + estado y menú a la derecha -->
+                        <div class="notif-content">
+                            <div class="notif-content-main">
+                                <div class="notif-title">Nueva funcionalidad</div>
+                                <div class="notif-text">Ahora puedes unirte a grupos de chat comunitarios por sector</div>
+                            </div>
+                            <div class="notif-top-actions">
+                                <button class="notif-menu-btn" onclick="event.stopPropagation(); toggleNotifMenu(4)">⋮</button>
+                                <div class="notif-dropdown" id="dropdown-4">
+                                    <button onclick="markAsUnread(4)" class="dropdown-action">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                        </svg>
+                                        Marcar como no leída
+                                    </button>
+                                    <button onclick="deleteNotification(4)" class="dropdown-action danger">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Área inferior: tiempo + botones de acción a la derecha -->
+                        <div class="notif-bottom">
+                            <div class="notif-time">1 día</div>
+                            <div class="notif-actions">
+                                <button class="notif-action-btn unread-btn" onclick="event.stopPropagation(); markAsUnread(4)" title="Marcar como no leída">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                    </svg>
+                                </button>
+                                <button class="notif-action-btn delete-btn" onclick="event.stopPropagation(); deleteNotification(4)" title="Eliminar">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notification-item" data-id="5" data-status="nueva" data-search="técnico asignado equipo alpha sol-2024-001247" onclick="toggleNotificationRead(5, event)">
+                    <div class="notif-icon info">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <div class="notif-content-wrapper">
+                        <!-- Área superior: contenido + estado y menú a la derecha -->
+                        <div class="notif-content">
+                            <div class="notif-content-main">
+                                <div class="notif-title">Técnico asignado</div>
+                                <div class="notif-text">El Equipo Alpha ha sido asignado a tu reporte #SOL-2024-001247</div>
+                            </div>
+                            <div class="notif-top-actions">
+                                <span class="notif-badge nueva">Nueva</span>
+                                <button class="notif-menu-btn" onclick="event.stopPropagation(); toggleNotifMenu(5)">⋮</button>
+                                <div class="notif-dropdown" id="dropdown-5">
+                                    <button onclick="markAsRead(5)" class="dropdown-action">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Marcar como leída
+                                    </button>
+                                    <button onclick="deleteNotification(5)" class="dropdown-action danger">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Área inferior: tiempo + botones de acción a la derecha -->
+                        <div class="notif-bottom">
+                            <div class="notif-time">2 días</div>
+                            <div class="notif-actions">
+                                <button class="notif-action-btn read-btn" onclick="event.stopPropagation(); markAsRead(5)" title="Marcar como leída">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </button>
+                                <button class="notif-action-btn delete-btn" onclick="event.stopPropagation(); deleteNotification(5)" title="Eliminar">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
