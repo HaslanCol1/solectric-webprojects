@@ -2024,3 +2024,345 @@ svg {
         grid-template-columns: 1fr;
     }
 }
+
+/* ==================== ESTILOS ESPECÍFICOS PARA COMUNIDAD DE FUNCIONARIOS ==================== */
+
+/* Botón "Unirse a Grupo" estilo funcionario */
+.join-group-btn.funcionario-join {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #7B61FF 0%, #9B7EFF 100%);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(123, 97, 255, 0.25);
+}
+
+.join-group-btn.funcionario-join:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(123, 97, 255, 0.35);
+}
+
+.join-group-btn.funcionario-join svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Botón para mostrar/ocultar solicitudes */
+.toggle-requests-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.toggle-requests-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.toggle-requests-btn svg:first-child {
+    flex-shrink: 0;
+}
+
+.toggle-requests-btn span:first-of-type {
+    flex: 1;
+    text-align: left;
+}
+
+.requests-badge-btn {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    min-width: 22px;
+    text-align: center;
+}
+
+.chevron-icon {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.toggle-requests-btn.active .chevron-icon {
+    transform: rotate(180deg);
+}
+
+/* Sección de Solicitudes de Unión */
+.join-requests-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    max-height: 400px;
+    overflow-y: auto;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.requests-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.requests-header h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1d1d1f;
+}
+
+.requests-count {
+    background: linear-gradient(135deg, #7B61FF 0%, #9B7EFF 100%);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.requests-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 4px;
+}
+
+/* Custom scrollbar para solicitudes */
+.join-requests-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.join-requests-section::-webkit-scrollbar-track {
+    background: #f5f5f7;
+    border-radius: 3px;
+}
+
+.join-requests-section::-webkit-scrollbar-thumb {
+    background: #d2d2d7;
+    border-radius: 3px;
+}
+
+.join-requests-section::-webkit-scrollbar-thumb:hover {
+    background: #b0b0b5;
+}
+
+/* Card de solicitud */
+.request-card {
+    background: white;
+    border: 1px solid #E5E5E7;
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.2s ease;
+    animation: slideInRequest 0.3s ease;
+}
+
+@keyframes slideInRequest {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.request-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-color: #d2d2d7;
+}
+
+.request-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.request-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7B61FF 0%, #9B7EFF 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.request-details {
+    flex: 1;
+}
+
+.request-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 4px;
+}
+
+.request-group {
+    font-size: 0.85rem;
+    color: #6e6e73;
+    margin-bottom: 4px;
+}
+
+.request-group strong {
+    color: #7B61FF;
+    font-weight: 600;
+}
+
+.request-time {
+    font-size: 0.75rem;
+    color: #86868b;
+}
+
+.request-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-accept,
+.btn-reject {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-accept {
+    background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(52, 199, 89, 0.25);
+}
+
+.btn-accept:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(52, 199, 89, 0.35);
+}
+
+.btn-reject {
+    background: #f5f5f7;
+    color: #6e6e73;
+}
+
+.btn-reject:hover {
+    background: #e5e5e7;
+    color: #1d1d1f;
+}
+
+.btn-accept svg,
+.btn-reject svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Animación de eliminación de solicitud */
+.request-card.removing {
+    animation: slideOutRequest 0.3s ease forwards;
+}
+
+@keyframes slideOutRequest {
+    to {
+        opacity: 0;
+        transform: translateX(20px);
+        height: 0;
+        padding: 0;
+        margin: 0;
+    }
+}
+
+/* Badge "Activo" para grupos unidos en funcionarios */
+.group-badge.unido {
+    background: linear-gradient(135deg, #7B61FF 0%, #9B7EFF 100%);
+    color: white;
+}
+
+/* Ajuste del botón "Unirse a Grupo" en el chat cuando no estás unido */
+.join-from-chat-btn {
+    background: linear-gradient(135deg, #7B61FF 0%, #9B7EFF 100%);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(123, 97, 255, 0.3);
+}
+
+.join-from-chat-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(123, 97, 255, 0.4);
+}
+
+/* Responsive para solicitudes */
+@media (max-width: 768px) {
+    .join-requests-section {
+        margin-top: 16px;
+        padding-top: 16px;
+    }
+
+    .request-card {
+        padding: 12px;
+    }
+
+    .request-actions {
+        flex-direction: column;
+    }
+
+    .btn-accept,
+    .btn-reject {
+        width: 100%;
+    }
+
+    .requests-container {
+        max-height: 300px;
+    }
+}

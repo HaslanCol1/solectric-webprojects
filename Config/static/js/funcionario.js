@@ -590,4 +590,236 @@ document.addEventListener('keydown', function(e) {
 // Inicializar acciones de reportes cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     initReportCardActions();
+    initFuncionarioCommunity();
 });
+
+/**
+ * ========== FUNCIONES ESPECÍFICAS PARA COMUNIDAD DE FUNCIONARIOS ==========
+ */
+
+/**
+ * Inicializa funcionalidad específica de la comunidad de funcionarios
+ */
+function initFuncionarioCommunity() {
+    // Datos actualizados para funcionarios
+    if (typeof groupsData !== 'undefined') {
+        // Actualizar datos de grupos con información de técnicos
+        groupsData[1] = {
+            name: "📍 Barranquilla Centro",
+            members: 12,
+            memberLabel: "técnicos",
+            messages: [
+                { id: 1, author: "Roberto Álvarez - Equipo Alpha", avatar: "RA", content: "Reportamos corte masivo en Calle 45. Confirmamos falla en transformador principal T-234.", time: "8:15 AM", own: false },
+                { id: 2, author: "Carlos Mendoza - Coordinador", avatar: "CM", content: "Recibido Alpha. Asignando grúa especializada. ETA 45 minutos. ¿Área asegurada?", time: "8:18 AM", own: false },
+                { id: 3, author: "Juan Pérez - Técnico Senior", avatar: "JP", content: "Afirmativo. Perímetro acordonado y señalización instalada. Esperando grúa para proceder.", time: "8:20 AM", own: true },
+                { id: 4, author: "Laura Torres - Equipo Beta", avatar: "LT", content: "Equipo Beta disponible para apoyo si es necesario. Actualmente en Villa Country finalizando mantenimiento.", time: "8:23 AM", own: false },
+                { id: 5, author: "Roberto Álvarez - Equipo Alpha", avatar: "RA", content: "📷 Imagen del transformador dañado subida al sistema. Solicitando reemplazo de unidad.", time: "8:26 AM", own: false }
+            ]
+        };
+
+        groupsData[2] = {
+            name: "📍 Villa Country",
+            members: 8,
+            memberLabel: "técnicos",
+            messages: [
+                { id: 1, author: "Miguel Reyes - Equipo Gamma", avatar: "MR", content: "Cables caídos en Carrera 30. Área crítica.", time: "7:30 AM", own: false },
+                { id: 2, author: "Juan Pérez - Técnico Senior", avatar: "JP", content: "En camino con equipo de emergencia.", time: "7:35 AM", own: true }
+            ]
+        };
+
+        groupsData[3] = {
+            name: "📍 El Prado",
+            members: 6,
+            memberLabel: "técnicos",
+            messages: []
+        };
+
+        groupsData[4] = {
+            name: "📍 Boston",
+            members: 5,
+            memberLabel: "técnicos",
+            messages: [
+                { id: 1, author: "Andrea Silva - Coordinadora", avatar: "AS", content: "Reportes de fluctuaciones de voltaje. Necesitamos revisión de subestación.", time: "7:15 AM", own: false },
+                { id: 2, author: "Juan Pérez - Técnico Senior", avatar: "JP", content: "Programando inspección para esta tarde. Equipo Delta disponible.", time: "7:30 AM", own: true }
+            ]
+        };
+
+        groupsData[5] = {
+            name: "📍 Soledad Centro",
+            members: 9,
+            memberLabel: "técnicos",
+            messages: []
+        };
+    }
+
+    // Actualizar la función updateChatInterface si existe para usar el label correcto
+    if (typeof window.originalUpdateChatInterface === 'undefined' && typeof updateChatInterface !== 'undefined') {
+        window.originalUpdateChatInterface = updateChatInterface;
+    }
+}
+
+/**
+ * Acepta una solicitud de unión a un grupo
+ */
+function acceptRequest(requestId) {
+    const requestCard = document.querySelector(`.request-card[data-request-id="${requestId}"]`);
+    if (!requestCard) return;
+
+    // Obtener datos de la solicitud
+    const requesterName = requestCard.querySelector('.request-name').textContent;
+    const groupName = requestCard.querySelector('.request-group strong').textContent;
+
+    // Animación de eliminación
+    requestCard.classList.add('removing');
+
+    // Simular acción en el backend
+    console.log(`Aceptando solicitud de ${requesterName} para unirse a ${groupName}`);
+
+    setTimeout(() => {
+        requestCard.remove();
+        
+        // Actualizar contador
+        updateRequestsCounter();
+        
+        // Mostrar notificación de éxito
+        showNotification(`Solicitud de ${requesterName} aceptada exitosamente`, 'success');
+    }, 300);
+}
+
+/**
+ * Rechaza una solicitud de unión a un grupo
+ */
+function rejectRequest(requestId) {
+    const requestCard = document.querySelector(`.request-card[data-request-id="${requestId}"]`);
+    if (!requestCard) return;
+
+    // Obtener datos de la solicitud
+    const requesterName = requestCard.querySelector('.request-name').textContent;
+
+    // Confirmar rechazo
+    if (!confirm(`¿Estás seguro de que deseas rechazar la solicitud de ${requesterName}?`)) {
+        return;
+    }
+
+    // Animación de eliminación
+    requestCard.classList.add('removing');
+
+    // Simular acción en el backend
+    console.log(`Rechazando solicitud de ${requesterName}`);
+
+    setTimeout(() => {
+        requestCard.remove();
+        
+        // Actualizar contador
+        updateRequestsCounter();
+        
+        // Mostrar notificación
+        showNotification(`Solicitud de ${requesterName} rechazada`, 'info');
+    }, 300);
+}
+
+/**
+ * Actualiza el contador de solicitudes pendientes
+ */
+function updateRequestsCounter() {
+    const requestsContainer = document.getElementById('requestsContainer');
+    const requestsCount = document.getElementById('requestsCount');
+    
+    if (!requestsContainer || !requestsCount) return;
+    
+    const remainingRequests = requestsContainer.querySelectorAll('.request-card:not(.removing)').length;
+    requestsCount.textContent = remainingRequests;
+    
+    // Si no hay más solicitudes, ocultar la sección
+    if (remainingRequests === 0) {
+        const joinRequestsSection = document.getElementById('joinRequestsSection');
+        if (joinRequestsSection) {
+            joinRequestsSection.style.display = 'none';
+        }
+    }
+}
+
+// Sobrescribir requestJoinGroup para funcionarios (unión inmediata, sin solicitud)
+const originalRequestJoinGroup = window.requestJoinGroup;
+if (typeof originalRequestJoinGroup !== 'undefined') {
+    window.requestJoinGroup = function(groupId) {
+        console.log('Funcionario uniéndose al grupo:', groupId);
+        
+        // Para funcionarios, la unión es inmediata
+        if (typeof userGroups !== 'undefined') {
+            userGroups.push(groupId);
+        }
+        
+        // Remover de pendientes si existía
+        if (typeof pendingRequests !== 'undefined') {
+            const index = pendingRequests.indexOf(groupId);
+            if (index > -1) {
+                pendingRequests.splice(index, 1);
+            }
+        }
+        
+        // Actualizar interfaz
+        const groupItem = document.querySelector(`.group-item[data-group-id="${groupId}"]`);
+        if (groupItem) {
+            groupItem.setAttribute('data-status', 'unido');
+            
+            // Actualizar badge
+            const groupName = groupItem.querySelector('.group-name');
+            let badge = groupName.querySelector('.group-badge');
+            
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'group-badge unido';
+                groupName.appendChild(badge);
+            }
+            
+            badge.textContent = 'Activo';
+            badge.className = 'group-badge unido';
+            
+            // Cambiar botón
+            const actionsDiv = groupItem.querySelector('.group-actions');
+            actionsDiv.innerHTML = `
+                <button class="leave-group-btn" onclick="leaveGroup(${groupId})" title="Salir del grupo">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                        </path>
+                    </svg>
+                </button>
+            `;
+        }
+        
+        // Cambiar al grupo recién unido
+        if (typeof switchToGroup !== 'undefined') {
+            switchToGroup(groupId);
+        }
+        
+        // Mostrar notificación
+        showNotification('Te has unido al grupo exitosamente', 'success');
+    };
+}
+
+/**
+ * ========== GESTIÓN DE SOLICITUDES DE UNIÓN ==========
+ */
+
+/**
+ * Toggle (mostrar/ocultar) la sección de solicitudes de unión
+ */
+function toggleJoinRequests() {
+    const requestsSection = document.getElementById('joinRequestsSection');
+    const toggleBtn = document.getElementById('toggleRequestsBtn');
+    
+    if (!requestsSection || !toggleBtn) return;
+    
+    if (requestsSection.style.display === 'none' || requestsSection.style.display === '') {
+        // Mostrar solicitudes
+        requestsSection.style.display = 'block';
+        toggleBtn.classList.add('active');
+    } else {
+        // Ocultar solicitudes
+        requestsSection.style.display = 'none';
+        toggleBtn.classList.remove('active');
+    }
+}
+

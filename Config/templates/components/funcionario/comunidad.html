@@ -12,8 +12,8 @@
     </style>
     <div class="container">
         <div class="welcome-section">
-            <h2>Comunidad Solectric</h2>
-            <p>Conéctate con otros ciudadanos de tu sector y comparte información sobre el servicio eléctrico</p>
+            <h2>Comunidad de Funcionarios</h2>
+            <p>Coordinación y comunicación entre equipos técnicos por sector operativo</p>
         </div>
 
         <div class="community-container">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
 
-                <div class="groups-header"># Grupos por Sector</div>
+                <div class="groups-header"># Grupos por Sector Operativo</div>
 
                 <div class="groups-container" id="groupsContainer">
                     <div class="group-item active" data-group-id="1" data-status="unido" data-unread="true"
@@ -40,12 +40,12 @@
                         <div class="group-name">
                             <span class="group-status online"></span>
                             Barranquilla Centro
-                            <span class="group-badge unido">Unido</span>
+                            <span class="group-badge unido">Activo</span>
                             <span class="unread-indicator"></span>
                         </div>
                         <div class="group-preview">Parece que ya se restableció la energía en la Calle 45</div>
                         <div class="group-meta">
-                            <span>👥 145 miembros</span>
+                            <span>👥 12 técnicos</span>
                             <span>2 min</span>
                         </div>
                         <div class="group-actions">
@@ -59,24 +59,26 @@
                         </div>
                     </div>
 
-                    <div class="group-item" data-group-id="2" data-status="pendiente" data-unread="false"
+                    <div class="group-item" data-group-id="2" data-status="no-unido" data-unread="false"
                         data-search="villa country">
                         <div class="group-name">
                             <span class="group-status offline"></span>
                             Villa Country
-                            <span class="group-badge pendiente">Pendiente</span>
                         </div>
-                        <div class="group-preview">Solicitud de unión enviada</div>
+                        <div class="group-preview">Siguen los cables caídos en la Carrera 30</div>
                         <div class="group-meta">
-                            <span>👥 89 miembros</span>
+                            <span>👥 8 técnicos</span>
                             <span>15 min</span>
                         </div>
                         <div class="group-actions">
-                            <button class="cancel-request-btn" onclick="cancelRequest(2)" title="Cancelar solicitud">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"></path>
+                            <button class="join-group-btn funcionario-join" onclick="requestJoinGroup(2)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="8.5" cy="7" r="4"/>
+                                    <line x1="20" y1="8" x2="20" y2="14"/>
+                                    <line x1="23" y1="11" x2="17" y2="11"/>
                                 </svg>
+                                Unirse a Grupo
                             </button>
                         </div>
                     </div>
@@ -86,13 +88,21 @@
                         <div class="group-name">
                             El Prado
                         </div>
-                        <div class="group-preview">👥 Únete para ver los mensajes</div>
+                        <div class="group-preview">Gracias al equipo técnico por la rápida respuesta</div>
                         <div class="group-meta">
-                            <span>👥 67 miembros</span>
+                            <span>👥 6 técnicos</span>
                             <span>1 hora</span>
                         </div>
                         <div class="group-actions">
-                            <button class="join-group-btn" onclick="requestJoinGroup(3)">Unirse</button>
+                            <button class="join-group-btn funcionario-join" onclick="requestJoinGroup(3)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="8.5" cy="7" r="4"/>
+                                    <line x1="20" y1="8" x2="20" y2="14"/>
+                                    <line x1="23" y1="11" x2="17" y2="11"/>
+                                </svg>
+                                Unirse a Grupo
+                            </button>
                         </div>
                     </div>
 
@@ -101,12 +111,12 @@
                         <div class="group-name">
                             <span class="group-status online"></span>
                             Boston
-                            <span class="group-badge unido">Unido</span>
+                            <span class="group-badge unido">Activo</span>
                             <span class="unread-indicator"></span>
                         </div>
                         <div class="group-preview">Alguien más tiene fluctuaciones en el voltaje?</div>
                         <div class="group-meta">
-                            <span>👥 34 miembros</span>
+                            <span>👥 5 técnicos</span>
                             <span>2 horas</span>
                         </div>
                         <div class="group-actions">
@@ -125,13 +135,123 @@
                         <div class="group-name">
                             Soledad Centro
                         </div>
-                        <div class="group-preview">👥 Únete para ver los mensajes</div>
+                        <div class="group-preview">Reporté el transformador dañado esta mañana</div>
                         <div class="group-meta">
-                            <span>👥 92 miembros</span>
+                            <span>👥 9 técnicos</span>
                             <span>3 horas</span>
                         </div>
                         <div class="group-actions">
-                            <button class="join-group-btn" onclick="requestJoinGroup(5)">Unirse</button>
+                            <button class="join-group-btn funcionario-join" onclick="requestJoinGroup(5)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="8.5" cy="7" r="4"/>
+                                    <line x1="20" y1="8" x2="20" y2="14"/>
+                                    <line x1="23" y1="11" x2="17" y2="11"/>
+                                </svg>
+                                Unirse a Grupo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón para mostrar/ocultar solicitudes (Solo para administradores) -->
+                <button class="toggle-requests-btn" id="toggleRequestsBtn" onclick="toggleJoinRequests()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <line x1="19" y1="8" x2="19" y2="14"/>
+                        <line x1="22" y1="11" x2="16" y2="11"/>
+                    </svg>
+                    <span>Solicitudes de Unión</span>
+                    <span class="requests-badge-btn">3</span>
+                    <svg class="chevron-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </button>
+
+                <!-- Solicitudes de Unión Recibidas (Solo para administradores) -->
+                <div class="join-requests-section" id="joinRequestsSection" style="display: none;">
+                    <div class="requests-header">
+                        <h3>Solicitudes de Unión Recibidas</h3>
+                        <span class="requests-count" id="requestsCount">3</span>
+                    </div>
+                    <div class="requests-container" id="requestsContainer">
+                        <div class="request-card" data-request-id="1">
+                            <div class="request-info">
+                                <div class="request-avatar">MR</div>
+                                <div class="request-details">
+                                    <div class="request-name">María Rodríguez</div>
+                                    <div class="request-group">Solicita unirse a: <strong>Barranquilla Centro</strong></div>
+                                    <div class="request-time">Hace 5 minutos</div>
+                                </div>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn-accept" onclick="acceptRequest(1)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                    </svg>
+                                    Aceptar
+                                </button>
+                                <button class="btn-reject" onclick="rejectRequest(1)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"/>
+                                        <line x1="6" y1="6" x2="18" y2="18"/>
+                                    </svg>
+                                    Rechazar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="request-card" data-request-id="2">
+                            <div class="request-info">
+                                <div class="request-avatar">CL</div>
+                                <div class="request-details">
+                                    <div class="request-name">Carlos López</div>
+                                    <div class="request-group">Solicita unirse a: <strong>Villa Country</strong></div>
+                                    <div class="request-time">Hace 15 minutos</div>
+                                </div>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn-accept" onclick="acceptRequest(2)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                    </svg>
+                                    Aceptar
+                                </button>
+                                <button class="btn-reject" onclick="rejectRequest(2)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"/>
+                                        <line x1="6" y1="6" x2="18" y2="18"/>
+                                    </svg>
+                                    Rechazar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="request-card" data-request-id="3">
+                            <div class="request-info">
+                                <div class="request-avatar">AP</div>
+                                <div class="request-details">
+                                    <div class="request-name">Ana Pérez</div>
+                                    <div class="request-group">Solicita unirse a: <strong>Barranquilla Centro</strong></div>
+                                    <div class="request-time">Hace 1 hora</div>
+                                </div>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn-accept" onclick="acceptRequest(3)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                    </svg>
+                                    Aceptar
+                                </button>
+                                <button class="btn-reject" onclick="rejectRequest(3)">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"/>
+                                        <line x1="6" y1="6" x2="18" y2="18"/>
+                                    </svg>
+                                    Rechazar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -142,7 +262,7 @@
                 <div class="chat-header">
                     <div class="chat-header-info">
                         <h3 id="currentGroupName">📍 Barranquilla Centro</h3>
-                        <span id="currentGroupMembers" class="chat-members">145 miembros</span>
+                        <span id="currentGroupMembers" class="chat-members">12 técnicos</span>
                     </div>
                     <div class="chat-header-actions">
                         <button id="currentLeaveBtn" class="header-leave-btn" onclick="leaveGroup(1)"
@@ -159,57 +279,57 @@
                 <div class="chat-messages" id="chatMessages">
                     <div class="message">
                         <div class="message-header">
-                            <div class="message-avatar">MG</div>
-                            <span class="message-author">María González</span>
+                            <div class="message-avatar">RA</div>
+                            <span class="message-author">Roberto Álvarez - Equipo Alpha</span>
                         </div>
                         <div class="message-content">
-                            Buenos días comunidad, ¿alguien más tiene corte de energía en la Calle 45?
+                            Reportamos corte masivo en Calle 45. Confirmamos falla en transformador principal T-234.
                         </div>
-                        <div class="message-time">9:15 AM</div>
+                        <div class="message-time">8:15 AM</div>
                     </div>
 
                     <div class="message">
                         <div class="message-header">
-                            <div class="message-avatar">CR</div>
-                            <span class="message-author">Carlos Ruiz</span>
+                            <div class="message-avatar">CM</div>
+                            <span class="message-author">Carlos Mendoza - Coordinador</span>
                         </div>
                         <div class="message-content">
-                            Sí, aquí en el 45-23 tampoco hay luz desde las 8:30
+                            Recibido Alpha. Asignando grúa especializada. ETA 45 minutos. ¿Área asegurada?
                         </div>
-                        <div class="message-time">9:17 AM</div>
+                        <div class="message-time">8:18 AM</div>
                     </div>
 
                     <div class="message own">
                         <div class="message-header">
                             <div class="message-avatar">JP</div>
-                            <span class="message-author">Juan Pérez</span>
+                            <span class="message-author">Juan Pérez - Técnico Senior</span>
                         </div>
                         <div class="message-content">
-                            Ya reporté la falla al sistema. Dice que el técnico llegará pronto
+                            Afirmativo. Perímetro acordonado y señalización instalada. Esperando grúa para proceder.
                         </div>
-                        <div class="message-time">9:20 AM</div>
+                        <div class="message-time">8:20 AM</div>
                     </div>
 
                     <div class="message">
                         <div class="message-header">
-                            <div class="message-avatar">AT</div>
-                            <span class="message-author">Ana Torres</span>
+                            <div class="message-avatar">LT</div>
+                            <span class="message-author">Laura Torres - Equipo Beta</span>
                         </div>
                         <div class="message-content">
-                            Excelente Juan! Yo también voy a reportar desde mi dirección
+                            Equipo Beta disponible para apoyo si es necesario. Actualmente en Villa Country finalizando mantenimiento.
                         </div>
-                        <div class="message-time">9:22 AM</div>
+                        <div class="message-time">8:23 AM</div>
                     </div>
 
                     <div class="message">
                         <div class="message-header">
-                            <div class="message-avatar">LM</div>
-                            <span class="message-author">Luis Mendoza</span>
+                            <div class="message-avatar">RA</div>
+                            <span class="message-author">Roberto Álvarez - Equipo Alpha</span>
                         </div>
                         <div class="message-content">
-                            📷 Acá se ve el transformador que está chisporroteando
+                            📷 Imagen del transformador dañado subida al sistema. Solicitando reemplazo de unidad.
                         </div>
-                        <div class="message-time">9:25 AM</div>
+                        <div class="message-time">8:26 AM</div>
                     </div>
                 </div>
 
@@ -223,16 +343,16 @@
                     <div class="not-joined-icon">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                             </path>
                         </svg>
                     </div>
-                    <h3>Grupo Privado</h3>
-                    <p>Necesitas unirte a este grupo para ver los mensajes y participar en las conversaciones.</p>
-                    <button class="join-from-chat-btn" onclick="requestJoinFromChat()">Solicitar Unirse</button>
+                    <h3>Grupo de Coordinación</h3>
+                    <p>Únete a este grupo para coordinar con el equipo técnico del sector y ver las conversaciones en tiempo real.</p>
+                    <button class="join-from-chat-btn" onclick="requestJoinFromChat()">Unirse a Grupo</button>
                 </div>
 
-                <!-- Estado para solicitud pendiente -->
+                <!-- Estado para solicitud pendiente (NO SE USA EN FUNCIONARIOS pero se mantiene por compatibilidad) -->
                 <div class="group-pending" id="groupPending" style="display: none;">
                     <div class="pending-icon">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
