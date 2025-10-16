@@ -1,25 +1,1418 @@
-<!-- Gestión - Panel Operativo -->
-<div id="dashboardView" class="dashboard-view active">
-	<div class="container">
-		<div class="panel-operativo">
-			<h2>Panel Operativo</h2>
-			<p>Gestión y seguimiento de reportes eléctricos en tiempo real</p>
+<div id="dashboardView" class="gestion-operativo">
+<style>
+    /* Reset específico para el componente */
+    .gestion-operativo * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-			<div class="stats-cards">
-				<div class="stat-card">Pendientes<br><strong>47</strong></div>
-				<div class="stat-card">En Progreso<br><strong>23</strong></div>
-				<div class="stat-card">Resueltos Hoy<br><strong>89</strong></div>
-				<div class="stat-card">Tiempo Promedio<br><strong>2.3 horas</strong></div>
-				<div class="stat-card">Equipos Activos<br><strong>12</strong></div>
-				<div class="stat-card critical">Críticos<br><strong>3</strong></div>
-			</div>
+    .gestion-operativo {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background-color: #f5f5f7;
+        padding: 40px 20px;
+        display: none;
+    }
 
-			<div class="management-tabs">
-				<button class="tab active">Gestión de Reportes</button>
-				<button class="tab">Equipos de Trabajo</button>
-				<button class="tab">Análisis y Métricas</button>
-			</div>
-		</div>
-	</div>
+    .gestion-operativo.active {
+        display: block;
+    }
+
+    .gestion-operativo .gestion-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .gestion-operativo h1 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1d1d1f;
+        margin-bottom: 8px;
+    }
+
+    .gestion-operativo .subtitle {
+        font-size: 16px;
+        color: #6e6e73;
+        margin-bottom: 40px;
+    }
+
+    .gestion-operativo .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 40px;
+    }
+
+    .gestion-operativo .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s;
+    }
+
+    .gestion-operativo .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .gestion-operativo .stat-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .gestion-operativo .stat-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .gestion-operativo .stat-label {
+        font-size: 14px;
+        color: #6e6e73;
+        font-weight: 500;
+    }
+
+    .gestion-operativo .stat-value {
+        font-size: 25px;
+        font-weight: 700;
+        margin-top: 4px;
+    }
+
+    .gestion-operativo .yellow { color: #ff9500; }
+    .gestion-operativo .purple { color: #af52de; }
+    .gestion-operativo .green { color: #34c759; }
+    .gestion-operativo .red { color: #ff3b30; }
+    .gestion-operativo .pink { color: #ff2d55; }
+
+    .gestion-operativo .tabs {
+        display: flex;
+        gap: 150px;
+        margin-bottom: 32px;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 0;
+    }
+
+    .gestion-operativo .tab {
+        font-size: 15px;
+        font-weight: 500;
+        color: #6e6e73;
+        padding: 10px 24px;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        white-space: nowrap;
+    }
+
+    .gestion-operativo .tab.active {
+        color: #1d1d1f;
+        font-weight: 600;
+        background: #f5f5f7;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .gestion-operativo .tab:hover:not(.active) {
+        color: #1d1d1f;
+        background: #fafafa;
+    }
+
+    .gestion-operativo .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 40px;
+    }
+
+    .gestion-operativo .content-card {
+        background: white;
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .gestion-operativo .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 24px;
+    }
+
+    .gestion-operativo .team-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid #f5f5f7;
+    }
+
+    .gestion-operativo .team-item:last-child {
+        border-bottom: none;
+    }
+
+    .gestion-operativo .team-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .gestion-operativo .team-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1d1d1f;
+    }
+
+    .gestion-operativo .team-location {
+        font-size: 13px;
+        color: #6e6e73;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .gestion-operativo .team-status {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+    }
+
+    .gestion-operativo .status-badge {
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .gestion-operativo .status-active { background: #d1f4e0; color: #248a3d; }
+    .gestion-operativo .status-field { background: #0071e3; color: white; }
+    .gestion-operativo .status-available { background: #f5f5f7; color: #6e6e73; }
+    .gestion-operativo .status-returning { background: #ff9500; color: white; }
+    .gestion-operativo .status-critico { background: #ff3b30; color: white; }
+    .gestion-operativo .status-resuelto { background: #34c759; color: white; }
+
+    .gestion-operativo .report-count {
+        font-size: 13px;
+        color: #6e6e73;
+    }
+
+    .gestion-operativo .map-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 0;
+    }
+
+    .gestion-operativo .map-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    }
+
+    .gestion-operativo .map-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 8px;
+    }
+
+    .gestion-operativo .map-subtitle {
+        font-size: 14px;
+        color: #6e6e73;
+        margin-bottom: 24px;
+    }
+
+    .gestion-operativo .map-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 32px;
+        border-radius: 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .gestion-operativo .map-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .gestion-operativo .chart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .gestion-operativo .chart-label {
+        font-size: 14px;
+        color: #1d1d1f;
+        font-weight: 500;
+    }
+
+    .gestion-operativo .chart-bar-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        margin-left: 20px;
+    }
+
+    .gestion-operativo .chart-bar {
+        height: 8px;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+
+    .gestion-operativo .chart-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #6e6e73;
+        min-width: 30px;
+        text-align: right;
+    }
+
+    .gestion-operativo .metric-item {
+        background: #f5f5f7;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .gestion-operativo .metric-label {
+        font-size: 15px;
+        color: #1d1d1f;
+        font-weight: 500;
+    }
+
+    .gestion-operativo .metric-value {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .gestion-operativo .view-1 { display: block; }
+    .gestion-operativo .view-2 { display: none; }
+    .gestion-operativo .view-3 { display: none; }
+
+    /* Contenedor para filtros (separado) */
+    .gestion-operativo .filters-reports-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .gestion-operativo .filters-section {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e5e7;
+    }
+
+    .gestion-operativo .filters-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 16px;
+    }
+
+    .gestion-operativo .filters-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+
+    .gestion-operativo .search-input {
+        flex: 1;
+        min-width: 250px;
+        padding: 10px 16px 10px 36px;
+        border: 1px solid #d2d2d7;
+        border-radius: 6px;
+        font-size: 13px;
+        background-color: #fafafa;
+        background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236e6e73' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: 12px center;
+        background-size: 14px;
+    }
+
+    .gestion-operativo .search-input:focus {
+        outline: none;
+        border-color: #86868b;
+        background-color: white;
+    }
+
+    .gestion-operativo .search-input::placeholder {
+        color: #86868b;
+    }
+
+    .gestion-operativo .filter-select {
+        padding: 10px 32px 10px 12px;
+        border: 1px solid #d2d2d7;
+        border-radius: 6px;
+        font-size: 13px;
+        background-color: #fafafa;
+        cursor: pointer;
+        appearance: none;
+        color: #1d1d1f;
+        background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236e6e73' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 10px;
+    }
+
+    .gestion-operativo .filter-select:focus {
+        outline: none;
+        border-color: #86868b;
+        background-color: white;
+    }
+
+    .gestion-operativo .export-button {
+        padding: 10px 20px;
+        border: 1px solid #d2d2d7;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        background-color: #fafafa;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+        color: #1d1d1f;
+    }
+
+    .gestion-operativo .export-button:hover {
+        background-color: #f5f5f7;
+        border-color: #86868b;
+    }
+
+    .gestion-operativo .reports-section {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e5e7;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .gestion-operativo .reports-section::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .gestion-operativo .reports-section::-webkit-scrollbar-track {
+        background: #f5f5f7;
+        border-radius: 4px;
+    }
+
+    .gestion-operativo .reports-section::-webkit-scrollbar-thumb {
+        background: #d2d2d7;
+        border-radius: 4px;
+    }
+
+    .gestion-operativo .reports-section::-webkit-scrollbar-thumb:hover {
+        background: #86868b;
+    }
+
+    .gestion-operativo .reports-header {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 20px;
+    }
+
+    .gestion-operativo .report-card {
+        border: 1px solid #e5e5e7;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 12px;
+        transition: all 0.2s;
+        background: white;
+    }
+
+    .gestion-operativo .report-card:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border-color: #d2d2d7;
+    }
+
+    .gestion-operativo .report-card:last-child {
+        margin-bottom: 0;
+    }
+
+    .gestion-operativo .report-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+    }
+
+    .gestion-operativo .report-id-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .gestion-operativo .report-id {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1d1d1f;
+    }
+
+    .gestion-operativo .priority-badge {
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .gestion-operativo .badge-critical { background: #ff3b30; color: white; }
+    .gestion-operativo .badge-high { background: #ff9500; color: white; }
+    .gestion-operativo .badge-medium { background: #ffcc00; color: #1d1d1f; }
+    .gestion-operativo .badge-low { background: #34c759; color: white; }
+    .gestion-operativo .status-resolved { background: #d1f4e0; color: #248a3d; }
+    .gestion-operativo .status-revision { background: #fff3cd; color: #856404; }
+
+    .gestion-operativo .report-timestamp {
+        text-align: right;
+    }
+
+    .gestion-operativo .report-date {
+        font-size: 12px;
+        color: #6e6e73;
+    }
+
+    .gestion-operativo .report-affected {
+        font-size: 11px;
+        color: #6e6e73;
+    }
+
+    .gestion-operativo .report-type {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 6px;
+    }
+
+    .gestion-operativo .report-address {
+        font-size: 12px;
+        color: #6e6e73;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 16px;
+    }
+
+    .gestion-operativo .report-details-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .gestion-operativo .report-detail {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .gestion-operativo .detail-label {
+        font-size: 11px;
+        color: #6e6e73;
+        font-weight: 400;
+    }
+
+    .gestion-operativo .detail-value {
+        font-size: 13px;
+        color: #1d1d1f;
+        font-weight: 600;
+    }
+
+    .gestion-operativo .report-description {
+        margin-bottom: 16px;
+    }
+
+    .gestion-operativo .description-label {
+        font-size: 11px;
+        color: #6e6e73;
+        font-weight: 400;
+        margin-bottom: 4px;
+    }
+
+    .gestion-operativo .description-text {
+        font-size: 13px;
+        color: #1d1d1f;
+        line-height: 1.5;
+    }
+
+    .gestion-operativo .progress-section {
+        margin-bottom: 16px;
+    }
+
+    .gestion-operativo .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .gestion-operativo .progress-label {
+        font-size: 11px;
+        color: #6e6e73;
+        font-weight: 400;
+    }
+
+    .gestion-operativo .progress-percentage {
+        font-size: 13px;
+        color: #1d1d1f;
+        font-weight: 700;
+    }
+
+    .gestion-operativo .progress-bar-container {
+        width: 100%;
+        height: 6px;
+        background-color: #e5e5e7;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .gestion-operativo .progress-bar-fill {
+        height: 100%;
+        background: #667eea;
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    }
+
+    .gestion-operativo .update-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 16px;
+        border-top: 1px solid #e5e5e7;
+    }
+
+    .gestion-operativo .update-text {
+        font-size: 12px;
+        color: #6e6e73;
+    }
+
+    .gestion-operativo .update-text strong {
+        color: #1d1d1f;
+        font-weight: 600;
+    }
+
+    .gestion-operativo .action-buttons {
+        display: flex;
+        gap: 12px;
+    }
+
+    .gestion-operativo .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .gestion-operativo .btn-secondary {
+        background-color: white;
+        color: #1d1d1f;
+        border: 1px solid #d2d2d7;
+    }
+
+    .gestion-operativo .btn-secondary:hover {
+        background-color: #f5f5f7;
+        border-color: #86868b;
+    }
+
+    .gestion-operativo .btn-primary {
+        background: #667eea;
+        color: white;
+        border: none;
+    }
+
+    .gestion-operativo .btn-primary:hover {
+        background: #5568d3;
+    }
+
+    @media (max-width: 768px) {
+        .gestion-operativo .content-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .gestion-operativo .stats-grid {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+
+        .gestion-operativo .report-details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .gestion-operativo .action-buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .gestion-operativo .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .gestion-operativo .update-section {
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .gestion-operativo .filters-row {
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
+
+        .gestion-operativo .search-input {
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .gestion-operativo .filter-select {
+            width: 100%;
+        }
+
+        .gestion-operativo .export-button {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .gestion-operativo .tabs {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .gestion-operativo h1 {
+            font-size: 24px;
+        }
+
+        .gestion-operativo .report-header-row {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .gestion-operativo .report-timestamp {
+            text-align: left;
+        }
+    }
+</style>
+
+<div class="gestion-container">
+    <h1>Panel Operativo</h1>
+    <p class="subtitle">Gestión y seguimiento de reportes eléctricos en tiempo real</p>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff9500" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                </div>
+                <span class="stat-label">Pendientes</span>
+            </div>
+            <div class="stat-value yellow">47</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#af52de" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                </div>
+                <span class="stat-label">En Progreso</span>
+            </div>
+            <div class="stat-value purple">23</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                </div>
+                <span class="stat-label">Resueltos Hoy</span>
+            </div>
+            <div class="stat-value green">89</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                    </svg>
+                </div>
+                <span class="stat-label">Tiempo Promedio</span>
+            </div>
+            <div class="stat-value red">2,3 horas</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#af52de" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                </div>
+                <span class="stat-label">Equipos Activos</span>
+            </div>
+            <div class="stat-value purple">12</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                </div>
+                <span class="stat-label">Críticos</span>
+            </div>
+            <div class="stat-value red">3</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchViewGestion(1)">Gestión de Reportes</div>
+        <div class="tab" onclick="switchViewGestion(2)">Equipos de Trabajo</div>
+        <div class="tab" onclick="switchViewGestion(3)">Análisis y Métricas</div>
+    </div>
+
+    <div class="view-1" id="viewGestion1">
+        <div class="filters-reports-wrapper">
+            <div class="filters-section">
+                <h2 class="filters-title">Filtros y Búsqueda</h2>
+                <div class="filters-row">
+                    <input type="text" id="searchReportsInput" class="search-input" placeholder="Buscar por ticket, dirección o reportante...">
+                    <select id="filterEstado" class="filter-select">
+                        <option value="">Todos los Estados</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="en progreso">En Progreso</option>
+                        <option value="resuelto">Resuelto</option>
+                        <option value="crítico">Crítico</option>
+                    </select>
+                    <select id="filterPrioridad" class="filter-select">
+                        <option value="">Todas las Prioridades</option>
+                        <option value="crítico">Crítico</option>
+                        <option value="alto">Alto</option>
+                        <option value="medio">Medio</option>
+                        <option value="bajo">Bajo</option>
+                    </select>
+                    <button id="exportButton" class="export-button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Exportar
+                    </button>
+                </div>
+            </div>
+
+            <div class="reports-section">
+                <h2 id="reportsHeader" class="reports-header">Reportes (4)</h2>
+                
+                <div id="noResultsMessage" style="display: none; text-align: center; padding: 40px; color: #86868b;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 16px;">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <p style="font-size: 16px; margin: 0;">No se encontraron reportes que coincidan con los filtros</p>
+                </div>
+
+                <div id="reportsContainer">
+                <!-- Reporte 1 -->
+                <div class="report-card"
+                     data-ticket="#SOL-2024-001247"
+                     data-status="en progreso"
+                     data-priority="alto"
+                     data-address="calle 45 # 23-56, barrio centro, barranquilla"
+                     data-reporter="juan pérez"
+                     data-type="corte total">
+                    <div class="report-header-row">
+                        <div class="report-id-section">
+                            <span class="report-id">#SOL-2024-001247</span>
+                            <span class="status-badge status-field">En Progreso</span>
+                            <span class="priority-badge badge-high">Alto</span>
+                        </div>
+                        <div class="report-timestamp">
+                            <div class="report-date">2024-01-15 14:30</div>
+                            <div class="report-affected">150 personas afectadas</div>
+                        </div>
+                    </div>
+
+                    <div class="report-type">Corte total</div>
+                    <div class="report-address">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        Calle 45 # 23-56, Barrio Centro, Barranquilla
+                    </div>
+
+                    <div class="report-details-grid">
+                        <div class="report-detail">
+                            <div class="detail-label">Reportado por:</div>
+                            <div class="detail-value">Juan Pérez</div>
+                            <div class="report-affected">300 123 4567</div>
+                        </div>
+                        <div class="report-detail">
+                            <div class="detail-label">Asignado a:</div>
+                            <div class="detail-value">Equipo Alpha</div>
+                        </div>
+                        <div class="report-detail">
+                            <div class="detail-label">Resolución estimada:</div>
+                            <div class="detail-value">2024-01-15 18:30</div>
+                        </div>
+                    </div>
+
+                    <div class="report-description">
+                        <div class="description-label">Descripción:</div>
+                        <div class="description-text">Corte total de energía en toda la manzana. Posible falla en transformador.</div>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <span class="progress-label">Progreso</span>
+                            <span class="progress-percentage">75%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: 75%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="update-section">
+                        <div class="update-text">
+                            <strong>Última actualización:</strong> Técnico en sitio, identificada falla en transformador
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                Contactar
+                            </button>
+                            <button class="btn btn-secondary">Ver Detalles</button>
+                            <button class="btn btn-primary">Actualizar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reporte 2 -->
+                <div class="report-card"
+                     data-ticket="#SOL-2024-001246"
+                     data-status="crítico"
+                     data-priority="crítico"
+                     data-address="carrera 30 # 67-12, villa country, barranquilla"
+                     data-reporter="maría gonzález"
+                     data-type="cables caídos">
+                    <div class="report-header-row">
+                        <div class="report-id-section">
+                            <span class="report-id">#SOL-2024-001246</span>
+                            <span class="status-badge status-critico">Crítico</span>
+                            <span class="priority-badge badge-critical">Crítico</span>
+                        </div>
+                        <div class="report-timestamp">
+                            <div class="report-date">2024-01-15 13:15</div>
+                            <div class="report-affected">80 personas afectadas</div>
+                        </div>
+                    </div>
+
+                    <div class="report-type">Cables caídos</div>
+                    <div class="report-address">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        Carrera 30 # 67-12, Villa Country, Barranquilla
+                    </div>
+
+                    <div class="report-details-grid">
+                        <div class="report-detail">
+                            <div class="detail-label">Reportado por:</div>
+                            <div class="detail-value">María González</div>
+                            <div class="report-affected">301 234 5678</div>
+                        </div>
+                        <div class="report-detail">
+                            <div class="detail-label">Asignado a:</div>
+                            <div class="detail-value">Equipo Beta</div>
+                        </div>
+                        <div class="report-detail">
+                            <div class="detail-label">Resolución estimada:</div>
+                            <div class="detail-value">2024-01-15 16:00</div>
+                        </div>
+                    </div>
+
+                    <div class="report-description">
+                        <div class="description-label">Descripción:</div>
+                        <div class="description-text">Cables de alta tensión caídos por viento fuerte. Área acordonada.</div>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <span class="progress-label">Progreso</span>
+                            <span class="progress-percentage">45%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: 45%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="update-section">
+                        <div class="update-text">
+                            <strong>Última actualización:</strong> Área asegurada, esperando grúa especializada
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                Contactar
+                            </button>
+                            <button class="btn btn-secondary">Ver Detalles</button>
+                            <button class="btn btn-primary">Actualizar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reporte 3 -->
+                <!-- Reporte 3 -->
+                <div class="report-card"
+                     data-ticket="#SOL-2024-001245"
+                     data-status="en revisión"
+                     data-priority="medio"
+                     data-address="avenida del río # 45-12, ciudad jardín, barranquilla"
+                     data-reporter="carlos ruiz"
+                     data-type="fluctuaciones">
+                    <div class="report-header-row">
+                        <div class="report-id-section">
+                            <span class="report-id">#SOL-2024-001245</span>
+                            <span class="status-badge status-returning">En Revisión</span>
+                            <span class="priority-badge badge-medium">Medio</span>
+                        </div>
+                        <div class="report-timestamp">
+                            <div class="report-date">2024-01-15 12:00</div>
+                            <div class="report-affected">45 personas afectadas</div>
+                        </div>
+                    </div>
+
+                    <div class="report-type">Fluctuaciones</div>
+                    <div class="report-address">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        Calle 72 # 45-30, El Prado, Barranquilla
+                    </div>
+
+                    <div class="report-details-grid">
+                        <div class="report-detail">
+                            <div class="detail-label">Reportado por:</div>
+                            <div class="detail-value">Carlos Ruiz</div>
+                            <div class="report-affected">302 345 6789</div>
+                        </div>
+                        <div class="report-detail">
+                            <div class="detail-label">Asignado a:</div>
+                            <div class="detail-value">Equipo Gamma</div>
+                        </div>
+                        <div class="report-detail">
+                            <div class="detail-label">Resolución estimada:</div>
+                            <div class="detail-value">2024-01-15 20:00</div>
+                        </div>
+                    </div>
+
+                    <div class="report-description">
+                        <div class="description-label">Descripción:</div>
+                        <div class="description-text">Fluctuaciones de voltaje afectando electrodomésticos.</div>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <span class="progress-label">Progreso</span>
+                            <span class="progress-percentage">25%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: 25%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="update-section">
+                        <div class="update-text">
+                            <strong>Última actualización:</strong> Programada inspección para esta tarde
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                Contactar
+                            </button>
+                            <button class="btn btn-secondary">Ver Detalles</button>
+                            <button class="btn btn-primary">Actualizar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reporte 4 -->
+                <!-- Reporte 4 -->
+                <div class="report-card"
+                     data-ticket="#SOL-2024-001244"
+                     data-status="resuelto"
+                     data-priority="bajo"
+                     data-address="calle 70 # 55-23, el poblado, barranquilla"
+                     data-reporter="ana torres"
+                     data-type="alumbrado público">
+                    <div class="report-header-row">
+                        <div class="report-id-section">
+                            <span class="report-id">#SOL-2024-001244</span>
+                            <span class="status-badge status-resuelto">Resuelto</span>
+                            <span class="priority-badge badge-low">Bajo</span>
+                        </div>
+                        <div class="report-timestamp">
+                            <div class="report-date">2024-01-15 10:30</div>
+                            <div class="report-affected">200 personas afectadas</div>
+                        </div>
+                    </div>
+
+                    <div class="report-type">Alumbrado público</div>
+                    <div class="report-address">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        Avenida Murillo # 58-76, Boston, Barranquilla
+                    </div>
+
+                    <div class="report-details-grid">
+                        <div class="report-detail">
+                            <div class="detail-label">Reportado por:</div>
+                            <div class="detail-value">Ana Torres</div>
+                            <div class="report-affected">303 456 7890</div>
+                        </div>
+                        <div class="report-detail">
+                            <div class="detail-label">Asignado a:</div>
+                            <div class="detail-value">Equipo Delta</div>
+                        </div>
+                        <div class="report-detail">
+                            <div class="detail-label">Resolución estimada:</div>
+                            <div class="detail-value">2024-01-15 15:00</div>
+                        </div>
+                    </div>
+
+                    <div class="report-description">
+                        <div class="description-label">Descripción:</div>
+                        <div class="description-text">Varias luminarias del alumbrado público sin funcionar.</div>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <span class="progress-label">Progreso</span>
+                            <span class="progress-percentage">100%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: 100%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="update-section">
+                        <div class="update-text">
+                            <strong>Última actualización:</strong> Luminarias reemplazadas y funcionando correctamente
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                Contactar
+                            </button>
+                            <button class="btn btn-secondary">Ver Detalles</button>
+                            <button class="btn btn-primary">Actualizar</button>
+                        </div>
+                    </div>
+                </div>
+                </div><!-- Fin reportsContainer -->
+            </div>
+        </div>
+    </div>
+
+    <div class="view-2" id="viewGestion2">
+        <div class="content-grid">
+            <div class="content-card">
+                <h2 class="card-title">Estado de Equipos</h2>
+
+                <div class="team-item">
+                    <div class="team-info">
+                        <div class="team-name">Equipo Alpha</div>
+                        <div class="team-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6e6e73" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
+                            Barranquilla Centro
+                        </div>
+                    </div>
+                    <div class="team-status">
+                        <span class="status-badge status-active">Activo</span>
+                        <span class="report-count">3 reportes</span>
+                    </div>
+                </div>
+
+                <div class="team-item">
+                    <div class="team-info">
+                        <div class="team-name">Equipo Beta</div>
+                        <div class="team-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6e6e73" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
+                            Villa Country
+                        </div>
+                    </div>
+                    <div class="team-status">
+                        <span class="status-badge status-field">En Campo</span>
+                        <span class="report-count">2 reportes</span>
+                    </div>
+                </div>
+
+                <div class="team-item">
+                    <div class="team-info">
+                        <div class="team-name">Equipo Gamma</div>
+                        <div class="team-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6e6e73" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
+                            Base Norte
+                        </div>
+                    </div>
+                    <div class="team-status">
+                        <span class="status-badge status-available">Disponible</span>
+                        <span class="report-count">1 reporte</span>
+                    </div>
+                </div>
+
+                <div class="team-item">
+                    <div class="team-info">
+                        <div class="team-name">Equipo Delta</div>
+                        <div class="team-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6e6e73" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
+                            Boston
+                        </div>
+                    </div>
+                    <div class="team-status">
+                        <span class="status-badge status-returning">Regresando</span>
+                        <span class="report-count">0 reportes</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h2 class="card-title">Mapa de Operaciones</h2>
+                <div class="map-container">
+                    <div class="map-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                            <circle cx="12" cy="10" r="3" />
+                        </svg>
+                    </div>
+                    <div class="map-title">Mapa Operativo</div>
+                    <div class="map-subtitle">Ubicación de equipos y reportes activos</div>
+                    <button class="map-button">Abrir Mapa Completo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="view-3" id="viewGestion3">
+        <div class="content-grid">
+            <div class="content-card">
+                <h2 class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#af52de" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                    Reportes por Tipo (Últimos 7 días)
+                </h2>
+
+                <div class="chart-item">
+                    <div class="chart-label">Corte total</div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="width: 80%; background-color: #ff3b30;"></div>
+                        <div class="chart-value">89</div>
+                    </div>
+                </div>
+
+                <div class="chart-item">
+                    <div class="chart-label">Fluctuaciones</div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="width: 50%; background-color: #ff9500;"></div>
+                        <div class="chart-value">56</div>
+                    </div>
+                </div>
+
+                <div class="chart-item">
+                    <div class="chart-label">Alumbrado público</div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="width: 30%; background-color: #0071e3;"></div>
+                        <div class="chart-value">34</div>
+                    </div>
+                </div>
+
+                <div class="chart-item">
+                    <div class="chart-label">Cables caídos</div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="width: 20%; background-color: #ff6b35;"></div>
+                        <div class="chart-value">23</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h2 class="card-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <line x1="9" y1="3" x2="9" y2="21" />
+                    </svg>
+                    Rendimiento del Equipo
+                </h2>
+
+                <div class="metric-item">
+                    <div class="metric-label">Reportes resueltos hoy</div>
+                    <div class="metric-value green">89</div>
+                </div>
+
+                <div class="metric-item">
+                    <div class="metric-label">Tiempo promedio</div>
+                    <div class="metric-value" style="color: #0071e3;">2.3h</div>
+                </div>
+
+                <div class="metric-item">
+                    <div class="metric-label">Satisfacción ciudadana</div>
+                    <div class="metric-value purple">94%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchViewGestion(viewNumber) {
+        const tabs = document.querySelectorAll('.gestion-operativo .tab');
+        const view1 = document.getElementById('viewGestion1');
+        const view2 = document.getElementById('viewGestion2');
+        const view3 = document.getElementById('viewGestion3');
+
+        tabs.forEach(tab => tab.classList.remove('active'));
+        tabs[viewNumber - 1].classList.add('active');
+
+        view1.style.display = 'none';
+        view2.style.display = 'none';
+        view3.style.display = 'none';
+
+        if (viewNumber === 1) {
+            view1.style.display = 'block';
+        } else if (viewNumber === 2) {
+            view2.style.display = 'block';
+        } else if (viewNumber === 3) {
+            view3.style.display = 'block';
+            // Animate chart bars when view 3 is shown
+            setTimeout(() => {
+                const bars = document.querySelectorAll('#viewGestion3 .chart-bar');
+                bars.forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 50);
+        }
+    }
+
+    // Animate progress bars on load
+    window.addEventListener('load', () => {
+        const progressBars = document.querySelectorAll('.gestion-operativo .progress-bar-fill');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 300);
+        });
+    });
+</script>
+
+<style>
+    /* Animaciones para mensajes de confirmación */
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+</style>
 </div>
 

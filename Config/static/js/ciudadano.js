@@ -34,6 +34,24 @@ notificationBtn.addEventListener('click', (e) => {
     // Cerrar dropdown si está abierto
     userMenuBtn.classList.remove('active');
     dropdownMenu.classList.remove('active');
+
+    // Asegurar que la pestaña activa muestre su contenido
+    if (notificationsPanel.classList.contains('active')) {
+        const activeTabBtn = document.querySelector('.notifications-tabs .tab-btn.active');
+        if (activeTabBtn) {
+            const tabName = activeTabBtn.getAttribute('data-tab');
+            const historialTab = document.getElementById('historialTab');
+            const envivoTab = document.getElementById('envivoTab');
+            
+            if (tabName === 'historial') {
+                if (historialTab) historialTab.classList.add('active');
+                if (envivoTab) envivoTab.classList.remove('active');
+            } else if (tabName === 'envivo') {
+                if (envivoTab) envivoTab.classList.add('active');
+                if (historialTab) historialTab.classList.remove('active');
+            }
+        }
+    }
 });
 
 closeNotifBtn.addEventListener('click', () => {
