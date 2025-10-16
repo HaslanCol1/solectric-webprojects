@@ -1413,6 +1413,881 @@
             opacity: 0;
         }
     }
+
+    /* ========== ESTILOS PARA MODALES ========== */
+    .gestion-operativo .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        padding: 20px;
+        animation: fadeIn 0.25s ease;
+    }
+
+    .gestion-operativo .modal-overlay.active {
+        display: flex;
+    }
+
+    .gestion-operativo .modal-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 700px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes modalSlideUp {
+        from {
+            transform: translateY(40px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Estilos del scrollbar del modal */
+    .gestion-operativo .modal-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .gestion-operativo .modal-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .gestion-operativo .modal-container::-webkit-scrollbar-thumb {
+        background: #d2d2d7;
+        border-radius: 4px;
+    }
+
+    /* Header del modal */
+    .gestion-operativo .modal-header {
+        padding: 32px 32px 24px;
+        border-bottom: 1px solid #f5f5f7;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .gestion-operativo .modal-header-content {
+        flex: 1;
+    }
+
+    .gestion-operativo .modal-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1d1d1f;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .gestion-operativo .modal-subtitle {
+        font-size: 14px;
+        color: #6e6e73;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .gestion-operativo .modal-close-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #f5f5f7;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        flex-shrink: 0;
+    }
+
+    .gestion-operativo .modal-close-btn:hover {
+        background: #e5e5e7;
+        transform: rotate(90deg);
+    }
+
+    /* Body del modal */
+    .gestion-operativo .modal-body {
+        padding: 32px;
+    }
+
+    .gestion-operativo .modal-section {
+        margin-bottom: 32px;
+    }
+
+    .gestion-operativo .modal-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .gestion-operativo .modal-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .gestion-operativo .modal-info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        background: #f9f9fb;
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .gestion-operativo .modal-info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .gestion-operativo .modal-info-item.full {
+        grid-column: 1 / -1;
+    }
+
+    .gestion-operativo .modal-info-label {
+        font-size: 12px;
+        color: #6e6e73;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .gestion-operativo .modal-info-value {
+        font-size: 15px;
+        color: #1d1d1f;
+        font-weight: 600;
+    }
+
+    .gestion-operativo .modal-info-value.description {
+        font-weight: 400;
+        line-height: 1.6;
+    }
+
+    /* Progress bar en modal */
+    .gestion-operativo .modal-progress-container {
+        background: #f9f9fb;
+        border-radius: 12px;
+        padding: 24px;
+    }
+
+    .gestion-operativo .modal-progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .gestion-operativo .modal-progress-label {
+        font-size: 14px;
+        color: #6e6e73;
+        font-weight: 500;
+    }
+
+    .gestion-operativo .modal-progress-percentage {
+        font-size: 24px;
+        color: #1d1d1f;
+        font-weight: 700;
+    }
+
+    .gestion-operativo .modal-progress-bar {
+        width: 100%;
+        height: 10px;
+        background-color: #e5e5e7;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 8px;
+    }
+
+    .gestion-operativo .modal-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 5px;
+        transition: width 0.5s ease;
+    }
+
+    .gestion-operativo .modal-progress-fill.warning {
+        background: linear-gradient(90deg, #ff9500 0%, #ff6b00 100%);
+    }
+
+    .gestion-operativo .modal-progress-fill.success {
+        background: linear-gradient(90deg, #34c759 0%, #30d158 100%);
+    }
+
+    .gestion-operativo .modal-progress-status {
+        font-size: 13px;
+        color: #6e6e73;
+        font-style: italic;
+    }
+
+    /* Timeline en modal de detalles */
+    .gestion-operativo .modal-timeline {
+        position: relative;
+        padding-left: 32px;
+    }
+
+    .gestion-operativo .modal-timeline::before {
+        content: '';
+        position: absolute;
+        left: 8px;
+        top: 8px;
+        bottom: 8px;
+        width: 2px;
+        background: linear-gradient(180deg, #667eea 0%, #e5e5e7 100%);
+    }
+
+    .gestion-operativo .timeline-item {
+        position: relative;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+    }
+
+    .gestion-operativo .timeline-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .gestion-operativo .timeline-dot {
+        position: absolute;
+        left: -28px;
+        top: 2px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #667eea;
+        z-index: 2;
+    }
+
+    .gestion-operativo .timeline-dot.completed {
+        background: #667eea;
+    }
+
+    .gestion-operativo .timeline-content {
+        background: #f9f9fb;
+        border-radius: 10px;
+        padding: 16px;
+    }
+
+    .gestion-operativo .timeline-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 4px;
+    }
+
+    .gestion-operativo .timeline-description {
+        font-size: 13px;
+        color: #6e6e73;
+        line-height: 1.5;
+        margin-bottom: 8px;
+    }
+
+    .gestion-operativo .timeline-time {
+        font-size: 12px;
+        color: #86868b;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* Form elements en modales */
+    .gestion-operativo .modal-form-group {
+        margin-bottom: 20px;
+    }
+
+    .gestion-operativo .modal-form-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 8px;
+    }
+
+    .gestion-operativo .modal-input,
+    .gestion-operativo .modal-select,
+    .gestion-operativo .modal-textarea {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid #d2d2d7;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #1d1d1f;
+        background: #fafafa;
+        transition: all 0.2s;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .gestion-operativo .modal-input:focus,
+    .gestion-operativo .modal-select:focus,
+    .gestion-operativo .modal-textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .gestion-operativo .modal-textarea {
+        resize: vertical;
+        min-height: 120px;
+        line-height: 1.6;
+    }
+
+    .gestion-operativo .modal-select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236e6e73' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        background-size: 12px;
+        padding-right: 44px;
+    }
+
+    /* Contact info card */
+    .gestion-operativo .contact-info-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        color: white;
+    }
+
+    .gestion-operativo .contact-name {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .gestion-operativo .contact-details {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .gestion-operativo .contact-detail-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        opacity: 0.95;
+    }
+
+    .gestion-operativo .contact-detail-item svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    /* Status update section */
+    .gestion-operativo .status-update-preview {
+        background: #f9f9fb;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 16px;
+    }
+
+    .gestion-operativo .status-preview-title {
+        font-size: 13px;
+        color: #6e6e73;
+        margin-bottom: 12px;
+        font-weight: 500;
+    }
+
+    .gestion-operativo .status-preview-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .gestion-operativo .status-preview-badge {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* Footer del modal */
+    .gestion-operativo .modal-footer {
+        padding: 24px 32px;
+        border-top: 1px solid #f5f5f7;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        position: sticky;
+        bottom: 0;
+        background: white;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .gestion-operativo .modal-btn {
+        padding: 12px 28px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .gestion-operativo .modal-btn-cancel {
+        background: #f5f5f7;
+        color: #1d1d1f;
+    }
+
+    .gestion-operativo .modal-btn-cancel:hover {
+        background: #e5e5e7;
+    }
+
+    .gestion-operativo .modal-btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .gestion-operativo .modal-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .gestion-operativo .modal-btn-success {
+        background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+    }
+
+    .gestion-operativo .modal-btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(52, 199, 89, 0.4);
+    }
+
+    /* Responsive modales */
+    @media (max-width: 768px) {
+        .gestion-operativo .modal-container {
+            max-width: 100%;
+            border-radius: 20px 20px 0 0;
+            max-height: 95vh;
+        }
+
+        .gestion-operativo .modal-header {
+            padding: 24px 20px 20px;
+        }
+
+        .gestion-operativo .modal-body {
+            padding: 24px 20px;
+        }
+
+        .gestion-operativo .modal-footer {
+            padding: 16px 20px;
+            flex-direction: column-reverse;
+        }
+
+        .gestion-operativo .modal-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .gestion-operativo .modal-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .gestion-operativo .modal-title {
+            font-size: 20px;
+        }
+    }
 </style>
+
+<!-- ========== MODAL VER DETALLES ========== -->
+<div id="modalVerDetalles" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-header-content">
+                <h2 class="modal-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    <span id="modalDetallesTicket">#SOL-2024-001247</span>
+                </h2>
+                <div class="modal-subtitle">
+                    <span id="modalDetallesStatus" class="status-badge status-field">En Progreso</span>
+                    <span id="modalDetallesPriority" class="priority-badge badge-high">Alto</span>
+                </div>
+            </div>
+            <button class="modal-close-btn" onclick="closeModal('modalVerDetalles')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6e6e73" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="modal-section">
+                <h3 class="modal-section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="16" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    Información del Reporte
+                </h3>
+                <div class="modal-info-grid">
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Fecha y Hora</span>
+                        <span class="modal-info-value" id="modalDetallesFecha">2024-01-15 14:30</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Personas Afectadas</span>
+                        <span class="modal-info-value" id="modalDetallesAfectados">150 personas</span>
+                    </div>
+                    <div class="modal-info-item full">
+                        <span class="modal-info-label">Ubicación</span>
+                        <span class="modal-info-value" id="modalDetallesUbicacion">Calle 45 # 23-56, Barrio Centro, Barranquilla</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Tipo de Falla</span>
+                        <span class="modal-info-value" id="modalDetallesTipo">Corte total</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Reportado por</span>
+                        <span class="modal-info-value" id="modalDetallesReportante">Juan Pérez</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Equipo Asignado</span>
+                        <span class="modal-info-value" id="modalDetallesEquipo">Equipo Alpha</span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Resolución Estimada</span>
+                        <span class="modal-info-value" id="modalDetallesResolucion">2024-01-15 18:30</span>
+                    </div>
+                    <div class="modal-info-item full">
+                        <span class="modal-info-label">Descripción</span>
+                        <span class="modal-info-value description" id="modalDetallesDescripcion">Corte total de energía en toda la manzana. Posible falla en transformador.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h3 class="modal-section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                    Estado del Progreso
+                </h3>
+                <div class="modal-progress-container">
+                    <div class="modal-progress-header">
+                        <span class="modal-progress-label">Progreso general</span>
+                        <span class="modal-progress-percentage" id="modalDetallesProgresoPorcentaje">75%</span>
+                    </div>
+                    <div class="modal-progress-bar">
+                        <div class="modal-progress-fill" id="modalDetallesProgresoBar" style="width: 75%;"></div>
+                    </div>
+                    <p class="modal-progress-status" id="modalDetallesProgresoStatus">
+                        Técnico en sitio, identificada falla en transformador
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h3 class="modal-section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    Historial de Actualizaciones
+                </h3>
+                <div class="modal-timeline" id="modalDetallesTimeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot completed"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Reporte recibido</div>
+                            <div class="timeline-description">Reporte creado y asignado a Equipo Alpha</div>
+                            <div class="timeline-time">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                2024-01-15 14:30
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot completed"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Equipo en camino</div>
+                            <div class="timeline-description">Equipo Alpha despachado hacia la ubicación</div>
+                            <div class="timeline-time">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                2024-01-15 14:45
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot completed"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Llegada al sitio</div>
+                            <div class="timeline-description">Técnicos en el lugar, iniciando diagnóstico</div>
+                            <div class="timeline-time">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                2024-01-15 15:20
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Falla identificada</div>
+                            <div class="timeline-description">Problema confirmado en transformador principal</div>
+                            <div class="timeline-time">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                2024-01-15 16:10
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-cancel" onclick="closeModal('modalVerDetalles')">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== MODAL CONTACTAR ========== -->
+<div id="modalContactar" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-header-content">
+                <h2 class="modal-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Contactar Ciudadano
+                </h2>
+                <div class="modal-subtitle">
+                    Enviar mensaje sobre el reporte <span id="modalContactarTicket">#SOL-2024-001247</span>
+                </div>
+            </div>
+            <button class="modal-close-btn" onclick="closeModal('modalContactar')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6e6e73" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="contact-info-card">
+                <div class="contact-name">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <span id="modalContactarNombre">Juan Pérez</span>
+                </div>
+                <div class="contact-details">
+                    <div class="contact-detail-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                        <span id="modalContactarTelefono">300 123 4567</span>
+                    </div>
+                    <div class="contact-detail-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                        <span id="modalContactarEmail">juan.perez@email.com</span>
+                    </div>
+                    <div class="contact-detail-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <span id="modalContactarDireccion">Calle 45 # 23-56, Barrio Centro</span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="formContactar">
+                <div class="modal-form-group">
+                    <label class="modal-form-label" for="tipoMensaje">Tipo de mensaje</label>
+                    <select id="tipoMensaje" class="modal-select" required>
+                        <option value="">Seleccione un tipo...</option>
+                        <option value="informacion">Información adicional</option>
+                        <option value="confirmacion">Confirmación de asistencia</option>
+                        <option value="seguimiento">Seguimiento del reporte</option>
+                        <option value="resolucion">Notificación de resolución</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="modal-form-group">
+                    <label class="modal-form-label" for="mensajeContacto">Mensaje</label>
+                    <textarea 
+                        id="mensajeContacto" 
+                        class="modal-textarea" 
+                        placeholder="Escriba su mensaje aquí..."
+                        required
+                    ></textarea>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-cancel" onclick="closeModal('modalContactar')">Cancelar</button>
+            <button class="modal-btn modal-btn-primary" onclick="enviarMensaje()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+                Enviar Mensaje
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== MODAL ACTUALIZAR ========== -->
+<div id="modalActualizar" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-header-content">
+                <h2 class="modal-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"/>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                    </svg>
+                    Actualizar Reporte
+                </h2>
+                <div class="modal-subtitle">
+                    Modificar estado y progreso del reporte <span id="modalActualizarTicket">#SOL-2024-001247</span>
+                </div>
+            </div>
+            <button class="modal-close-btn" onclick="closeModal('modalActualizar')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6e6e73" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <form id="formActualizar">
+                <div class="modal-form-group">
+                    <label class="modal-form-label" for="nuevoEstado">Nuevo Estado</label>
+                    <select id="nuevoEstado" class="modal-select" required onchange="updateStatusPreview()">
+                        <option value="">Seleccione un estado...</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="en-progreso">En Progreso</option>
+                        <option value="en-revision">En Revisión</option>
+                        <option value="completado">Completado</option>
+                        <option value="critico">Crítico</option>
+                    </select>
+                </div>
+
+                <div class="modal-form-group">
+                    <label class="modal-form-label" for="porcentajeProgreso">Progreso (%)</label>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <input 
+                            type="range" 
+                            id="porcentajeProgreso" 
+                            min="0" 
+                            max="100" 
+                            value="75" 
+                            style="flex: 1; height: 8px; border-radius: 4px; outline: none; background: linear-gradient(90deg, #667eea 75%, #e5e5e7 75%); -webkit-appearance: none; appearance: none; cursor: pointer;"
+                            oninput="updateProgressDisplay(this.value)"
+                        >
+                        <span id="displayProgreso" style="font-size: 18px; font-weight: 700; color: #1d1d1f; min-width: 50px; text-align: right;">75%</span>
+                    </div>
+                </div>
+
+                <div class="modal-form-group">
+                    <label class="modal-form-label" for="notasActualizacion">Notas de actualización</label>
+                    <textarea 
+                        id="notasActualizacion" 
+                        class="modal-textarea" 
+                        placeholder="Describa los cambios o novedades del reporte..."
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="status-update-preview">
+                    <div class="status-preview-title">Vista previa de actualización</div>
+                    <div class="status-preview-content">
+                        <span id="previewEstadoBadge" class="status-preview-badge status-field">En Progreso</span>
+                        <div>
+                            <div style="font-size: 12px; color: #6e6e73; margin-bottom: 4px;">Progreso actual</div>
+                            <div style="font-size: 20px; font-weight: 700; color: #1d1d1f;" id="previewProgresoPorcentaje">75%</div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-cancel" onclick="closeModal('modalActualizar')">Cancelar</button>
+            <button class="modal-btn modal-btn-success" onclick="guardarActualizacion()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/>
+                    <polyline points="7 3 7 8 15 8"/>
+                </svg>
+                Guardar Cambios
+            </button>
+        </div>
+    </div>
+</div>
+
 </div>
 

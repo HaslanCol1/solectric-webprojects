@@ -269,5 +269,325 @@ function showExportConfirmation(count) {
     }, 3000);
 }
 
-// Inicializar acciones de reportes cuando sea necesario
-// initReportCardActions();
+/**
+ * ========== FUNCIONES PARA MODALES ==========
+ */
+
+/**
+ * Abre un modal específico con los datos del reporte
+ */
+function openModal(modalId, reportCard) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    // Extraer datos del reporte
+    const ticket = reportCard.getAttribute('data-ticket');
+    const status = reportCard.getAttribute('data-status');
+    const priority = reportCard.getAttribute('data-priority');
+    const address = reportCard.getAttribute('data-address');
+    const reporter = reportCard.getAttribute('data-reporter');
+    const type = reportCard.getAttribute('data-type');
+    
+    // Obtener más datos del DOM
+    const statusBadge = reportCard.querySelector('.status-badge');
+    const priorityBadge = reportCard.querySelector('.priority-badge');
+    const fecha = reportCard.querySelector('.report-date')?.textContent || 'N/A';
+    const afectados = reportCard.querySelector('.report-affected')?.textContent || 'N/A';
+    const equipo = reportCard.querySelectorAll('.detail-value')[1]?.textContent || 'N/A';
+    const resolucion = reportCard.querySelectorAll('.detail-value')[2]?.textContent || 'N/A';
+    const descripcion = reportCard.querySelector('.description-text')?.textContent || 'N/A';
+    const progreso = reportCard.querySelector('.progress-percentage')?.textContent || '0%';
+    const progresoNumero = parseInt(progreso);
+    const ultimaActualizacion = reportCard.querySelector('.update-text strong')?.nextSibling?.textContent.trim() || 'N/A';
+    
+    // Obtener teléfono del reportante (si existe)
+    const telefono = reportCard.querySelectorAll('.report-affected')[1]?.textContent || '300 000 0000';
+
+    if (modalId === 'modalVerDetalles') {
+        // Llenar modal de detalles
+        document.getElementById('modalDetallesTicket').textContent = ticket;
+        document.getElementById('modalDetallesStatus').textContent = statusBadge?.textContent || status;
+        document.getElementById('modalDetallesStatus').className = statusBadge?.className || 'status-badge';
+        document.getElementById('modalDetallesPriority').textContent = priorityBadge?.textContent || priority;
+        document.getElementById('modalDetallesPriority').className = priorityBadge?.className || 'priority-badge';
+        document.getElementById('modalDetallesFecha').textContent = fecha;
+        document.getElementById('modalDetallesAfectados').textContent = afectados;
+        document.getElementById('modalDetallesUbicacion').textContent = address;
+        document.getElementById('modalDetallesTipo').textContent = type;
+        document.getElementById('modalDetallesReportante').textContent = reporter;
+        document.getElementById('modalDetallesEquipo').textContent = equipo;
+        document.getElementById('modalDetallesResolucion').textContent = resolucion;
+        document.getElementById('modalDetallesDescripcion').textContent = descripcion;
+        document.getElementById('modalDetallesProgresoPorcentaje').textContent = progreso;
+        document.getElementById('modalDetallesProgresoBar').style.width = progreso;
+        document.getElementById('modalDetallesProgresoStatus').textContent = ultimaActualizacion;
+        
+        // Aplicar clase según el progreso
+        const progressBar = document.getElementById('modalDetallesProgresoBar');
+        progressBar.className = 'modal-progress-fill';
+        if (progresoNumero < 50) {
+            progressBar.classList.add('warning');
+        } else if (progresoNumero === 100) {
+            progressBar.classList.add('success');
+        }
+    }
+    else if (modalId === 'modalContactar') {
+        // Llenar modal de contacto
+        document.getElementById('modalContactarTicket').textContent = ticket;
+        document.getElementById('modalContactarNombre').textContent = reporter;
+        document.getElementById('modalContactarTelefono').textContent = telefono;
+        document.getElementById('modalContactarEmail').textContent = `${reporter.toLowerCase().replace(' ', '.')}@email.com`;
+        document.getElementById('modalContactarDireccion').textContent = address;
+        
+        // Limpiar formulario
+        document.getElementById('formContactar').reset();
+    }
+    else if (modalId === 'modalActualizar') {
+        // Llenar modal de actualización
+        document.getElementById('modalActualizarTicket').textContent = ticket;
+        
+        // Establecer estado actual
+        const estadoSelect = document.getElementById('nuevoEstado');
+        const estadoMap = {
+            'pendiente': 'pendiente',
+            'en progreso': 'en-progreso',
+            'en revisión': 'en-revision',
+            'resuelto': 'completado',
+            'crítico': 'critico'
+        };
+        estadoSelect.value = estadoMap[status.toLowerCase()] || '';
+        
+        // Establecer progreso actual
+        document.getElementById('porcentajeProgreso').value = progresoNumero;
+        updateProgressDisplay(progresoNumero);
+        
+        // Limpiar notas
+        document.getElementById('notasActualizacion').value = '';
+        
+        // Actualizar preview
+        updateStatusPreview();
+    }
+
+    // Mostrar modal con animación
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Cierra un modal específico
+ */
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+/**
+ * Actualiza la visualización del progreso en el modal de actualización
+ */
+function updateProgressDisplay(value) {
+    document.getElementById('displayProgreso').textContent = value + '%';
+    document.getElementById('previewProgresoPorcentaje').textContent = value + '%';
+    
+    // Actualizar el gradiente del input range
+    const progressInput = document.getElementById('porcentajeProgreso');
+    progressInput.style.background = `linear-gradient(90deg, #667eea ${value}%, #e5e5e7 ${value}%)`;
+}
+
+/**
+ * Actualiza la vista previa del estado en el modal de actualización
+ */
+function updateStatusPreview() {
+    const estadoSelect = document.getElementById('nuevoEstado');
+    const previewBadge = document.getElementById('previewEstadoBadge');
+    
+    const estadoTexts = {
+        'pendiente': 'Pendiente',
+        'en-progreso': 'En Progreso',
+        'en-revision': 'En Revisión',
+        'completado': 'Completado',
+        'critico': 'Crítico'
+    };
+    
+    const estadoClasses = {
+        'pendiente': 'status-badge status-available',
+        'en-progreso': 'status-badge status-field',
+        'en-revision': 'status-badge status-returning',
+        'completado': 'status-badge status-resuelto',
+        'critico': 'status-badge status-critico'
+    };
+    
+    const selectedEstado = estadoSelect.value;
+    
+    if (selectedEstado && estadoTexts[selectedEstado]) {
+        previewBadge.textContent = estadoTexts[selectedEstado];
+        previewBadge.className = estadoClasses[selectedEstado] + ' status-preview-badge';
+    } else {
+        previewBadge.textContent = 'Seleccione un estado';
+        previewBadge.className = 'status-preview-badge status-badge';
+    }
+}
+
+/**
+ * Envía el mensaje de contacto
+ */
+function enviarMensaje() {
+    const form = document.getElementById('formContactar');
+    
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    const tipoMensaje = document.getElementById('tipoMensaje').value;
+    const mensaje = document.getElementById('mensajeContacto').value;
+    const nombreCiudadano = document.getElementById('modalContactarNombre').textContent;
+    const ticket = document.getElementById('modalContactarTicket').textContent;
+    
+    // Simular envío (aquí se haría la petición al backend)
+    console.log('Enviando mensaje:', {
+        ticket: ticket,
+        ciudadano: nombreCiudadano,
+        tipo: tipoMensaje,
+        mensaje: mensaje
+    });
+    
+    // Mostrar confirmación
+    showNotification('Mensaje enviado exitosamente', 'success');
+    
+    // Cerrar modal
+    closeModal('modalContactar');
+}
+
+/**
+ * Guarda la actualización del reporte
+ */
+function guardarActualizacion() {
+    const form = document.getElementById('formActualizar');
+    
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    const nuevoEstado = document.getElementById('nuevoEstado').value;
+    const progreso = document.getElementById('porcentajeProgreso').value;
+    const notas = document.getElementById('notasActualizacion').value;
+    const ticket = document.getElementById('modalActualizarTicket').textContent;
+    
+    // Simular guardado (aquí se haría la petición al backend)
+    console.log('Actualizando reporte:', {
+        ticket: ticket,
+        estado: nuevoEstado,
+        progreso: progreso + '%',
+        notas: notas
+    });
+    
+    // Mostrar confirmación
+    showNotification('Reporte actualizado exitosamente', 'success');
+    
+    // Cerrar modal
+    closeModal('modalActualizar');
+    
+    // Aquí se podría actualizar la tarjeta del reporte en la interfaz
+}
+
+/**
+ * Muestra una notificación temporal
+ */
+function showNotification(message, type = 'info') {
+    const colors = {
+        success: '#34c759',
+        error: '#ff3b30',
+        warning: '#ff9500',
+        info: '#667eea'
+    };
+    
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${colors[type] || colors.info};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        z-index: 10001;
+        font-size: 14px;
+        font-weight: 600;
+        animation: slideIn 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    `;
+    
+    const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+    notification.innerHTML = `<span style="font-size: 18px;">${icon}</span> ${message}`;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+/**
+ * Inicializa los event listeners para los botones de las tarjetas de reporte
+ */
+function initReportCardActions() {
+    // Delegación de eventos para mejor rendimiento
+    const reportsContainer = document.getElementById('reportsContainer');
+    
+    if (!reportsContainer) return;
+    
+    reportsContainer.addEventListener('click', function(e) {
+        const target = e.target;
+        const button = target.closest('button.btn');
+        
+        if (!button) return;
+        
+        const reportCard = button.closest('.report-card');
+        if (!reportCard) return;
+        
+        const buttonText = button.textContent.trim();
+        
+        if (buttonText.includes('Ver Detalles')) {
+            openModal('modalVerDetalles', reportCard);
+        }
+        else if (buttonText.includes('Contactar')) {
+            openModal('modalContactar', reportCard);
+        }
+        else if (buttonText.includes('Actualizar')) {
+            openModal('modalActualizar', reportCard);
+        }
+    });
+}
+
+// Cerrar modales al hacer clic fuera de ellos
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal-overlay')) {
+        const modalId = e.target.id;
+        closeModal(modalId);
+    }
+});
+
+// Cerrar modales con la tecla Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const activeModal = document.querySelector('.modal-overlay.active');
+        if (activeModal) {
+            closeModal(activeModal.id);
+        }
+    }
+});
+
+// Inicializar acciones de reportes cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    initReportCardActions();
+});
