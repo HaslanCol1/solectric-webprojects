@@ -1627,3 +1627,278 @@ function confirmDeleteAccount() {
         showSettingMessage('Texto incorrecto. Eliminación de cuenta cancelada.');
     }
 }
+
+// ===== MODAL DETALLE REPORTE: comportamiento simple =====
+(function() {
+    function safeText(el, selector) {
+        if (!el) return '';
+        const s = el.querySelector(selector);
+        return s ? s.textContent.trim() : '';
+    }
+
+    function abrirModalConCard(card) {
+        if (!card) return;
+        const id = safeText(card, '.report-id');
+        const tipo = safeText(card, '.report-title');
+        const prioridad = safeText(card, '.priority-badge');
+        const estado = safeText(card, '.status-badge');
+
+        // Fecha: buscar un nodo con class .report-header y texto pequeño
+        let fecha = '';
+        const header = card.querySelector('.report-header');
+        if (header) {
+            // Busca específicamente el elemento con estilo de fecha
+            const fechaEl = header.querySelector('[style*="font-size: 12px"]');
+            if (fechaEl) {
+                fecha = fechaEl.textContent.trim();
+            } else {
+                fecha = Array.from(header.querySelectorAll('div, span'))
+                    .map(n => n.textContent.trim())
+                    .filter(text => text.match(/\d{4}-\d{2}-\d{2}/))
+                    .join(' ').trim();
+            }
+        }
+
+        // Ubicación: intentar obtener texto del contenedor
+        let ubicacion = '';
+        const ubicacionNode = card.querySelector('.report-location');
+        if (ubicacionNode) {
+            // Eliminar el svg de la ubicación y obtener solo el texto
+            const svgEl = ubicacionNode.querySelector('svg');
+            if (svgEl) {
+                const clone = ubicacionNode.cloneNode(true);
+                clone.querySelector('svg').remove();
+                ubicacion = clone.textContent.trim();
+            } else {
+                ubicacion = ubicacionNode.textContent.trim();
+            }
+        }
+
+        // Obtener progreso (valor numérico y elemento visual)
+        let progresoText = '';
+        let progresoValue = 0;
+        const progressHeader = card.querySelector('.progress-header');
+        if (progressHeader) {
+            const progressSpan = progressHeader.querySelector('span[style]');
+            if (progressSpan) {
+                progresoText = progressSpan.textContent.trim();
+                // Extraer solo el número
+                const match = progresoText.match(/(\d+)/);
+                if (match && match[1]) {
+                    progresoValue = parseInt(match[1], 10);
+                }
+            }
+        } else {
+            const progressFill = card.querySelector('.progress-fill');
+            if (progressFill && progressFill.style.width) {
+                progresoValue = parseInt(progressFill.style.width, 10);
+                progresoText = `${progresoValue}%`;
+            }
+        }
+
+        const actualizacion = safeText(card, '.update-text');
+        const descripcion = safeText(card, '.report-info .report-title') || safeText(card, '.report-description');
+
+        const modal = document.getElementById('modalDetalleReporte');
+        if (!modal) return;
+
+        // Set text content for simple fields
+        const setIf = (sel, value) => {
+            const el = modal.querySelector(sel);
+            if (el) el.textContent = value || '-';
+        };
+
+        setIf('#md-id', id);
+        setIf('#md-tipo', tipo);
+        setIf('#md-fecha', fecha);
+        setIf('#md-ubicacion', ubicacion);
+        setIf('#md-actualizacion', actualizacion);
+        setIf('#md-descripcion', descripcion);
+
+        // Set progress bar and text
+        const progressFill = modal.querySelector('#md-progreso-fill');
+        if (progressFill) {
+            progressFill.style.width = `${progresoValue}%`;
+            
+            // Cambiar color según el progreso
+            if (progresoValue === 100) {
+                progressFill.style.background = '#10b981';
+            } else {
+                progressFill.style.background = '#7c3aed';
+            }
+        }
+        
+        const progressText = modal.querySelector('#md-progreso');
+        if (progressText) {
+            progressText.textContent = progresoText || '0%';
+        }
+
+        // Prioridad: configurar clase de badge
+        const prioridadEl = modal.querySelector('#md-prioridad');
+        if (prioridadEl) {
+            const pText = (prioridad || '').toLowerCase();
+            prioridadEl.textContent = prioridad || '-';
+            
+            // Reset classes and add the correct one
+            prioridadEl.className = 'modal-badge';
+            if (pText.includes('alto')) {
+                prioridadEl.classList.add('alto');
+            } else if (pText.includes('medio')) {
+                prioridadEl.classList.add('medio');
+            } else if (pText.includes('bajo')) {
+                prioridadEl.classList.add('bajo');
+            }
+        }
+
+        // Estado: configurar clase de badge
+        const estadoEl = modal.querySelector('#md-estado');
+        if (estadoEl) {
+            const eText = (estado || '').toLowerCase();
+            estadoEl.textContent = estado || '-';
+            
+            // Reset classes and add the correct one
+            estadoEl.className = 'modal-badge';
+            if (eText.includes('progreso')) {
+                estadoEl.classList.add('progreso');
+            } else if (eText.includes('revisión') || eText.includes('revision')) {
+                estadoEl.classList.add('revision');
+            } else if (eText.includes('resuelto')) {
+                estadoEl.classList.add('resuelto');
+            }
+        }
+
+        // Timeline: construir desde data-timeline JSON o generar uno básico
+        const timelineEl = modal.querySelector('#md-timeline');
+        if (timelineEl) {
+            timelineEl.innerHTML = '';
+            let dt = card.getAttribute('data-timeline');
+            
+            // Si no hay timeline en los datos, generemos uno básico desde el estado
+            if (!dt) {
+                // Crear timeline basado en el estado actual y la última actualización
+                const now = new Date();
+                const reporteCreado = { 
+                    fecha: fecha || now.toLocaleDateString('es-CO'), 
+                    titulo: 'Reporte registrado', 
+                    descripcion: 'Se ha creado el reporte'
+                };
+                
+                let estadoActual = {};
+                
+                if (estado.toLowerCase().includes('progreso')) {
+                    estadoActual = { 
+                        fecha: now.toLocaleDateString('es-CO'), 
+                        titulo: 'En progreso', 
+                        descripcion: actualizacion || 'Trabajo en curso'
+                    };
+                } else if (estado.toLowerCase().includes('revisión') || estado.toLowerCase().includes('revision')) {
+                    estadoActual = { 
+                        fecha: now.toLocaleDateString('es-CO'), 
+                        titulo: 'En revisión', 
+                        descripcion: actualizacion || 'Evaluando el problema'
+                    };
+                } else if (estado.toLowerCase().includes('resuelto')) {
+                    estadoActual = { 
+                        fecha: now.toLocaleDateString('es-CO'), 
+                        titulo: 'Resuelto', 
+                        descripcion: actualizacion || 'Problema solucionado'
+                    };
+                }
+                
+                // Usar JSON string directamente
+                dt = JSON.stringify([reporteCreado, estadoActual]);
+            }
+            
+            try {
+                const items = JSON.parse(dt);
+                
+                if (items.length === 0) {
+                    const emptyItem = document.createElement('div');
+                    emptyItem.className = 'timeline-empty';
+                    emptyItem.textContent = 'No hay eventos registrados';
+                    timelineEl.appendChild(emptyItem);
+                    return;
+                }
+                
+                items.forEach(it => {
+                    // Crear item de timeline
+                    const item = document.createElement('div');
+                    item.className = 'timeline-item';
+                    
+                    // Fecha como time element
+                    const timeEl = document.createElement('time');
+                    timeEl.textContent = it.fecha || '';
+                    
+                    // Contenido del evento
+                    const content = document.createElement('div');
+                    content.className = 'timeline-content';
+                    
+                    // Si tiene título, mostrarlo como un elemento fuerte
+                    if (it.titulo) {
+                        const titleSpan = document.createElement('strong');
+                        titleSpan.textContent = it.titulo;
+                        content.appendChild(titleSpan);
+                        
+                        if (it.descripcion) {
+                            content.appendChild(document.createTextNode(' — ' + it.descripcion));
+                        }
+                    } else if (it.descripcion) {
+                        content.textContent = it.descripcion;
+                    } else {
+                        content.textContent = 'Actualización';
+                    }
+                    
+                    // Armar estructura completa
+                    item.appendChild(timeEl);
+                    item.appendChild(content);
+                    timelineEl.appendChild(item);
+                });
+            } catch (e) {
+                console.error('Error al parsear timeline:', e);
+                const errorItem = document.createElement('div');
+                errorItem.className = 'timeline-error';
+                errorItem.textContent = 'No se pudo cargar el historial';
+                timelineEl.appendChild(errorItem);
+            }
+        }
+
+        modal.style.display = 'block';
+        modal.setAttribute('aria-hidden','false');
+    }
+
+    function cerrarModal() {
+        const modal = document.getElementById('modalDetalleReporte');
+        if (!modal) return;
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden','true');
+    }
+
+    // attach handlers
+    document.addEventListener('DOMContentLoaded', function() {
+        const botones = document.querySelectorAll('.btn-ver-detalles');
+        botones.forEach(b => {
+            b.addEventListener('click', function(e) {
+                const card = this.closest('.report-card');
+                abrirModalConCard(card);
+            });
+        });
+
+        const closeBtn = document.getElementById('modalCloseBtn');
+        if (closeBtn) closeBtn.addEventListener('click', cerrarModal);
+        const footerClose = document.getElementById('modalCerrarBtn');
+        if (footerClose) footerClose.addEventListener('click', cerrarModal);
+
+        // click outside
+        const modal = document.getElementById('modalDetalleReporte');
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) cerrarModal();
+            });
+        }
+
+        // ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarModal();
+        });
+    });
+})();

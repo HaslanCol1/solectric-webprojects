@@ -1,4 +1,4 @@
-<!-- MAIN CONTENT -->
+﻿<!-- MAIN CONTENT -->
 <div id="dashboardView" class="main-content">
     <!-- Welcome Section -->
     <div class="welcome-section">
@@ -144,7 +144,13 @@
 
                     <!-- Report Card 1 -->
                     <div class="report-card" data-priority="alto" data-status="progreso"
-                        data-search="sol-2024-001247 corte total calle 45 # 23-56 barrio centro">
+                        data-search="sol-2024-001247 corte total calle 45 # 23-56 barrio centro"
+                        data-timeline='[
+                            {"fecha":"2024-01-15 08:30","titulo":"Reporte creado","descripcion":"Se registró un corte total de energía"},
+                            {"fecha":"2024-01-15 09:15","titulo":"Validación","descripcion":"Centro de control confirma el incidente"},
+                            {"fecha":"2024-01-15 10:00","titulo":"Diagnóstico","descripcion":"Se detecta falla en transformador principal"},
+                            {"fecha":"2024-01-15 11:30","titulo":"En progreso","descripcion":"Técnico asignado y en camino al lugar"}
+                        ]'>
                         <div class="report-header">
                             <div>
                                 <div class="report-id">
@@ -418,3 +424,89 @@
                     </div>
             </div>
         </div>
+
+    <!-- MODAL DETALLE REPORTE (AGREGADO) -->
+    <div id="modalDetalleReporte" class="modal-detalle" aria-hidden="true">
+        <div class="modal-detalle-content" role="dialog" aria-modal="true" aria-labelledby="modalDetalleTitulo">
+            <div class="modal-header">
+                <h2 id="modalDetalleTitulo">Detalle del reporte</h2>
+                <button class="modal-close" id="modalCloseBtn" aria-label="Cerrar">
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Información principal -->
+                <div class="modal-main-info">
+                    <div class="modal-id-section">
+                        <div id="md-id">#SOL-2024-001247</div>
+                        <div id="md-tipo" class="modal-tipo">Corte total</div>
+                    </div>
+                    
+                    <div class="modal-badges">
+                        <div id="md-prioridad" class="modal-badge alto">Alto</div>
+                        <div id="md-estado" class="modal-badge progreso">En Progreso</div>
+                    </div>
+                </div>
+                
+                <!-- Grid de información -->
+                <div class="modal-grid">
+                    <div class="info-item">
+                        <div class="info-label">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Fecha y hora
+                        </div>
+                        <div class="info-value" id="md-fecha">2024-01-15</div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Ubicación
+                        </div>
+                        <div class="info-value" id="md-ubicacion">Calle 45 # 23-56, Barrio Centro</div>
+                    </div>
+                </div>
+                
+                <!-- Progreso -->
+                <div class="info-section">
+                    <div class="info-label">Progreso</div>
+                    <div class="modal-progress-bar">
+                        <div class="modal-progress-fill" id="md-progreso-fill" style="width: 75%"></div>
+                        <span id="md-progreso" class="modal-progress-text">75%</span>
+                    </div>
+                </div>
+                
+                <!-- Última actualización -->
+                <div class="info-section">
+                    <div class="info-label">Última actualización</div>
+                    <div class="info-value highlight-update" id="md-actualizacion">Técnico asignado y en camino al lugar</div>
+                </div>
+                
+                <!-- Descripción -->
+                <div class="info-section">
+                    <div class="info-label">Descripción</div>
+                    <div class="info-value" id="md-descripcion">Servicio interrumpido en la zona residencial</div>
+                </div>
+                
+                <!-- Historial (paso a paso) -->
+                <div class="info-section timeline-section">
+                    <div class="info-label">Historial (paso a paso)</div>
+                    <div class="timeline" id="md-timeline">
+                        <!-- Se llenará dinámicamente con JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn-cerrar-modal" id="modalCerrarBtn">Cerrar</button>
+            </div>
+        </div>
+    </div>
