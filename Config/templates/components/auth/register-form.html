@@ -1,6 +1,22 @@
 <!-- Register Form -->
 <div class="form-section" id="registerSection">
     <form onsubmit="handleRegister(event)">
+
+        <div class="form-group">
+            <label for="registerNIC">Identificación</label>
+            <div class="input-wrapper">
+                <span class="material-icons input-icon">receipt_long</span>
+                <input 
+                    type="text" 
+                    id="registerNIC" 
+                    inputmode="numeric" 
+                    pattern="[0-9]{6,12}"
+                    title="Ingresa entre 6 y 12 dígitos"
+                    placeholder="Ej: 1234567890" 
+                    required>
+            </div>
+        </div>
+
         <div class="form-row">
             <div class="form-group">
                 <label for="registerName">Nombre Completo</label>
