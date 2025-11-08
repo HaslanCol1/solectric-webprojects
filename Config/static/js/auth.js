@@ -1,3 +1,6 @@
+import { api } from "./utils/http.js";
+import { AuthStore } from "./utils/storage.js";
+
 // Elements
 const loginTab = document.getElementById('loginTab');
 const registerTab = document.getElementById('registerTab');
@@ -54,76 +57,113 @@ function backToLogin() {
   successMessage.classList.remove('show');
 }
 
-// Handle Login
-function handleLogin(event) {
+export async function handleRegister(event) {
   event.preventDefault();
 
-  const userType = document.getElementById('userType').value;
-  const email = document.getElementById('loginEmail').value;
+  const name       = document.getElementById('registerName').value;
+  const phone      = document.getElementById('registerPhone').value;
+  const email      = document.getElementById('registerEmail').value;
+  const municipio  = document.getElementById('registerMunicipio').value; // si backend lo pide, agrégalo al body
+  const address    = document.getElementById('registerAddress').value;
+  const password   = document.getElementById('registerPassword').value;
+  const numberCard = document.getElementById('registerNumberCard').value; // número identificación
+  const nic        = document.getElementById('registerNIC').value;
+
+  const body = {
+    "nombre_completo":       name,
+    "numero_identificacion": numberCard,
+    "telefono":              phone,
+    "nic":                   nic,
+    "correo_electronico":    email,
+    "direccion":             address,
+    "contrasenia":           password
+    // "municipio": municipio, // <-- si el backend lo necesita, descomenta
+  };
+
+  console.log(body)
+
+  try {
+    const created = await api.post("/ciudadanos", body, { auth: false });
+
+    alert("✅ Cuenta creada. Iniciando sesión…");
+
+    /*// Si quieres loguear automáticamente al usuario tras registrarse:
+    // Asumo credenciales por correo + contraseña. Si tu /auth usa otro payload,
+    // cambia las claves (ver comentario más abajo).
+    await api.login({
+      correo_electronico: email,
+      contrasenia: password,
+    }, { ttl: 3600_000 }); // token expira en 1h (opcional)*/
+
+    // Redirige a donde prefieras tras registro+login
+    // window.location.href = "/ciudadano";
+
+    alert('Fuiste registrado exitosamente, intenta iniciar sesión.');
+
+  } catch (e) {
+    // e.status y e.data vienen del ApiClient
+    if (e.status === 409) {
+      alert("⚠️ Número de identificación ya registrado.");
+    } else if (e.status === 422) {
+      alert("⚠️ Datos inválidos. Revisa el formulario.");
+    } else {
+      console.error("Registro falló:", e);
+      alert("❌ Error creando la cuenta. Intenta nuevamente.");
+    }
+  }
+}
+
+// =============== LOGIN =====================
+export async function handleLogin(event) {
+  event.preventDefault();
+
+  const userType = document.getElementById('userType').value; // 'ciudadano' | 'funcionario'
+  const email    = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
 
-  // Validación básica
+  console.log(userType)
+
   if (!userType || !email || !password) {
     alert('Por favor, completa todos los campos');
     return;
   }
 
-  const loginData = {
-    userType,
-    email,
-    password
-  };
+  try {
+    // IMPORTANTE: ajusta el payload a lo que espera TU /auth.
+    // Suposición 1 (frecuente): { correo_electronico, contrasenia }
+    // Si tu backend usa otro formato (p.ej. { numero_identificacion, codigo_acceso }),
+    // cambia estas claves manteniendo la llamada a api.login(...).
+    await api.login({
+      correo_electronico: email,
+      contrasenia: password,
+      rol: userType,
+      // tipo_usuario: userType,   // si tu backend lo requiere, descomenta
+    }, { ttl: 3600_000 });
 
-  console.log('Login Data:', loginData);
-  
-  // Verificar si hay un parámetro 'next' en la URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const nextPage = urlParams.get('next');
-  
-  // Redirigir según el contexto inmediatamente
-  if (nextPage === 'reporte' && userType === 'ciudadano') {
-    // Si viene del botón "Reportar Falla" y es ciudadano, ir directo al reporte
-    window.location.href = '/reporte';
-  } else if (userType === 'ciudadano') {
-    window.location.href = '/ciudadano';
-  } else if (userType === 'funcionario') {
-    window.location.href = '/funcionario';
-  } else {
-    window.location.href = '/ciudadano'; // default
+    // Si llegaste aquí, ya hay token en LocalStorage:
+    // AuthStore.token() => 'Bearer ...'
+    const urlParams = new URLSearchParams(window.location.search);
+    const nextPage = urlParams.get('next');
+
+    if (nextPage === 'reporte' && userType === 'ciudadano') {
+      window.location.href = '/reporte';
+    } else if (userType === 'ciudadano') {
+      window.location.href = '/ciudadano';
+    } else if (userType === 'funcionario') {
+      window.location.href = '/funcionario';
+    } else {
+      window.location.href = '/ciudadano'; // default
+    }
+  } catch (e) {
+    if (e.status === 401) {
+      alert("❌ Credenciales inválidas.");
+    } else {
+      console.error("Login falló:", e);
+      alert("❌ No se pudo iniciar sesión. Intenta de nuevo.");
+    }
   }
 }
 
-// Handle Register
-function handleRegister(event) {
-  event.preventDefault();
-
-  const name = document.getElementById('registerName').value;
-  const phone = document.getElementById('registerPhone').value;
-  const email = document.getElementById('registerEmail').value;
-  const municipio = document.getElementById('registerMunicipio').value;
-  const address = document.getElementById('registerAddress').value;
-  const password = document.getElementById('registerPassword').value;
-
-  const registerData = {
-    name,
-    phone,
-    email,
-    municipio,
-    address,
-    password
-  };
-
-  console.log('Register Data:', registerData);
-
-  // Aquí enviarás los datos al backend
-  // fetch('/api/auth/register', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify(registerData)
-  // })
-
-  alert('✅ Creando cuenta...\n\nDatos capturados (ver consola)');
-}
 
 // Handle Forgot Password
 function handleForgotPassword(event) {
@@ -210,3 +250,9 @@ function showReportMessage() {
 document.addEventListener('DOMContentLoaded', function() {
   initializeAuthPage();
 });
+
+// Exponer funciones para que los handlers inline las vean
+window.handleRegister = (e) => handleRegister(e);
+window.handleLogin = (e) => handleLogin(e);
+window.showForgotPassword = () => showForgotPassword();
+window.backToLogin = () => backToLogin();
