@@ -76,9 +76,8 @@ function wireSelection() {
         card.classList.add("selected");
 
         const selected = {
-            id: card.dataset.id,
-            codigo: card.dataset.code,
-            nombre: card.querySelector(".failure-title")?.textContent || "",
+            id: card.dataset.idTipo,
+            nombre: card.dataset.nombreTipo,
         };
         localStorage.setItem("solectric:reporte.tipo", JSON.stringify(selected));
     });

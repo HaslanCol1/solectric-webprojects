@@ -1,4 +1,5 @@
 import { Storage } from "./utils/storage.js";
+import { api } from "./utils/http.js";
 
 // Variables globales
 let currentStep = 1;
@@ -131,8 +132,9 @@ function renderizarTiposReporte() {
     (configReportes.tipos_reporte || []).forEach(tr => {
         const div = document.createElement('div');
         div.className = 'failure-option';
-        div.dataset.tipoId = tr.id;
-        div.dataset.type = slugify(tr.nombre || 'tipo');
+        div.dataset.idTipo = tr.id;
+        div.dataset.nombreTipo = tr.nombre;
+        div.dataset.descripcion = tr.descripcion;
         div.innerHTML = `
             <div class="failure-header">
                 <span class="failure-emoji">${emojiTipo(tr)}</span>
@@ -210,7 +212,7 @@ function slugify(text) {
 // ================== AJUSTE EN SUBMIT PARA INCLUIR IDS ==================
 // Interceptar confirmación final (paso 3) para enviar
 // Reutilizamos submitReportBtn ya existente
-document.addEventListener('click', (e) => {
+/*document.addEventListener('click', (e) => {
     const btn = e.target.closest('#submitReportBtn');
     if (!btn) return;
     // Validar que tengamos IDs seleccionados
@@ -225,7 +227,7 @@ document.addEventListener('click', (e) => {
     formData.id_estado_reporte = idsSeleccion.id_estado_reporte;
     // Guardar para ver en resumen antes de confirmación final
     localStorage.setItem('reporteFormData', JSON.stringify(formData));
-});
+});*/
 
 // ============== LOGOUT (limpia datos de usuario y catálogos) ==============
 function clearAllUserData() {
@@ -711,49 +713,46 @@ function removeFile(button) {
     button.parentElement.remove();
 }
 
-// Actualizar resumen
 function updateSummary() {
-    console.log('Actualizando resumen con datos:', formData); // Para debugging
-    
-    // Ubicación (combinar municipio, barrio y dirección)
-    let ubicacionParts = [];
-    if (formData.municipio) ubicacionParts.push(formData.municipio);
-    if (formData.barrio) ubicacionParts.push(formData.barrio);
-    if (formData.direccion) ubicacionParts.push(formData.direccion);
-    
-    const ubicacion = ubicacionParts.length > 0 ? ubicacionParts.join(', ') : 'No especificado';
-    const ubicacionElement = document.getElementById('summaryUbicacion');
-    if (ubicacionElement) {
-        ubicacionElement.textContent = ubicacion;
-    }
+    const saved = JSON.parse(localStorage.getItem('reporteFormData') || "{}");
+    const selTipo  = JSON.parse(localStorage.getItem('solectric:reporte.tipo')  || "null");
+    const selNivel = JSON.parse(localStorage.getItem('solectric:reporte.nivel') || "null");
 
-    // Tipo de falla desde la tarjeta seleccionada o del formData
+    const ubicacionParts = [];
+    if (saved.municipio) ubicacionParts.push(saved.municipio);
+    if (saved.barrio)    ubicacionParts.push(saved.barrio);
+    if (saved.direccion) ubicacionParts.push(saved.direccion);
+    const ubicacion = ubicacionParts.length ? ubicacionParts.join(", ") : "No especificado";
+    const ubicacionElement = document.getElementById('summaryUbicacion');
+    if (ubicacionElement) ubicacionElement.textContent = ubicacion;
+
     const tipoFallaElement = document.getElementById('summaryTipoFalla');
     if (tipoFallaElement) {
-        const selTipo = document.querySelector('.failure-option.selected .failure-title');
-        tipoFallaElement.textContent = selTipo ? selTipo.textContent : (formData.failureType || 'No especificado');
+        const fromDOM = document.querySelector('.failure-option.selected .failure-title')?.textContent;
+        tipoFallaElement.textContent = fromDOM || selTipo?.nombre || saved.failureType || 'No especificado';
     }
 
-    // Urgencia desde la tarjeta seleccionada o del formData
     const urgenciaElement = document.getElementById('summaryUrgencia');
     if (urgenciaElement) {
-        const selUrg = document.querySelector('.urgency-option.selected .urgency-label');
-        urgenciaElement.textContent = selUrg ? selUrg.textContent : (formData.urgency || 'No especificado');
+        const fromDOM = document.querySelector('.urgency-option.selected .urgency-badge')?.textContent
+            || document.querySelector('.urgency-option.selected .urgency-label')?.textContent;
+        urgenciaElement.textContent = fromDOM || selNivel?.nombre || saved.urgency || 'No especificado';
     }
 
-    // Descripción
     const descripcionElement = document.getElementById('summaryDescripcion');
     if (descripcionElement) {
-        descripcionElement.textContent = formData.descripcion || 'No especificado';
+        descripcionElement.textContent = saved.descripcion || 'No especificado';
     }
 
-    // Evidencia (archivos subidos)
-    const fileCount = document.querySelectorAll('#filesPreview .file-item').length;
     const evidenciaElement = document.getElementById('summaryEvidencia');
     if (evidenciaElement) {
-        evidenciaElement.textContent = fileCount > 0 ? `${fileCount} archivo(s) adjunto(s)` : 'Sin evidencia fotográfica';
+        const fileCount = document.querySelectorAll('#filesPreview .file-item').length;
+        evidenciaElement.textContent = fileCount > 0
+            ? `${fileCount} archivo(s) adjunto(s)`
+            : 'Sin evidencia fotográfica';
     }
 }
+
 
 // Funciones para manejo de errores de campo
 function showFieldError(element, message) {
@@ -802,20 +801,69 @@ function clearFieldErrorsOnInput() {
     });
 }
 
-// Función para mostrar el modal de confirmación
-function showConfirmationModal() {
-    // Generar número de ticket aleatorio
-    const ticketNumber = 'RPT' + Date.now().toString().slice(-6);
-    
-    // Mostrar número de ticket
-    const ticketElement = document.getElementById('ticketNumber');
-    if (ticketElement) {
-        ticketElement.textContent = ticketNumber;
+function buildReportBody(saved) {
+    const tipo  = JSON.parse(localStorage.getItem("solectric:reporte.tipo")  || "null");
+    const nivel = JSON.parse(localStorage.getItem("solectric:reporte.nivel") || "null");
+    console.log(tipo)
+    console.log(nivel)
+    return {
+        municipio: (saved?.municipio || "").trim(),
+        barrio: (saved?.barrio || "").trim(),
+        direccion: (saved?.direccion || "").trim(),
+        punto_referencia: (saved?.referencia || "").trim(),
+        tipo_id: tipo?.id ?? null,
+        descripcion: (saved?.descripcion || "").trim(),
+        ocurrido_en: saved?.fechaInicio ? new Date(saved.fechaInicio).toISOString() : null,
+        personas_afectadas: saved?.personasAfectadas ? Number(saved.personasAfectadas) : 0,
+        nivel_id: nivel?.id ?? null,
+    };
+}
+
+// === Validaciones del body ===
+function validateReportBody(body) {
+    const errors = [];
+    console.log(body);
+    if (!body.municipio) errors.push("Selecciona el municipio.");
+    if (!body.barrio) errors.push("Ingresa el barrio/sector.");
+    if (!body.direccion) errors.push("Ingresa la dirección exacta.");
+    if (!body.tipo_id) errors.push("Selecciona el tipo de falla.");
+    if (!body.descripcion) errors.push("Agrega una descripción.");
+    if (!body.ocurrido_en) errors.push("Indica cuándo comenzó la falla.");
+    if (!Number.isFinite(body.personas_afectadas) || body.personas_afectadas < 0) {
+        errors.push("Personas afectadas debe ser un número válido (>= 0).");
     }
-    
-    // Mostrar modal
-    const modal = document.getElementById('confirmationModal');
-    if (modal) {
-        modal.style.display = 'flex';
+    if (!body.nivel_id) errors.push("Selecciona el nivel de urgencia.");
+    return { ok: errors.length === 0, errors };
+}
+
+async function showConfirmationModal() {
+    const savedData = JSON.parse(localStorage.getItem('reporteFormData') || "{}");
+    const body = buildReportBody(savedData);
+    const { ok, errors } = validateReportBody(body);
+
+    if (!ok) {
+        mostrarMensajeGlobal("Por favor corrige: " + errors.join(" "), "warning");
+        return;
+    }
+
+    try {
+        const modal = document.getElementById('confirmationModal');
+        if (modal) modal.style.display = 'none';
+        mostrarMensajeGlobal("Enviando reporte...", "info");
+
+        const response = await api.post("/reportes", body);
+
+        mostrarMensajeGlobal("Reporte enviado correctamente ✅", "success");
+
+        const ticketNumber = 'RPT' + (response.id || Date.now().toString().slice(-6));
+        const ticketElement = document.getElementById('ticketNumber');
+        if (ticketElement) ticketElement.textContent = ticketNumber;
+
+        if (modal) modal.style.display = 'flex';
+
+    } catch (err) {
+        console.error("❌ Error al enviar reporte:", err);
+        const msg = err.data?.detail || err.message || "Error desconocido al enviar el reporte.";
+        mostrarMensajeGlobal("Error al enviar el reporte: " + msg, "error");
     }
 }

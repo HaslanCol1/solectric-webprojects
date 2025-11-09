@@ -90,22 +90,18 @@ function wireSelection() {
         const card = e.target.closest(".urgency-option");
         if (!card) return;
 
-        // marcar selección visual
         grid.querySelectorAll(".urgency-option.selected")
             .forEach((el) => el.classList.remove("selected"));
         card.classList.add("selected");
 
-        // persistir selección con ID para pasos siguientes
         const selected = {
-            id: card.dataset.id,         // <-- aquí va el ID del nivel
-            codigo: card.dataset.code,
-            nombre: card.querySelector(".urgency-badge")?.textContent || "",
+            id: card.dataset.nivelId,
+            nombre: card.dataset.nivelNombre,
         };
         localStorage.setItem("solectric:reporte.nivel", JSON.stringify(selected));
     });
 }
 
-// (Opcional) validador al dar “Continuar”
 function requireNivelBeforeContinue() {
     const continueBtn = document.querySelector(".continue-btn");
     continueBtn?.addEventListener("click", (e) => {
