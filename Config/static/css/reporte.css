@@ -11,6 +11,15 @@
             line-height: 1.6;
         }
 
+        .urgency-option { cursor:pointer; border:1px solid #e5e7eb; border-radius:10px; padding:12px; display:flex; gap:12px; align-items:flex-start; }
+        .urgency-option.selected { outline: 2px solid #2563eb; background:#eff6ff; }
+
+        .urgency-badge { display:inline-block; padding:4px 10px; border-radius:999px; font-weight:600; font-size:12px; }
+        .urgency-badge.low { background:#ecfdf5; color:#065f46; }       /* verde */
+        .urgency-badge.medium { background:#fffbeb; color:#92400e; }    /* amarillo */
+        .urgency-badge.high { background:#fef2f2; color:#991b1b; }      /* rojo claro */
+        .urgency-badge.critical { background:#111827; color:#f9fafb; }  /* negro */
+
         /* Header */
         .header {
             background-color: #ffffff;

@@ -30,39 +30,7 @@
             <h2 class="card-title">Nivel de Urgencia <span class="required">*</span></h2>
         </div>
 
-        <div class="urgency-grid">
-            <div class="urgency-option" data-urgency="bajo">
-                <span class="urgency-badge low">Bajo</span>
-                <div class="urgency-content">
-                    <div class="urgency-label">No hay riesgo inmediato</div>
-                    <div class="urgency-desc">La situación puede esperar, no afecta actividades esenciales</div>
-                </div>
-            </div>
-
-            <div class="urgency-option" data-urgency="medio">
-                <span class="urgency-badge medium">Medio</span>
-                <div class="urgency-content">
-                    <div class="urgency-label">Causa inconvenientes menores</div>
-                    <div class="urgency-desc">Afecta algunas actividades pero no hay peligro inmediato</div>
-                </div>
-            </div>
-
-            <div class="urgency-option" data-urgency="alto">
-                <span class="urgency-badge high">Alto</span>
-                <div class="urgency-content">
-                    <div class="urgency-label">Afecta actividades esenciales</div>
-                    <div class="urgency-desc">Requiere atención pronta, impacta operaciones importantes</div>
-                </div>
-            </div>
-
-            <div class="urgency-option" data-urgency="critico">
-                <span class="urgency-badge critical">Crítico</span>
-                <div class="urgency-content">
-                    <div class="urgency-label">Riesgo para la seguridad</div>
-                    <div class="urgency-desc">Situación peligrosa que requiere atención inmediata</div>
-                </div>
-            </div>
-        </div>
+        <div class="urgency-grid" id="nivelesUrgenciaGrid"></div>
     </div>
 
     <div class="form-card">
@@ -90,4 +58,6 @@
         <a href="{{ url_for('reporte_paso1') }}" class="btn-back">Anterior</a>
         <a href="{{ url_for('reporte_paso3') }}" class="continue-btn">Continuar</a>
     </div>
+
+    <script type="module" src="{{ url_for('static', filename='js/reporte-paso2.js') }}"></script>
 </div>

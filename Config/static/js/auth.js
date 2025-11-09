@@ -191,27 +191,22 @@ export async function handleLogin(event) {
   const email    = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
 
-  console.log(userType)
-
   if (!userType || !email || !password) {
     showFormMessage(loginSection, 'Por favor, completa todos los campos', 'warning');
     return;
   }
 
   try {
-    // IMPORTANTE: ajusta el payload a lo que espera TU /auth.
-    // Suposición 1 (frecuente): { correo_electronico, contrasenia }
-    // Si tu backend usa otro formato (p.ej. { numero_identificacion, codigo_acceso }),
-    // cambia estas claves manteniendo la llamada a api.login(...).
     await api.login({
       correo_electronico: email,
       contrasenia: password,
       rol: userType,
-      // tipo_usuario: userType,   // si tu backend lo requiere, descomenta
     }, { ttl: 3600_000 });
 
-    // Si llegaste aquí, ya hay token en LocalStorage:
-    // AuthStore.token() => 'Bearer ...'
+    const res = await api.get("/catalogo-reportes", null)
+
+    localStorage.setItem('catalogo_reportes', JSON.stringify(res));
+
     const urlParams = new URLSearchParams(window.location.search);
     const nextPage = urlParams.get('next');
 

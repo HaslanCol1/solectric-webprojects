@@ -36,13 +36,11 @@ export class ApiClient {
         const url = buildUrl(this.baseUrl, path);
         const finalHeaders = { ...headers };
 
-        // Content-Type JSON por defecto si el body no es FormData
         const isFormData = (typeof FormData !== "undefined") && (body instanceof FormData);
         if (body && !isFormData && !finalHeaders["Content-Type"]) {
             finalHeaders["Content-Type"] = "application/json";
         }
 
-        // Inyectar token si se solicita auth
         if (auth) {
             const token = AuthStore.token();
             if (token) finalHeaders["Authorization"] = `Bearer ${token}`;
@@ -66,11 +64,7 @@ export class ApiClient {
     put(path, body, opts)  { return this.request(path, { ...opts, method: "PUT",  body }); }
     del(path, opts)    { return this.request(path, { ...opts, method: "DELETE" }); }
 
-    // === Helpers de autenticación ===
-    /**
-     * Hace login contra /auth, guarda token y usuario.
-     * Ajusta el payload según tu backend (ej: {numero_identificacion, codigo_acceso})
-     */
+
     async login(credentials, { ttl } = {}) {
         const res = await fetch(AUTH_URL, {
             method: "POST",
@@ -78,8 +72,7 @@ export class ApiClient {
             body: JSON.stringify(credentials),
         });
         await throwIfNotOk(res);
-        const data = await res.json(); // ejemplo del backend que nos diste
-        // { user_data: {...}, access_token: "..." }
+        const data = await res.json();
         AuthStore.save(data, { ttl });
         return data;
     }

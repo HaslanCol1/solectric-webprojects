@@ -1,4 +1,3 @@
-<!-- STEP 1: Location and Failure Type -->
 <div class="step" id="step1">
     <div class="form-card">
         <div class="card-header">
@@ -46,59 +45,12 @@
             <h2 class="card-title">Tipo de Falla <span class="required">*</span></h2>
         </div>
 
-        <div class="failure-grid">
-            <div class="failure-option" data-type="corte-total">
-                <div class="failure-header">
-                    <span class="failure-emoji">⚡</span>
-                    <div class="failure-title">Corte Total de Energía</div>
-                </div>
-                <div class="failure-desc">Sin electricidad en toda la zona</div>
-            </div>
-
-            <div class="failure-option" data-type="fluctuaciones">
-                <div class="failure-header">
-                    <span class="failure-emoji">📊</span>
-                    <div class="failure-title">Fluctuaciones de Voltaje</div>
-                </div>
-                <div class="failure-desc">Variaciones en el suministro eléctrico</div>
-            </div>
-
-            <div class="failure-option" data-type="transformador">
-                <div class="failure-header">
-                    <span class="failure-emoji">🔧</span>
-                    <div class="failure-title">Transformador Dañado</div>
-                </div>
-                <div class="failure-desc">Falla en transformador eléctrico</div>
-            </div>
-
-            <div class="failure-option" data-type="cables">
-                <div class="failure-header">
-                    <span class="failure-emoji">⚠️</span>
-                    <div class="failure-title">Cables Caídos</div>
-                </div>
-                <div class="failure-desc">Cables de electricidad en el suelo</div>
-            </div>
-
-            <div class="failure-option" data-type="alumbrado">
-                <div class="failure-header">
-                    <span class="failure-emoji">💡</span>
-                    <div class="failure-title">Alumbrado Público</div>
-                </div>
-                <div class="failure-desc">Falla en iluminación de calles</div>
-            </div>
-
-            <div class="failure-option" data-type="medidor">
-                <div class="failure-header">
-                    <span class="failure-emoji">📟</span>
-                    <div class="failure-title">Problema con Medidor</div>
-                </div>
-                <div class="failure-desc">Falla en medidor de energía</div>
-            </div>
-        </div>
+        <div class="failure-grid" id="tiposFallaGrid"></div>
     </div>
 
     <div class="button-container">
         <div></div>
         <a href="{{ url_for('reporte_paso2') }}" class="continue-btn">Continuar</a>
     </div>
+    <script type="module" src="{{ url_for('static', filename='js/reporte-paso1.js') }}"></script>
 </div>
