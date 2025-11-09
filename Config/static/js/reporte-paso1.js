@@ -1,7 +1,17 @@
 import { Storage } from "./utils/storage.js";
 
 const GRID_ID = "tiposFallaGrid";
-const EMOJI = "⚡";
+
+function emojiTipoFromName(nombre) {
+    const n = (nombre || "").toLowerCase();
+    if (n.includes("corte")) return "⚡";           // Corte Total de Energía
+    if (n.includes("volt")) return "📊";            // Fluctuaciones de Voltaje
+    if (n.includes("transform")) return "🔧";       // Transformador Dañado
+    if (n.includes("cable")) return "⚠️";           // Cables Caídos
+    if (n.includes("alumbr")) return "💡";          // Alumbrado Público
+    if (n.includes("medidor")) return "📟";         // Problema con Medidor
+    return "🔌";                                     // Genérico
+}
 
 function readCatalogo() {
     const viaWrapper = (typeof Storage !== "undefined")
@@ -35,7 +45,7 @@ function renderTiposReporte() {
 
     grid.innerHTML = "";
 
-    tipos.forEach((t) => {
+        tipos.forEach((t) => {
         const item = document.createElement("div");
         item.className = "failure-option";
         item.dataset.id = t.id;
@@ -43,7 +53,7 @@ function renderTiposReporte() {
 
         item.innerHTML = `
       <div class="failure-header">
-        <span class="failure-emoji">${EMOJI}</span>
+                <span class="failure-emoji">${emojiTipoFromName(t.nombre)}</span>
         <div class="failure-title">${t.nombre}</div>
       </div>
       <div class="failure-desc">${t.descripcion ?? ""}</div>
