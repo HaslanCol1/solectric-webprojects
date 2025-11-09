@@ -11,6 +11,76 @@ const cardTitle = document.getElementById('cardTitle');
 const tabsContainer = document.getElementById('tabsContainer');
 const successMessage = document.getElementById('successMessage');
 
+// ====== UI helpers para mensajes (reemplazo de alert) ======
+function clearFormMessage(sectionEl) {
+  if (!sectionEl) return;
+  const existing = sectionEl.querySelector('[data-form-message="true"]');
+  if (existing) existing.remove();
+}
+
+function showFormMessage(sectionEl, text, type = 'info', opts = {}) {
+  if (!sectionEl) return;
+  clearFormMessage(sectionEl);
+
+  const palette = {
+    info:    { bg: '#eff6ff', border: '#60a5fa', text: '#1e40af', icon: 'info' },
+    success: { bg: '#ecfdf5', border: '#34d399', text: '#065f46', icon: 'check_circle' },
+    warning: { bg: '#fef3c7', border: '#fbbf24', text: '#92400e', icon: 'warning' },
+    error:   { bg: '#fee2e2', border: '#f87171', text: '#7f1d1d', icon: 'error' }
+  }[type] || {
+    bg: '#eff6ff', border: '#60a5fa', text: '#1e40af', icon: 'info'
+  };
+
+  const wrap = document.createElement('div');
+  wrap.setAttribute('data-form-message', 'true');
+  wrap.style.cssText = `
+    background: ${palette.bg};
+    border: 1px solid ${palette.border};
+    color: ${palette.text};
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: start;
+    gap: 8px;
+    font-size: 13px;
+  `;
+
+  const icon = document.createElement('span');
+  icon.className = 'material-icons';
+  icon.textContent = palette.icon;
+  icon.style.cssText = 'font-size:18px;line-height:18px;';
+
+  const msg = document.createElement('div');
+  msg.textContent = text;
+  msg.style.cssText = 'flex:1;';
+
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.textContent = '×';
+  close.style.cssText = `
+    background: transparent;
+    border: 0;
+    color: ${palette.text};
+    font-size: 18px;
+    cursor: pointer;
+    line-height: 18px;
+  `;
+  close.addEventListener('click', () => wrap.remove());
+
+  wrap.appendChild(icon);
+  wrap.appendChild(msg);
+  wrap.appendChild(close);
+
+  // Insertar al inicio de la sección
+  sectionEl.insertBefore(wrap, sectionEl.firstChild);
+
+  // Autocierre
+  let autoHide = opts.autoHide;
+  if (autoHide === undefined) autoHide = (type !== 'error');
+  if (autoHide) setTimeout(() => wrap.remove(), opts.timeout || 6000);
+}
+
 // Switch to Login
 loginTab.addEventListener('click', () => {
   loginTab.classList.add('active');
@@ -85,7 +155,7 @@ export async function handleRegister(event) {
   try {
     const created = await api.post("/ciudadanos", body, { auth: false });
 
-    alert("✅ Cuenta creada. Iniciando sesión…");
+    showFormMessage(registerSection, "✅ Cuenta creada. Iniciando sesión…", 'success');
 
     /*// Si quieres loguear automáticamente al usuario tras registrarse:
     // Asumo credenciales por correo + contraseña. Si tu /auth usa otro payload,
@@ -98,17 +168,17 @@ export async function handleRegister(event) {
     // Redirige a donde prefieras tras registro+login
     // window.location.href = "/ciudadano";
 
-    alert('Fuiste registrado exitosamente, intenta iniciar sesión.');
+    showFormMessage(registerSection, 'Fuiste registrado exitosamente, intenta iniciar sesión.', 'success');
 
   } catch (e) {
     // e.status y e.data vienen del ApiClient
     if (e.status === 409) {
-      alert("⚠️ Número de identificación ya registrado.");
+      showFormMessage(registerSection, '⚠️ Número de identificación ya registrado.', 'warning');
     } else if (e.status === 422) {
-      alert("⚠️ Datos inválidos. Revisa el formulario.");
+      showFormMessage(registerSection, '⚠️ Datos inválidos. Revisa el formulario.', 'error', { autoHide: false });
     } else {
       console.error("Registro falló:", e);
-      alert("❌ Error creando la cuenta. Intenta nuevamente.");
+      showFormMessage(registerSection, '❌ Error creando la cuenta. Intenta nuevamente.', 'error', { autoHide: false });
     }
   }
 }
@@ -124,7 +194,7 @@ export async function handleLogin(event) {
   console.log(userType)
 
   if (!userType || !email || !password) {
-    alert('Por favor, completa todos los campos');
+    showFormMessage(loginSection, 'Por favor, completa todos los campos', 'warning');
     return;
   }
 
@@ -156,10 +226,10 @@ export async function handleLogin(event) {
     }
   } catch (e) {
     if (e.status === 401) {
-      alert("❌ Credenciales inválidas.");
+      showFormMessage(loginSection, '❌ Credenciales inválidas.', 'error', { autoHide: false });
     } else {
       console.error("Login falló:", e);
-      alert("❌ No se pudo iniciar sesión. Intenta de nuevo.");
+      showFormMessage(loginSection, '❌ No se pudo iniciar sesión. Intenta de nuevo.', 'error', { autoHide: false });
     }
   }
 }
