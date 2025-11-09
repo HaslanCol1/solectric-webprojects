@@ -1,11 +1,254 @@
+import { Storage } from "./utils/storage.js";
+
 // Variables globales
 let currentStep = 1;
 let formData = {};
 
 // Inicializar la página
-document.addEventListener('DOMContentLoaded', function () {
+// ================== CONFIG DINÁMICA DESDE BACKEND ==================
+// Al cargar, obtener token y pedir configuración (tipos, niveles, estados)
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await cargarConfiguracionReportes();
+    } catch (e) {
+        console.error('Error cargando configuración reportes:', e);
+        mostrarMensajeGlobal('No se pudo cargar configuración de reportes. Intenta más tarde.', 'error');
+    }
     initializeForm();
     initializeEventListeners();
+});
+
+// Contenedores dinámicos (se inyectará contenido)
+let configReportes = {
+    tipos_reporte: [],
+    niveles_urgencia: [],
+    estados_reporte: []
+};
+let idsSeleccion = {
+    id_tipo_reporte: null,
+    id_nivel_urgencia: null,
+    id_estado_reporte: null
+};
+
+function obtenerTokenUsuarioActual() {
+    // 1) Intentar con 'usuarioActual' (estructura: { v: { access_token, user_data } })
+    try {
+        const raw = localStorage.getItem('usuarioActual');
+        if (raw) {
+            const obj = JSON.parse(raw);
+            const t = obj?.v?.access_token || obj?.access_token;
+            if (t) return t;
+        }
+    } catch {}
+
+    // 2) Fallback al esquema de Storage (solectric:auth:access_token)
+    try {
+        const rawTok = localStorage.getItem('solectric:auth:access_token');
+        if (rawTok) {
+            const rec = JSON.parse(rawTok); // { v: token, e: expiry? }
+            const { v, e } = rec || {};
+            if (!e || Date.now() <= e) return v;
+        }
+    } catch {}
+
+    return null;
+}
+
+async function cargarConfiguracionReportes() {
+    const token = obtenerTokenUsuarioActual();
+    if (!token) {
+        window.location.href = '/auth?next=reporte';
+        return;
+    }
+    const res = await fetch('http://localhost:8000/api-solectric/v1/catalogo-reportes', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'accept': 'application/json'
+        }
+    });
+    if (!res.ok) {
+        if (res.status === 401) {
+            window.location.href = '/auth?next=reporte';
+            return;
+        }
+        throw new Error('HTTP ' + res.status);
+    }
+    const data = await res.json();
+    configReportes = data;
+    // Guardar catálogo completo para futuros reportes
+    try {
+        localStorage.setItem('catalogo_reportes', JSON.stringify(data));
+        // Además, guarda con el wrapper con TTL (24h) y listas independientes
+        const ONE_DAY = 24 * 60 * 60 * 1000;
+        try { Storage.set('reportes:catalogo', data, { ttl: ONE_DAY }); } catch {}
+        try { Storage.set('reportes:tipos', data.tipos_reporte || [], { ttl: ONE_DAY }); } catch {}
+        try { Storage.set('reportes:niveles', data.niveles_urgencia || [], { ttl: ONE_DAY }); } catch {}
+        try { Storage.set('reportes:estados', data.estados_reporte || [], { ttl: ONE_DAY }); } catch {}
+    } catch (err) {
+        console.warn('No se pudo guardar catalogo_reportes en localStorage:', err);
+    }
+    // Estado pendiente
+    const pendiente = (data.estados_reporte || []).find(e => e.nombre?.toLowerCase() === 'pendiente');
+    if (pendiente) {
+        idsSeleccion.id_estado_reporte = pendiente.id;
+        mostrarEstadoPendienteUI(pendiente);
+    }
+    renderizarTiposReporte();
+    renderizarNivelesUrgencia();
+}
+
+function mostrarMensajeGlobal(texto, tipo='info') {
+    let box = document.getElementById('mensajeGlobalReportes');
+    if (!box) {
+        box = document.createElement('div');
+        box.id = 'mensajeGlobalReportes';
+        box.style.cssText = 'max-width:1000px;margin:0 auto 24px;padding:12px 16px;border-radius:8px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px;';
+        document.querySelector('.main-container')?.insertBefore(box, document.querySelector('.main-container').firstChild.nextSibling);
+    }
+    const palette = {
+        info:{bg:'#eff6ff',border:'#60a5fa',color:'#1e40af',icon:'ℹ️'},
+        success:{bg:'#ecfdf5',border:'#34d399',color:'#065f46',icon:'✅'},
+        warning:{bg:'#fef3c7',border:'#fbbf24',color:'#92400e',icon:'⚠️'},
+        error:{bg:'#fee2e2',border:'#f87171',color:'#7f1d1d',icon:'⛔'}
+    }[tipo] || palette.info;
+    box.style.background = palette.bg;
+    box.style.border = '1px solid ' + palette.border;
+    box.style.color = palette.color;
+    box.innerHTML = `<span style="font-size:18px;">${palette.icon}</span><span>${texto}</span>`;
+}
+
+function mostrarEstadoPendienteUI(estado) {
+    // Mostrar en resumen (paso 3) si existe un contenedor
+    const resumen = document.getElementById('summaryEstado');
+    if (resumen) resumen.textContent = estado.nombre + ' (#' + estado.id + ')';
+}
+
+function renderizarTiposReporte() {
+    const grid = document.querySelector('.failure-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    (configReportes.tipos_reporte || []).forEach(tr => {
+        const div = document.createElement('div');
+        div.className = 'failure-option';
+        div.dataset.tipoId = tr.id;
+        div.dataset.type = slugify(tr.nombre || 'tipo');
+        div.innerHTML = `
+            <div class="failure-header">
+                <span class="failure-emoji">${emojiTipo(tr)}</span>
+                <div class="failure-title">${escapeHtml(tr.nombre || 'Tipo')}</div>
+            </div>
+            <div class="failure-desc">${escapeHtml(tr.descripcion || 'Sin descripción')}</div>
+        `;
+        div.addEventListener('click', () => {
+            document.querySelectorAll('.failure-option').forEach(o => o.classList.remove('selected'));
+            div.classList.add('selected');
+            idsSeleccion.id_tipo_reporte = tr.id;
+        });
+        grid.appendChild(div);
+    });
+}
+
+function renderizarNivelesUrgencia() {
+    const grid = document.querySelector('.urgency-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    (configReportes.niveles_urgencia || []).forEach(nu => {
+        const div = document.createElement('div');
+        div.className = 'urgency-option';
+        div.dataset.nivelId = nu.id;
+        div.dataset.urgency = slugify(nu.nombre || 'urgencia');
+        div.dataset.nivelNombre = nu.nombre || '';
+        div.innerHTML = `
+            <span class="urgency-badge ${claseBadgeUrgencia(nu)}">${escapeHtml(nu.nombre || 'Urgencia')}</span>
+            <div class="urgency-content">
+                <div class="urgency-label">${escapeHtml(nu.nombre || '')}</div>
+                <div class="urgency-desc">${escapeHtml(nu.descripcion || 'Sin descripción')}</div>
+            </div>
+        `;
+        div.addEventListener('click', () => {
+            document.querySelectorAll('.urgency-option').forEach(o => o.classList.remove('selected'));
+            div.classList.add('selected');
+            idsSeleccion.id_nivel_urgencia = nu.id;
+        });
+        grid.appendChild(div);
+    });
+}
+
+function emojiTipo(tr) {
+    const nombre = (tr.nombre || '').toLowerCase();
+    if (nombre.includes('corte')) return '⚡';
+    if (nombre.includes('volt')) return '📊';
+    if (nombre.includes('transform')) return '🔧';
+    if (nombre.includes('cable')) return '⚠️';
+    if (nombre.includes('alumbr')) return '💡';
+    if (nombre.includes('medidor')) return '📟';
+    return '🔌';
+}
+
+function claseBadgeUrgencia(nu) {
+    const nombre = (nu.nombre || '').toLowerCase();
+    if (nombre.includes('bajo')) return 'low';
+    if (nombre.includes('medio')) return 'medium';
+    if (nombre.includes('alto')) return 'high';
+    if (nombre.includes('critic')) return 'critical';
+    return 'medium';
+}
+
+function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s]));
+}
+
+function slugify(text) {
+    return String(text)
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+}
+
+// ================== AJUSTE EN SUBMIT PARA INCLUIR IDS ==================
+// Interceptar confirmación final (paso 3) para enviar
+// Reutilizamos submitReportBtn ya existente
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('#submitReportBtn');
+    if (!btn) return;
+    // Validar que tengamos IDs seleccionados
+    if (!idsSeleccion.id_tipo_reporte || !idsSeleccion.id_nivel_urgencia || !idsSeleccion.id_estado_reporte) {
+        mostrarMensajeGlobal('Faltan seleccionar tipo de reporte o urgencia.', 'warning');
+        e.preventDefault();
+        return;
+    }
+    // Extender formData con IDs requeridos para envío
+    formData.id_tipo_reporte = idsSeleccion.id_tipo_reporte;
+    formData.id_nivel_urgencia = idsSeleccion.id_nivel_urgencia;
+    formData.id_estado_reporte = idsSeleccion.id_estado_reporte;
+    // Guardar para ver en resumen antes de confirmación final
+    localStorage.setItem('reporteFormData', JSON.stringify(formData));
+});
+
+// ============== LOGOUT (limpia datos de usuario y catálogos) ==============
+function clearAllUserData() {
+    try { localStorage.removeItem('usuarioActual'); } catch {}
+    try { localStorage.removeItem('catalogo_reportes'); } catch {}
+    try { localStorage.removeItem('reporteFormData'); } catch {}
+    // Limpiar posibles claves del wrapper Storage con prefijo solectric:
+    try {
+        Object.keys(localStorage).forEach((k) => {
+            if (k.startsWith('solectric:')) localStorage.removeItem(k);
+        });
+    } catch {}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            clearAllUserData();
+            window.location.href = '/';
+        });
+    }
 });
 
 function initializeForm() {
@@ -319,14 +562,20 @@ function saveCurrentStepData() {
             formData.barrio = document.getElementById('barrio').value;
             formData.direccion = document.getElementById('direccion').value;
             formData.referencia = document.getElementById('referencia').value;
-            formData.failureType = document.querySelector('.failure-option.selected')?.dataset.type;
+            {
+                const selTipo = document.querySelector('.failure-option.selected');
+                formData.failureType = selTipo ? (selTipo.querySelector('.failure-title')?.textContent || selTipo.dataset.type) : undefined;
+            }
             break;
 
         case 2:
             formData.descripcion = document.getElementById('descripcion').value;
             formData.fechaInicio = document.getElementById('fechaInicio').value;
             formData.personasAfectadas = document.getElementById('personasAfectadas').value;
-            formData.urgency = document.querySelector('.urgency-option.selected')?.dataset.urgency;
+            {
+                const selUrg = document.querySelector('.urgency-option.selected');
+                formData.urgency = selUrg ? (selUrg.dataset.nivelNombre || selUrg.querySelector('.urgency-label')?.textContent || selUrg.dataset.urgency) : undefined;
+            }
             break;
     }
 
@@ -478,30 +727,18 @@ function updateSummary() {
         ubicacionElement.textContent = ubicacion;
     }
 
-    // Tipo de falla
-    const failureTypes = {
-        'corte-total': 'Corte Total de Energía',
-        'fluctuaciones': 'Fluctuaciones de Voltaje',
-        'transformador': 'Transformador Dañado',
-        'cables': 'Cables Caídos',
-        'alumbrado': 'Alumbrado Público',
-        'medidor': 'Problema con Medidor'
-    };
+    // Tipo de falla desde la tarjeta seleccionada o del formData
     const tipoFallaElement = document.getElementById('summaryTipoFalla');
     if (tipoFallaElement) {
-        tipoFallaElement.textContent = failureTypes[formData.failureType] || 'No especificado';
+        const selTipo = document.querySelector('.failure-option.selected .failure-title');
+        tipoFallaElement.textContent = selTipo ? selTipo.textContent : (formData.failureType || 'No especificado');
     }
 
-    // Urgencia
-    const urgencyLevels = {
-        'bajo': 'Bajo',
-        'medio': 'Medio',
-        'alto': 'Alto',
-        'critico': 'Crítico'
-    };
+    // Urgencia desde la tarjeta seleccionada o del formData
     const urgenciaElement = document.getElementById('summaryUrgencia');
     if (urgenciaElement) {
-        urgenciaElement.textContent = urgencyLevels[formData.urgency] || 'No especificado';
+        const selUrg = document.querySelector('.urgency-option.selected .urgency-label');
+        urgenciaElement.textContent = selUrg ? selUrg.textContent : (formData.urgency || 'No especificado');
     }
 
     // Descripción
