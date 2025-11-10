@@ -877,3 +877,77 @@ async function showConfirmationModal() {
         mostrarMensajeGlobal("Error al enviar el reporte: " + msg, "error");
     }
 }
+
+const openProfileBtn = document.getElementById('openProfileBtn');
+
+
+
+// ========== MODAL DE PERFIL ==========
+// Guarded: attach only if element exists to avoid runtime errors on pages
+// that don't include the 'Mi Perfil' button.
+if (openProfileBtn) {
+    openProfileBtn.addEventListener('click', () => {
+        // Query current elements at runtime (they may not be in the global scope here)
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        if (userMenuBtn) userMenuBtn.classList.remove('active');
+        if (dropdownMenu) dropdownMenu.classList.remove('active');
+    });
+}
+
+// --- User menu toggle (minimal, defensive) ---
+// Attach handler so the avatar button opens/closes the dropdown on report pages
+document.addEventListener('DOMContentLoaded', function () {
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const notificationsPanel = document.getElementById('notificationsPanel');
+
+    if (!userMenuBtn) return;
+
+    userMenuBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        userMenuBtn.classList.toggle('active');
+        if (dropdownMenu) dropdownMenu.classList.toggle('active');
+        // Close notifications if open
+        if (notificationsPanel) notificationsPanel.classList.remove('active');
+    });
+
+    // Close the menu when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!dropdownMenu || !userMenuBtn) return;
+        if (!dropdownMenu.contains(e.target) && !userMenuBtn.contains(e.target)) {
+            dropdownMenu.classList.remove('active');
+            userMenuBtn.classList.remove('active');
+        }
+    });
+});
+
+// ==================== POBLADO BÁSICO DEL HEADER (solo nombre) ====================
+// Lee `solectric:auth:user` y coloca el nombre en el elemento con id `navbarUserName`.
+document.addEventListener('DOMContentLoaded', function () {
+    try {
+        const raw = localStorage.getItem('solectric:auth:user');
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        const user = parsed && parsed.v ? parsed.v : null;
+        if (!user) return;
+
+        const navbarName = document.getElementById('navbarUserName');
+        const navbarAvatar = document.getElementById('navbarUserAvatar');
+        if (navbarName && user.nombre) {
+            navbarName.textContent = user.nombre;
+        }
+        if (navbarAvatar && user.nombre) {
+            const initials = (user.nombre || '')
+                .split(' ')
+                .map(s => s.charAt(0))
+                .join('')
+                .slice(0, 2)
+                .toUpperCase();
+            navbarAvatar.textContent = initials || navbarAvatar.textContent;
+        }
+    } catch (e) {
+        // No es crítico; sólo intentar poblar el nombre si existe en storage
+        console.warn('No se pudo poblar nombre en el header desde localStorage', e);
+    }
+});
