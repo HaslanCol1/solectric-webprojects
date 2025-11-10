@@ -63,6 +63,7 @@ export class ApiClient {
     post(path, body, opts) { return this.request(path, { ...opts, method: "POST", body }); }
     put(path, body, opts)  { return this.request(path, { ...opts, method: "PUT",  body }); }
     del(path, opts)    { return this.request(path, { ...opts, method: "DELETE" }); }
+    patch(path, body, opts) { return this.request(path, { ...opts, method: "PATCH", body }); }
 
 
     async login(credentials, { ttl } = {}) {

@@ -907,7 +907,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Función para guardar cambios
-    function saveChanges() {
+    async function saveChanges() {
         const editInputs = profileInfoGrid.querySelectorAll('.edit-input');
         const updatedData = {};
         
@@ -952,7 +952,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Simular guardado (aquí podrías hacer una llamada AJAX al servidor)
+        // Realizar petición PATCH al endpoint de ciudadanos
         editBtn.innerHTML = `
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -960,38 +960,79 @@ document.addEventListener('DOMContentLoaded', function() {
             Guardando...
         `;
         editBtn.disabled = true;
-        
-        setTimeout(() => {
+
+        try {
+            // obtener id del usuario logueado
+            const rawAuth = localStorage.getItem('solectric:auth:user');
+            const authObj = rawAuth ? JSON.parse(rawAuth) : null;
+            const userId = authObj && authObj.v && authObj.v.id ? authObj.v.id : null;
+
+            if (!userId) {
+                showMessage('Error', 'Usuario no autenticado. Por favor inicia sesión.', 'error');
+                editBtn.disabled = false;
+                return;
+            }
+
+            // Construir payload con los campos que el backend espera
+            const payload = {};
+            // Mapear nombres de UI a nombres del backend
+            if (updatedData.nombre) payload.nombre_completo = updatedData.nombre;
+            if (updatedData.telefono) payload.telefono = updatedData.telefono;
+            // correo no es editable en UI, pero enviamos el existente para mantener consistencia
+            const existingEmail = authObj && authObj.v ? (authObj.v.correo || authObj.v.email || '') : '';
+            if (existingEmail) payload.correo_electronico = existingEmail;
+            // direccion: preferimos campo direccion, si sólo hay municipio usarlo como direccion
+            if (updatedData.direccion) payload.direccion = updatedData.direccion;
+            else if (updatedData.municipio) payload.direccion = updatedData.municipio;
+
+            // Debug: log payload being sent
+            try { console.debug('PATCH payload for /ciudadanos/' + userId, payload); } catch (e) { }
+
+            // Hacer la petición PATCH al recurso de ciudadano
+            const updatedUser = await api.patch(`/ciudadanos/${userId}`, payload);
+
+            // Actualizar localStorage solectric:auth:user conservando la envoltura 'v'
+            try {
+                if (authObj && authObj.v) {
+                    authObj.v = Object.assign({}, authObj.v, updatedUser);
+                    localStorage.setItem('solectric:auth:user', JSON.stringify(authObj));
+                } else if (updatedUser) {
+                    localStorage.setItem('solectric:auth:user', JSON.stringify({ v: updatedUser, e: null }));
+                }
+            } catch (err) {
+                console.warn('No se pudo actualizar localStorage con el usuario actualizado', err);
+            }
+
             // Actualizar valores en la interfaz
             editInputs.forEach(input => {
                 const field = input.parentNode;
                 const infoValue = field.querySelector('.info-value');
                 infoValue.textContent = input.value;
             });
-            
-            // Actualizar también el header del modal si se cambió el nombre
+
+            // Actualizar también el header del modal y avatar si se cambió el nombre
             if (updatedData.nombre) {
                 const profileHeaderText = document.querySelector('.profile-header-text h2');
-                if (profileHeaderText) {
-                    profileHeaderText.textContent = 'Mi Perfil';
-                }
-                
-                // Actualizar iniciales del avatar
+                if (profileHeaderText) profileHeaderText.textContent = 'Mi Perfil';
+
                 const initials = updatedData.nombre.split(' ')
                     .map(word => word.charAt(0))
                     .join('')
                     .toUpperCase()
                     .substring(0, 2);
-                
+
                 const avatars = document.querySelectorAll('.profile-avatar-large');
-                avatars.forEach(avatar => {
-                    avatar.textContent = initials;
-                });
+                avatars.forEach(avatar => avatar.textContent = initials);
+
+                // también poblar navbar
+                const navbarName = document.getElementById('navbarUserName') || document.querySelector('.user-name');
+                const navbarAvatar = document.getElementById('navbarUserAvatar') || document.querySelector('.user-avatar');
+                if (navbarName) navbarName.textContent = updatedData.nombre;
+                if (navbarAvatar) navbarAvatar.textContent = initials;
             }
-            
-            // Mostrar mensaje de éxito
+
             showSuccessMessage('Perfil actualizado correctamente');
-            
+
             // Volver al modo normal
             isEditing = false;
             editBtn.innerHTML = `
@@ -1004,13 +1045,11 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             editBtn.classList.remove('saving');
             editBtn.disabled = false;
-            
+
             // Remover botón cancelar
             const cancelBtn = document.querySelector('.btn-cancel');
-            if (cancelBtn) {
-                cancelBtn.remove();
-            }
-            
+            if (cancelBtn) cancelBtn.remove();
+
             // Remover inputs y mostrar valores
             editInputs.forEach(input => {
                 const field = input.parentNode;
@@ -1018,8 +1057,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 infoValue.style.display = 'block';
                 input.remove();
             });
-            
-        }); // Simular tiempo de guardado
+
+        } catch (err) {
+            // err produced by ApiClient.request contains .status and .data
+            console.error('Error actualizando perfil:', err);
+            try {
+                const status = err && err.status ? err.status : (err && err.data && err.data.status ? err.data.status : null);
+                const data = err && err.data ? err.data : (err && err.data ? err.data : null);
+
+                // If backend returned a validation detail array (FastAPI style)
+                if (data && Array.isArray(data.detail)) {
+                    const msgs = data.detail.map(d => {
+                        const loc = Array.isArray(d.loc) ? d.loc.join('.') : (d.loc || 'campo');
+                        return `${loc}: ${d.msg || JSON.stringify(d)}`;
+                    }).join('; ');
+                    showMessage('Error 422', msgs, 'error');
+                    console.warn('422 details:', data.detail);
+                } else if (status === 422 && data) {
+                    // Generic 422 with body
+                    showMessage('Error 422', JSON.stringify(data), 'error');
+                    console.warn('422 response data:', data);
+                } else if (err && err.message) {
+                    showMessage('Error', err.message, 'error');
+                } else {
+                    showMessage('Error', 'No se pudo actualizar el perfil', 'error');
+                }
+            } catch (ee) {
+                showMessage('Error', 'No se pudo actualizar el perfil', 'error');
+            }
+            editBtn.disabled = false;
+        }
     }
     
     // Función para mostrar mensaje de éxito
