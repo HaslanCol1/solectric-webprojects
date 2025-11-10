@@ -836,6 +836,15 @@ function validateReportBody(body) {
     return { ok: errors.length === 0, errors };
 }
 
+async function updateLocalStorageReportes() {
+    try {
+        const responseReportes = await api.get("/reportes", null);
+        localStorage.setItem('lista_reportes', JSON.stringify(responseReportes));
+    } catch (e) {
+        console.error("Error actualizando lista de reportes en localStorage:", e);
+    }
+}
+
 async function showConfirmationModal() {
     const savedData = JSON.parse(localStorage.getItem('reporteFormData') || "{}");
     const body = buildReportBody(savedData);
@@ -852,6 +861,7 @@ async function showConfirmationModal() {
         mostrarMensajeGlobal("Enviando reporte...", "info");
 
         const response = await api.post("/reportes", body);
+        updateLocalStorageReportes().then(() => console.log("Reportes actualizados correctamente ✅"))
 
         mostrarMensajeGlobal("Reporte enviado correctamente ✅", "success");
 
