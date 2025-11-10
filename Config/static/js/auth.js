@@ -204,9 +204,11 @@ export async function handleLogin(event) {
     }, { ttl: 3600_000 });
 
     const res = await api.get("/catalogo-reportes", null)
+    const responseReportes = await api.get("/reportes", null)
 
     localStorage.setItem('catalogo_reportes', JSON.stringify(res));
-
+    localStorage.setItem('lista_reportes', JSON.stringify(responseReportes));
+    
     const urlParams = new URLSearchParams(window.location.search);
     const nextPage = urlParams.get('next');
 

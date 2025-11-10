@@ -1,3 +1,5 @@
+import { api } from "./utils/http.js";
+import { AuthStore } from "./utils/storage.js";
 // ========== ELEMENTOS DEL DOM ==========
 const userMenuBtn = document.getElementById('userMenuBtn');
 const dropdownMenu = document.getElementById('dropdownMenu');
@@ -217,40 +219,35 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para filtrar reportes
     function filterReports() {
+        if (!searchInput || !priorityFilter || !statusFilter || !reportsContainer) return;
         const searchTerm = searchInput.value.toLowerCase().trim();
         const selectedPriority = priorityFilter.value;
         const selectedStatus = statusFilter.value;
-        
+
         const reportCards = reportsContainer.querySelectorAll('.report-card');
         const totalReports = reportCards.length;
         let visibleCount = 0;
-        
+
         reportCards.forEach(card => {
-            // Obtener datos del reporte
-            const priority = card.getAttribute('data-priority');
-            const status = card.getAttribute('data-status');
+            const priority = (card.getAttribute('data-priority') || '').trim();
+            const status = (card.getAttribute('data-status') || '').trim();
             const searchData = card.getAttribute('data-search');
-            
-            // Verificar criterios de filtrado
+
             const matchesSearch = !searchTerm || searchData.includes(searchTerm);
-            const matchesPriority = !selectedPriority || priority === selectedPriority;
-            const matchesStatus = !selectedStatus || status === selectedStatus;
-            
-            // Mostrar u ocultar el reporte
+            const matchesPriority = !selectedPriority || priority === selectedPriority.trim();
+            const matchesStatus = !selectedStatus || status === selectedStatus.trim();
+
             if (matchesSearch && matchesPriority && matchesStatus) {
                 card.style.display = 'block';
                 visibleCount++;
-                
-                // Reiniciar la animación
                 card.style.animation = 'none';
-                card.offsetHeight; // Trigger reflow
+                card.offsetHeight;
                 card.style.animation = null;
             } else {
                 card.style.display = 'none';
             }
         });
-        
-        // Actualizar contador de resultados
+
         if (resultsCounter) {
             if (searchTerm || selectedPriority || selectedStatus) {
                 resultsCounter.textContent = `(${visibleCount} de ${totalReports})`;
@@ -259,20 +256,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 resultsCounter.style.display = 'none';
             }
         }
-        
-        // Mostrar mensaje de "sin resultados" si no hay reportes visibles
-        if (visibleCount === 0) {
-            noResultsMessage.style.display = 'block';
-        } else {
-            noResultsMessage.style.display = 'none';
+
+        if (noResultsMessage) {
+            if (visibleCount === 0) {
+                noResultsMessage.style.display = 'block';
+            } else {
+                noResultsMessage.style.display = 'none';
+            }
         }
     }
     
     // Función para limpiar filtros
     function clearFilters() {
-        searchInput.value = '';
-        priorityFilter.value = '';
-        statusFilter.value = '';
+        if (searchInput) searchInput.value = '';
+        if (priorityFilter) priorityFilter.value = '';
+        if (statusFilter) statusFilter.value = '';
         filterReports();
     }
     
@@ -305,6 +303,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar filtros
     filterReports();
+
+    // Exponer filtro globalmente para que otros módulos (render/poblado selects) lo reutilicen
+    if (typeof window !== 'undefined') {
+        window.filterReports = filterReports;
+    }
 });
 
 // ========== FUNCIONALIDAD DE NOTIFICACIONES ==========
@@ -1326,7 +1329,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Función para obtener estado del grupo
-    function getGroupStatus(groupId) {
+    function getGroupStatus() {
+        const groupId = currentGroupId;
         if (userGroups.includes(groupId)) return 'unido';
         if (pendingRequests.includes(groupId)) return 'pendiente';
         return 'no-unido';
@@ -1705,6 +1709,12 @@ function confirmDeleteAccount() {
                 if (match && match[1]) {
                     progresoValue = parseInt(match[1], 10);
                 }
+            } else {
+                const progressFill = card.querySelector('.progress-fill');
+                if (progressFill && progressFill.style.width) {
+                    progresoValue = parseInt(progressFill.style.width, 10);
+                    progresoText = `${progresoValue}%`;
+                }
             }
         } else {
             const progressFill = card.querySelector('.progress-fill');
@@ -1920,3 +1930,249 @@ function confirmDeleteAccount() {
         });
     });
 })();
+
+// Dinamizar selects de prioridad (niveles) y estado usando EXACTAMENTE los nombres del backend
+(function() {
+    const CATALOGO_KEY = 'catalogo_reportes';
+
+    function populateSelects() {
+        const prioritySelect = document.getElementById('priorityFilter');
+        const statusSelect   = document.getElementById('statusFilter');
+        if (!prioritySelect && !statusSelect) return;
+
+        const raw = localStorage.getItem(CATALOGO_KEY);
+        if (!raw) return;
+
+        let catalogo;
+        try { catalogo = JSON.parse(raw); } catch { return; }
+
+        const niveles = Array.isArray(catalogo?.niveles_urgencia) ? catalogo.niveles_urgencia : [];
+        const estados = Array.isArray(catalogo?.estados_reporte) ? catalogo.estados_reporte : [];
+
+        // Guardar selección previa
+        const prevPriority = prioritySelect.value;
+        const prevStatus = statusSelect.value;
+
+        // Limpiar y llenar selects con id como value y nombre como texto
+        if (prioritySelect) {
+            prioritySelect.innerHTML = '<option value="">Todas</option>';
+            niveles.forEach(n => {
+                const opt = document.createElement('option');
+                opt.value = n.id;
+                opt.textContent = n.nombre;
+                prioritySelect.appendChild(opt);
+            });
+            if ([...prioritySelect.options].some(o=>o.value===prevPriority))
+                prioritySelect.value = prevPriority;
+        }
+
+        if (statusSelect) {
+            statusSelect.innerHTML = '<option value="">Todos</option>';
+            estados.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.textContent = s.nombre;
+                statusSelect.appendChild(opt);
+            });
+            if ([...statusSelect.options].some(o=>o.value===prevStatus))
+                statusSelect.value = prevStatus;
+        }
+
+        // Forzar filtrado tras poblar
+        if (typeof window.filterReports === 'function') window.filterReports();
+    }
+
+    document.addEventListener('DOMContentLoaded', populateSelects);
+    window.reloadDynamicFilters = populateSelects;
+})();
+
+// Render de reportes: dataset usa exactamente los nombres del backend para que los filtros coincidan 1:1
+(function(){
+  const KEY='lista_reportes';
+
+  // Progreso (simple). No afecta filtros.
+  function progressByEstado(nombre){
+    const v = (nombre||'').toLowerCase();
+    if (v.includes('pendiente')) return 10;
+    if (v.includes('asignado'))  return 30;
+    if (v.includes('progreso'))  return 60;
+    if (v.includes('revisión') || v.includes('revision')) return 80;
+    if (v.includes('resuelto') || v.includes('cerrado')) return 100;
+    if (v.includes('rechazado')) return 0;
+    return 0;
+  }
+  function shortDate(iso){const d=new Date(iso);return isNaN(d)?'-':d.toISOString().slice(0,10);}
+  const code=id=>'#REP-'+String(id||'').slice(0,8).toUpperCase();
+  function load(){try{const raw=localStorage.getItem(KEY); return raw?JSON.parse(raw):[];}catch{return [];}}
+
+  function renderReports(){
+    const list=document.getElementById('reportList');
+    const tpl=document.getElementById('reportCardTpl');
+    const empty=document.getElementById('noResultsMessage');
+    if(!list||!tpl) return;
+
+    list.innerHTML='';
+    const data=load();
+
+    if(!data.length){ empty && (empty.style.display='block'); return; }
+    empty && (empty.style.display='none');
+
+    data.forEach(r=>{
+      const el=tpl.content.firstElementChild.cloneNode(true);
+
+    const nivelId      = r?.nivel?.id      || '';
+    const nivelNombre  = r?.nivel?.nombre  || '';
+    const estadoId     = r?.estado?.id     || '';
+    const estadoNombre = r?.estado?.nombre || '';
+    const tipoNombre   = r?.tipo?.nombre   || '';
+    const ubic         = [r.direccion, r.barrio].filter(Boolean).join(', ');
+    const estadoDesc   = r?.estado?.descripcion || '';
+    const pct          = progressByEstado(estadoNombre);
+
+    // Filtros: usar id para comparar
+    el.dataset.priority = nivelId;
+    el.dataset.status   = estadoId;
+    el.dataset.search   = (code(r.id)+' '+tipoNombre+' '+ubic).toLowerCase();
+
+      // Pintar tarjeta (sin transformar textos)
+      const idWrap=el.querySelector('.report-id');
+      if (idWrap) idWrap.innerHTML=`${code(r.id)} <span class="priority-badge">${nivelNombre}</span>`;
+
+      const sBadge=el.querySelector('.status-badge');
+      if (sBadge) sBadge.textContent=estadoNombre;
+
+      const fecha=el.querySelector('.fecha-text');
+      if (fecha) fecha.textContent=shortDate(r.creado_en);
+
+      const title=el.querySelector('.report-title');
+      if (title) title.textContent=tipoNombre;
+
+      const loc=el.querySelector('.ubicacion-text');
+      if (loc) loc.textContent=ubic||'-';
+
+      const pctText=el.querySelector('.porcentaje-text');
+      if (pctText) pctText.textContent=pct+'%';
+
+      const fill=el.querySelector('.progress-fill');
+      if (fill) {
+        fill.style.width=pct+'%';
+        if (pct===100) fill.style.background='#10b981';
+      }
+
+      const upd=el.querySelector('.update-text');
+      if (upd) upd.textContent=estadoDesc;
+
+      const foot=el.querySelector('.footer-time-text');
+      if (foot) foot.textContent=pct===100?'Completado':'Estimado: -';
+
+      const btn=el.querySelector('.btn-ver-detalles');
+      if (btn && typeof abrirModalConCard==='function') btn.addEventListener('click',()=>abrirModalConCard(el));
+
+      // Botón de eliminar reporte (solo si el estado es Pendiente)
+      const btnEliminar = el.querySelector('.btn-eliminar-reporte');
+      if (btnEliminar) {
+        if ((r?.estado?.nombre || '').toLowerCase() === 'pendiente') {
+            btnEliminar.disabled = false;
+            btnEliminar.onclick = () => deleteReporteById(r.id, r?.estado?.nombre);
+        } else {
+            btnEliminar.disabled = true;
+            btnEliminar.title = "Solo puedes eliminar reportes en estado Pendiente";
+        }
+      }
+
+      list.appendChild(el);
+    });
+
+        // Aplicar filtros si ya hay valores seleccionados
+        if (typeof filterReports === 'function') filterReports();
+        // Actualizar estadísticas generales
+        if (typeof updateStats === 'function') updateStats();
+  }
+
+  document.addEventListener('DOMContentLoaded', renderReports);
+  window.reloadReportes=renderReports;
+})();
+
+// Estadísticas: Mis Reportes, Activos, Resueltos, Tiempo Promedio (usa exactamente los datos del backend)
+(function(){
+    const KEY='lista_reportes';
+
+    function load(){
+        try{ const raw = localStorage.getItem(KEY); return raw?JSON.parse(raw):[]; }catch{return []}
+    }
+
+    function avgHours(creado, resuelto){
+        const d1 = creado ? new Date(creado) : null;
+        const d2 = resuelto ? new Date(resuelto) : null;
+        if (!d1 || !d2 || isNaN(d1) || isNaN(d2)) return null;
+        const ms = d2 - d1; if (ms < 0) return null;
+        return ms/36e5; // ms to hours
+    }
+
+    function updateStats(){
+        const data = load();
+        const total = data.length;
+
+        const isResolved = (nombre)=>{
+            const v=(nombre||'').toLowerCase();
+            return v.includes('resuelto') || v.includes('cerrado');
+        };
+        const isRejected = (nombre)=> (nombre||'').toLowerCase().includes('rechazado');
+
+        const resolved = data.filter(r=>isResolved(r?.estado?.nombre)).length;
+        const activos  = data.filter(r=>!isResolved(r?.estado?.nombre) && !isRejected(r?.estado?.nombre)).length;
+
+        // promedio horas entre creado_en y resuelto_en solo para resueltos con fechas válidas
+        const horas = data
+            .map(r=>avgHours(r?.creado_en, r?.resuelto_en))
+            .filter(h=>typeof h==='number' && isFinite(h));
+        const prom = horas.length ? (horas.reduce((a,b)=>a+b,0)/horas.length) : 0;
+        const promTexto = `${Math.round(prom)} horas`;
+
+        const nodes = document.querySelectorAll('.stats-grid .stat-card .stat-value');
+        if (nodes && nodes.length>=4){
+            nodes[0].textContent = String(total);
+            nodes[1].textContent = String(activos);
+            nodes[2].textContent = String(resolved);
+            nodes[3].textContent = promTexto; // si no hay, queda "0 horas"
+        }
+    }
+
+    if (typeof window!=='undefined') window.updateStats = updateStats;
+    document.addEventListener('DOMContentLoaded', updateStats);
+})();
+
+async function updateLocalStorageReportes() {
+    try {
+        const responseReportes = await api.get("/reportes", null);
+        localStorage.setItem('lista_reportes', JSON.stringify(responseReportes));
+    } catch (e) {
+        console.error("Error actualizando lista de reportes en localStorage:", e);
+    }
+}
+
+/**
+ * Elimina un reporte por su id usando el API.
+ * Solo permite eliminar si el estado es "Pendiente".
+ * @param {string} reporteId - El id del reporte a eliminar.
+ * @param {string} estadoNombre - El nombre del estado del reporte.
+ */
+async function deleteReporteById(reporteId, estadoNombre) {
+    if (!reporteId) return;
+    if ((estadoNombre || '').toLowerCase() !== 'pendiente') {
+        showMessage('No permitido', 'Solo puedes eliminar reportes en estado Pendiente.', 'error');
+        return;
+    }
+    try {
+        await api.del(`/reportes/${reporteId}`, reporteId);
+        await updateLocalStorageReportes();
+        showMessage('Reporte eliminado', 'El reporte fue eliminado correctamente', 'success');
+        if (typeof window.reloadReportes === 'function') window.reloadReportes();
+        if (typeof window.updateStats === 'function') window.updateStats();
+    } catch (e) {
+        showMessage('Error', 'No se pudo eliminar el reporte', 'error');
+        console.error(e);
+    }
+}
+window.deleteReporteById = deleteReporteById;
+window.updateLocalStorageReportes = updateLocalStorageReportes;
