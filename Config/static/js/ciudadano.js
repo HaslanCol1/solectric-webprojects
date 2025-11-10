@@ -97,6 +97,12 @@ openProfileBtn.addEventListener('click', () => {
     // Cerrar dropdown
     userMenuBtn.classList.remove('active');
     dropdownMenu.classList.remove('active');
+    // Populate profile fields and statistics from localStorage each time modal opens
+    try {
+        if (typeof populateProfileModal === 'function') populateProfileModal();
+    } catch (err) {
+        console.error('Error running populateProfileModal:', err);
+    }
 });
 
 closeProfileBtn.addEventListener('click', () => {
@@ -109,6 +115,149 @@ profileModal.addEventListener('click', (e) => {
         profileModal.classList.remove('active');
     }
 });
+
+// ====== POPULATE PROFILE MODAL (stats + header) ======
+/**
+ * Populates profile header, avatar initials and activity statistics inside the profile modal.
+ * Uses `solectric:auth:user` for user info and `lista_reportes` for report counts.
+ */
+function populateProfileModal() {
+    try {
+        // Read user from localStorage
+        const userRaw = localStorage.getItem('solectric:auth:user');
+        const parsed = userRaw ? JSON.parse(userRaw) : null;
+        const user = parsed && parsed.v ? parsed.v : null;
+
+        // Read lista_reportes early (used both as fallback for city and later for stats)
+        const listaRaw = localStorage.getItem('lista_reportes');
+        const lista = listaRaw ? JSON.parse(listaRaw) : [];
+
+        // Fallback: try to discover a city for the user from their reports
+        let fallbackCity = '';
+        if (Array.isArray(lista) && user && user.id) {
+            const found = lista.find(r => {
+                if (!r) return false;
+                let autorId = null;
+                if (r.autor) autorId = (typeof r.autor === 'string') ? r.autor : (r.autor.id || null);
+                else if (r.autor_id) autorId = r.autor_id;
+                return autorId === user.id && (r.municipio || r.barrio || r.direccion);
+            });
+            if (found) fallbackCity = found.municipio || found.barrio || '';
+        }
+
+        // Update header email and avatar inside the modal
+        if (user) {
+            const headerEmail = document.querySelector('#profileModal .profile-header-text p');
+            if (headerEmail) headerEmail.textContent = user.correo || user.email || '';
+
+            const initials = (user.nombre || '')
+                .split(' ')
+                .filter(Boolean)
+                .map(n => n[0])
+                .join('')
+                .slice(0, 2)
+                .toUpperCase();
+
+            // there are two avatar elements in the modal; update both
+            document.querySelectorAll('#profileModal .profile-avatar-large').forEach(el => {
+                el.textContent = initials || 'US';
+            });
+
+            // Populate personal info fields in the profile grid (match by label)
+            const infoGrid = document.querySelector('#perfilContent .profile-info-grid');
+            if (infoGrid) {
+                infoGrid.querySelectorAll('.info-field').forEach(field => {
+                    const labelEl = field.querySelector('.info-label');
+                    const valueEl = field.querySelector('.info-value');
+                    if (!labelEl || !valueEl) return;
+                    const label = labelEl.textContent.trim().toLowerCase();
+
+                    if (label.includes('nombre')) {
+                        valueEl.textContent = user.nombre || '';
+                    } else if (label.includes('correo')) {
+                        valueEl.textContent = user.correo || user.email || '';
+                    } else if (label.includes('teléfono') || label.includes('telefono')) {
+                        valueEl.textContent = user.telefono || '';
+                    } else if (label.includes('ciudad')) {
+                        // ciudad may be stored as 'municipio' or in 'barrio' or inferred from reports
+                        valueEl.textContent = user.municipio || user.barrio || fallbackCity || '';
+                    } else if (label.includes('direcci')) { // covers 'dirección' and 'direccion'
+                        valueEl.textContent = user.direccion || '';
+                    }
+                });
+            }
+
+            // Member badge - use role name if available, otherwise keep default
+            const badge = document.getElementById('profileMemberBadge');
+            if (badge) {
+                if (user.rol && user.rol.nombre) {
+                    // If role mentions "colaborador" keep the special text
+                    if (/colaborador/i.test(user.rol.nombre)) badge.textContent = 'Colaborador Activo';
+                    else badge.textContent = user.rol.nombre;
+                } else {
+                    // fallback: show "Colaborador Activo" if there is any collaborator-like property, else keep existing
+                    badge.textContent = badge.textContent || 'Colaborador Activo';
+                }
+            }
+
+            // Member since - try created fields from user
+            const memberSinceEl = document.getElementById('profileMemberSince');
+            if (memberSinceEl) {
+                const created = user.creado_fecha || user.creado_en || user.creado || user.created_at || null;
+                if (created) {
+                    const d = new Date(created);
+                    if (!isNaN(d)) {
+                        const fmt = new Intl.DateTimeFormat('es-CO', { month: 'long', year: 'numeric' });
+                        let txt = fmt.format(d);
+                        txt = txt.charAt(0).toUpperCase() + txt.slice(1);
+                        memberSinceEl.textContent = txt;
+                    } else {
+                        memberSinceEl.textContent = created;
+                    }
+                }
+            }
+        }
+
+        // lista and fallbackCity were computed earlier
+
+        // Read lista_reportes and compute totals for this user
+        let total = 0;
+        let resolved = 0;
+
+        if (Array.isArray(lista) && user && user.id) {
+            lista.forEach(r => {
+                // find author id
+                let autorId = null;
+                if (r.autor) {
+                    autorId = (typeof r.autor === 'string') ? r.autor : (r.autor.id || null);
+                } else if (r.autor_id) {
+                    autorId = r.autor_id;
+                }
+
+                if (autorId === user.id) {
+                    total += 1;
+
+                    const isResolved = Boolean(
+                        r.resuelto_en ||
+                        (r.estado && r.estado.nombre && r.estado.nombre.toLowerCase() === 'resuelto')
+                    );
+                    if (isResolved) resolved += 1;
+                }
+            });
+        }
+
+        const totalEl = document.getElementById('profileTotalReports');
+        const resolvedEl = document.getElementById('profileResolvedReports');
+        if (totalEl) totalEl.textContent = String(total);
+        if (resolvedEl) resolvedEl.textContent = String(resolved);
+
+    } catch (err) {
+        console.error('populateProfileModal error:', err);
+    }
+}
+
+// Expose for debugging if needed
+window.populateProfileModal = populateProfileModal;
 
 // ========== TABS DEL MODAL DE PERFIL ==========
 const modalTabBtns = document.querySelectorAll('.modal-tab');
@@ -1652,6 +1801,9 @@ function confirmDeleteAccount() {
 
 // ===== MODAL DETALLE REPORTE: comportamiento simple =====
 (function() {
+    // Track the element that had focus before the modal opened so we can restore focus
+    let lastFocusedBeforeModal = null;
+
     function safeText(el, selector) {
         if (!el) return '';
         const s = el.querySelector(selector);
@@ -1660,39 +1812,82 @@ function confirmDeleteAccount() {
 
     function abrirModalConCard(card) {
         if (!card) return;
-        const id = safeText(card, '.report-id');
-        const tipo = safeText(card, '.report-title');
-        const prioridad = safeText(card, '.priority-badge');
-        const estado = safeText(card, '.status-badge');
+        // remember the currently focused element so we can restore focus when the modal closes
+        try { lastFocusedBeforeModal = document.activeElement; } catch (e) { lastFocusedBeforeModal = null; }
+        // If the card has a dataset.reportId, prefer loading the full report object from localStorage
+        const reportId = card && card.dataset ? card.dataset.reportId : null;
+        let reportObj = null;
+        if (reportId) {
+            try {
+                const raw = localStorage.getItem('lista_reportes');
+                const arr = raw ? JSON.parse(raw) : [];
 
-        // Fecha: buscar un nodo con class .report-header y texto pequeño
-        let fecha = '';
-        const header = card.querySelector('.report-header');
-        if (header) {
-            // Busca específicamente el elemento con estilo de fecha
-            const fechaEl = header.querySelector('[style*="font-size: 12px"]');
-            if (fechaEl) {
-                fecha = fechaEl.textContent.trim();
-            } else {
-                fecha = Array.from(header.querySelectorAll('div, span'))
-                    .map(n => n.textContent.trim())
-                    .filter(text => text.match(/\d{4}-\d{2}-\d{2}/))
-                    .join(' ').trim();
+                const rid = String(reportId);
+                // Try multiple common id keys and compare as strings to avoid type mismatches
+                reportObj = arr.find(x => {
+                    if (!x) return false;
+                    const candidates = [x.id, x._id, x.uuid, x.uid, x.identificador];
+                    // also support nested oid like {_id: { $oid: '...' }}
+                    if (x._id && typeof x._id === 'object' && x._id.$oid) candidates.push(x._id.$oid);
+                    return candidates.some(c => c !== undefined && c !== null && String(c) === rid);
+                }) || null;
+
+                // If still not found, try matching by generated code '#REP-<id>' appearing in dataset or card text
+                if (!reportObj) {
+                    reportObj = arr.find(x => {
+                        try { return String('#REP-'+String(x.id)).toLowerCase() === String(card.querySelector('.report-id').textContent || '').trim().toLowerCase().split(' ')[0]; } catch { return false; }
+                    }) || null;
+                }
+
+                if (!reportObj) {
+                    console.warn(`abrirModalConCard: reportId=${reportId} present but no matching report found in lista_reportes`);
+                }
+            } catch (e) {
+                console.error('Error parsing lista_reportes for modal detail fallback:', e);
             }
         }
 
-        // Ubicación: intentar obtener texto del contenedor
+    console.debug('abrirModalConCard invoked. reportObj:', reportObj, 'card.dataset.reportId:', reportId);
+
+    // Fields either from reportObj (preferred) or from card DOM
+        const id = reportObj ? reportObj.id : safeText(card, '.report-id');
+        const tipo = reportObj ? (reportObj.tipo && reportObj.tipo.nombre ? reportObj.tipo.nombre : '') : safeText(card, '.report-title');
+        const prioridad = reportObj ? (reportObj.nivel && reportObj.nivel.nombre ? reportObj.nivel.nombre : '') : safeText(card, '.priority-badge');
+        const estado = reportObj ? (reportObj.estado && reportObj.estado.nombre ? reportObj.estado.nombre : '') : safeText(card, '.status-badge');
+
+        // Fecha: prefer reportObj.ocurrido_en or creado_en, otherwise fall back to extracting from DOM
+        let fecha = '';
+        if (reportObj) {
+            const d = reportObj.ocurrido_en || reportObj.creado_en || reportObj.creado_fecha || reportObj.creado;
+            if (d) {
+                try { fecha = new Date(d).toISOString().slice(0,10); } catch { fecha = String(d); }
+            }
+        }
+        if (!fecha) {
+            const header = card.querySelector('.report-header');
+            if (header) {
+                const fechaEl = header.querySelector('[style*="font-size: 12px"]');
+                if (fechaEl) fecha = fechaEl.textContent.trim();
+                else fecha = Array.from(header.querySelectorAll('div, span')).map(n => n.textContent.trim()).filter(text => text.match(/\d{4}-\d{2}-\d{2}/)).join(' ').trim();
+            }
+        }
+
+        // Ubicación: prefer reportObj fields, otherwise extract from DOM
         let ubicacion = '';
-        const ubicacionNode = card.querySelector('.report-location');
-        if (ubicacionNode) {
-            // Eliminar el svg de la ubicación y obtener solo el texto
-            const svgEl = ubicacionNode.querySelector('svg');
-            if (svgEl) {
-                const clone = ubicacionNode.cloneNode(true);
-                clone.querySelector('svg').remove();
-                ubicacion = clone.textContent.trim();
-            } else {
-                ubicacion = ubicacionNode.textContent.trim();
+        if (reportObj) {
+            ubicacion = [reportObj.direccion, reportObj.barrio, reportObj.municipio].filter(Boolean).join(', ');
+        }
+        if (!ubicacion) {
+            const ubicacionNode = card.querySelector('.report-location');
+            if (ubicacionNode) {
+                const svgEl = ubicacionNode.querySelector('svg');
+                if (svgEl) {
+                    const clone = ubicacionNode.cloneNode(true);
+                    const svg = clone.querySelector('svg'); if (svg) svg.remove();
+                    ubicacion = clone.textContent.trim();
+                } else {
+                    ubicacion = ubicacionNode.textContent.trim();
+                }
             }
         }
 
@@ -1724,8 +1919,9 @@ function confirmDeleteAccount() {
             }
         }
 
-        const actualizacion = safeText(card, '.update-text');
-        const descripcion = safeText(card, '.report-info .report-title') || safeText(card, '.report-description');
+    // Actualización y descripción: prefer report object
+    const actualizacion = reportObj ? (reportObj.estado && reportObj.estado.descripcion ? reportObj.estado.descripcion : '') : safeText(card, '.update-text');
+    const descripcion = reportObj ? (reportObj.tipo && reportObj.tipo.descripcion ? reportObj.tipo.descripcion : (reportObj.punto_referencia || '')) : (safeText(card, '.report-info .report-title') || safeText(card, '.report-description'));
 
         const modal = document.getElementById('modalDetalleReporte');
         if (!modal) return;
@@ -1736,12 +1932,17 @@ function confirmDeleteAccount() {
             if (el) el.textContent = value || '-';
         };
 
-        setIf('#md-id', id);
-        setIf('#md-tipo', tipo);
-        setIf('#md-fecha', fecha);
-        setIf('#md-ubicacion', ubicacion);
-        setIf('#md-actualizacion', actualizacion);
-        setIf('#md-descripcion', descripcion);
+        // md-id: format a short code (keep previous visual format if card DOM provided)
+        const shortCode = (reportObj && reportObj.id) ? ('#REP-' + String(reportObj.id).slice(0,8).toUpperCase()) : (typeof id === 'string' ? id : id);
+    setIf('#md-id', shortCode);
+    setIf('#md-tipo', tipo);
+    setIf('#md-fecha', fecha);
+    setIf('#md-ubicacion', ubicacion);
+    setIf('#md-actualizacion', actualizacion);
+    setIf('#md-descripcion', descripcion);
+
+    // Debug: log final modal values
+    console.debug('Modal values:', { shortCode, tipo, fecha, ubicacion, actualizacion, descripcion, progresoValue, prioridad, estado });
 
         // Set progress bar and text
         const progressFill = modal.querySelector('#md-progreso-fill');
@@ -1766,16 +1967,10 @@ function confirmDeleteAccount() {
         if (prioridadEl) {
             const pText = (prioridad || '').toLowerCase();
             prioridadEl.textContent = prioridad || '-';
-            
-            // Reset classes and add the correct one
             prioridadEl.className = 'modal-badge';
-            if (pText.includes('alto')) {
-                prioridadEl.classList.add('alto');
-            } else if (pText.includes('medio')) {
-                prioridadEl.classList.add('medio');
-            } else if (pText.includes('bajo')) {
-                prioridadEl.classList.add('bajo');
-            }
+            if (pText.includes('alto')) prioridadEl.classList.add('alto');
+            else if (pText.includes('medio')) prioridadEl.classList.add('medio');
+            else if (pText.includes('bajo')) prioridadEl.classList.add('bajo');
         }
 
         // Estado: configurar clase de badge
@@ -1783,16 +1978,10 @@ function confirmDeleteAccount() {
         if (estadoEl) {
             const eText = (estado || '').toLowerCase();
             estadoEl.textContent = estado || '-';
-            
-            // Reset classes and add the correct one
             estadoEl.className = 'modal-badge';
-            if (eText.includes('progreso')) {
-                estadoEl.classList.add('progreso');
-            } else if (eText.includes('revisión') || eText.includes('revision')) {
-                estadoEl.classList.add('revision');
-            } else if (eText.includes('resuelto')) {
-                estadoEl.classList.add('resuelto');
-            }
+            if (eText.includes('progreso')) estadoEl.classList.add('progreso');
+            else if (eText.includes('revisión') || eText.includes('revision')) estadoEl.classList.add('revision');
+            else if (eText.includes('resuelto') || eText.includes('cerrado')) estadoEl.classList.add('resuelto');
         }
 
         // Timeline: construir desde data-timeline JSON o generar uno básico
@@ -1801,6 +1990,14 @@ function confirmDeleteAccount() {
             timelineEl.innerHTML = '';
             let dt = card.getAttribute('data-timeline');
             
+            // If reportObj contains a timeline-like field (e.g. data_timeline or timeline), try to use it
+            if (!dt && reportObj) {
+                if (reportObj.timeline && typeof reportObj.timeline === 'string') dt = reportObj.timeline;
+                else if (reportObj.timeline && Array.isArray(reportObj.timeline)) dt = JSON.stringify(reportObj.timeline);
+                else if (reportObj.data_timeline && typeof reportObj.data_timeline === 'string') dt = reportObj.data_timeline;
+                else if (reportObj.progresos && Array.isArray(reportObj.progresos)) dt = JSON.stringify(reportObj.progresos.map(p => ({ fecha: p.fecha || p.creado_en || '', titulo: p.titulo || p.descripcion || '', descripcion: p.descripcion || '' })));
+            }
+
             // Si no hay timeline en los datos, generemos uno básico desde el estado
             if (!dt) {
                 // Crear timeline basado en el estado actual y la última actualización
@@ -1890,15 +2087,49 @@ function confirmDeleteAccount() {
             }
         }
 
+        // Ensure modal is visible with either display or an "active" class (covers different CSS patterns)
         modal.style.display = 'block';
+        modal.classList.add('active');
         modal.setAttribute('aria-hidden','false');
+
+        // Move focus into the modal (to the close button) for accessibility
+        try {
+            const focusTarget = modal.querySelector('#modalCloseBtn') || modal.querySelector('.modal-close') || modal;
+            if (focusTarget && typeof focusTarget.focus === 'function') focusTarget.focus();
+        } catch (e) {
+            // ignore
+        }
     }
 
     function cerrarModal() {
         const modal = document.getElementById('modalDetalleReporte');
         if (!modal) return;
+        // Before hiding the modal, attempt to move focus away from any element inside the modal
+        try {
+            if (lastFocusedBeforeModal && document.contains(lastFocusedBeforeModal) && typeof lastFocusedBeforeModal.focus === 'function') {
+                lastFocusedBeforeModal.focus();
+            } else {
+                // Fallback: focus a safe control in the page
+                const fallback = document.getElementById('dashboardBtn') || document.getElementById('logoBtn') || document.body;
+                if (fallback && typeof fallback.focus === 'function') fallback.focus();
+            }
+
+            // If after focusing the fallback the modal still contains the activeElement, blur it explicitly
+            const activeNow = document.activeElement;
+            if (activeNow && modal.contains(activeNow)) {
+                try { activeNow.blur(); } catch (ee) { /* ignore */ }
+            }
+        } catch (e) {
+            // ignore
+        }
+
+        // Now hide the modal and mark it as hidden for assistive tech
         modal.style.display = 'none';
+        modal.classList.remove('active');
         modal.setAttribute('aria-hidden','true');
+
+        // Clear stored reference
+        lastFocusedBeforeModal = null;
     }
 
     // attach handlers
@@ -1929,7 +2160,20 @@ function confirmDeleteAccount() {
             if (e.key === 'Escape') cerrarModal();
         });
     });
+
+    // Expose to global scope so other modules or delegated handlers can call it
+    if (typeof window !== 'undefined') window.abrirModalConCard = abrirModalConCard;
 })();
+
+// Delegated click handler to ensure 'Ver Detalles' always opens the modal (covers dynamic content)
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest && e.target.closest('.btn-ver-detalles');
+    if (!btn) return;
+    e.preventDefault();
+    const card = btn.closest('.report-card');
+    if (!card) return;
+    try { abrirModalConCard(card); } catch (err) { console.error('Error opening report detail modal via delegation:', err); }
+});
 
 // Dinamizar selects de prioridad (niveles) y estado usando EXACTAMENTE los nombres del backend
 (function() {
@@ -2019,6 +2263,8 @@ function confirmDeleteAccount() {
 
     data.forEach(r=>{
       const el=tpl.content.firstElementChild.cloneNode(true);
+        // attach report id for later lookup when opening modal
+        if (r && r.id) el.dataset.reportId = r.id;
 
     const nivelId      = r?.nivel?.id      || '';
     const nivelNombre  = r?.nivel?.nombre  || '';
@@ -2065,8 +2311,8 @@ function confirmDeleteAccount() {
       const foot=el.querySelector('.footer-time-text');
       if (foot) foot.textContent=pct===100?'Completado':'Estimado: -';
 
-      const btn=el.querySelector('.btn-ver-detalles');
-      if (btn && typeof abrirModalConCard==='function') btn.addEventListener('click',()=>abrirModalConCard(el));
+    const btn=el.querySelector('.btn-ver-detalles');
+    if (btn && typeof abrirModalConCard==='function') btn.addEventListener('click',()=>abrirModalConCard(el));
 
       // Botón de eliminar reporte (solo si el estado es Pendiente)
       const btnEliminar = el.querySelector('.btn-eliminar-reporte');
@@ -2176,3 +2422,31 @@ async function deleteReporteById(reporteId, estadoNombre) {
 }
 window.deleteReporteById = deleteReporteById;
 window.updateLocalStorageReportes = updateLocalStorageReportes;
+
+// ==================== POBLADO BÁSICO DE NAVBAR Y DASHBOARD ====================
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        const raw = localStorage.getItem('solectric:auth:user');
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        const user = parsed && parsed.v ? parsed.v : null;
+        if (!user) return;
+
+        // Navbar: name and avatar
+        const navbarName = document.getElementById('navbarUserName') || document.querySelector('.user-name');
+        const navbarAvatar = document.getElementById('navbarUserAvatar') || document.querySelector('.user-avatar');
+        if (navbarName && user.nombre) navbarName.textContent = user.nombre;
+        if (navbarAvatar && user.nombre) {
+            const initials = (user.nombre || '').split(' ').map(s=>s.charAt(0)).join('').slice(0,2).toUpperCase();
+            navbarAvatar.textContent = initials || navbarAvatar.textContent;
+        }
+
+        // Dashboard welcome
+        const welcomeEl = document.getElementById('welcomeTitle') || document.querySelector('.welcome-title');
+        if (welcomeEl && user.nombre) {
+            welcomeEl.textContent = `¡Bienvenido, ${user.nombre}!`;
+        }
+    } catch (e) {
+        console.warn('No se pudo poblar datos del usuario desde localStorage', e);
+    }
+});
