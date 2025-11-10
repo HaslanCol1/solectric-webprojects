@@ -2450,3 +2450,55 @@ document.addEventListener('DOMContentLoaded', function() {
         console.warn('No se pudo poblar datos del usuario desde localStorage', e);
     }
 });
+
+// ==================== LOGOUT: CLEAR ALL USER DATA (parity with reporte.js) ====================
+/**
+ * Borra datos relacionados al usuario del localStorage.
+ * Elimina claves concretas y cualquier clave que empiece con 'solectric:'.
+ */
+function clearAllUserData() {
+    try {
+        localStorage.removeItem('usuarioActual');
+        localStorage.removeItem('catalogo_reportes');
+        localStorage.removeItem('reporteFormData');
+        localStorage.removeItem('lista_reportes');
+        localStorage.removeItem('reporte:id_nivel_urgencia');
+        localStorage.removeItem('reporte:id_tipo_reporte');
+        localStorage.removeItem('emailNotifications');
+        localStorage.removeItem('pushNotifications');
+        localStorage.removeItem('showLocation');
+        localStorage.removeItem('soundNotifications');
+
+        // Eliminar cualquier clave de localStorage que empiece con el prefijo 'solectric:'
+        Object.keys(localStorage).forEach(key => {
+            try {
+                if (typeof key === 'string' && key.startsWith('solectric:')) {
+                    localStorage.removeItem(key);
+                }
+            } catch (err) {
+                // ignore individual key deletion errors
+            }
+        });
+    } catch (err) {
+        console.error('clearAllUserData error:', err);
+    }
+}
+
+// Bind the logout clearing to the logout button(s)
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutBtn = document.getElementById('logoutBtn') || document.getElementById('cerrarSesionBtn');
+    if (!logoutBtn) return;
+
+    logoutBtn.addEventListener('click', function(e) {
+        try {
+            // prevent default navigation so we can clear storage first
+            if (e && typeof e.preventDefault === 'function') e.preventDefault();
+        } catch (ee) { }
+
+        clearAllUserData();
+
+        // After clearing, navigate to the href if present, otherwise to root
+        const href = (logoutBtn && logoutBtn.getAttribute) ? (logoutBtn.getAttribute('href') || '/') : '/';
+        window.location.href = href;
+    });
+});

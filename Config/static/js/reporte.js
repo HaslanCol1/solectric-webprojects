@@ -234,6 +234,7 @@ function clearAllUserData() {
     try { localStorage.removeItem('usuarioActual'); } catch {}
     try { localStorage.removeItem('catalogo_reportes'); } catch {}
     try { localStorage.removeItem('reporteFormData'); } catch {}
+    try { localStorage.removeItem('lista_reportes'); } catch {}
     // Limpiar posibles claves del wrapper Storage con prefijo solectric:
     try {
         Object.keys(localStorage).forEach((k) => {
