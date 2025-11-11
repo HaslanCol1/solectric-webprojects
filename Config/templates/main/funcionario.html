@@ -16,7 +16,7 @@
     {% include 'components/funcionario/perfil.html' %}
     {% include 'components/funcionario/gestion.html' %}
     {% include 'components/funcionario/comunidad.html' %}
-    <script src="{{ url_for('static', filename='js/funcionario.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/ciudadano.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/funcionario.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/ciudadano.js') }}"></script>
 </body>
 </html>

@@ -197,6 +197,7 @@ export async function handleLogin(event) {
   }
 
   try {
+    // Log in and let the ApiClient/AuthStore persist token + user_data
     await api.login({
       correo_electronico: email,
       contrasenia: password,
@@ -212,14 +213,23 @@ export async function handleLogin(event) {
     const urlParams = new URLSearchParams(window.location.search);
     const nextPage = urlParams.get('next');
 
-    if (nextPage === 'reporte' && userType === 'ciudadano') {
+    // Prefer the role returned by the backend (more authoritative) instead
+    // of trusting the `userType` select. AuthStore.user() is populated by
+    // api.login through the ApiClient/AuthStore.save helper.
+    const authUser = AuthStore.user();
+    const backendRole = authUser && authUser.rol ? (authUser.rol.nombre || authUser.rol.id) : null;
+    const roleNormalized = backendRole ? String(backendRole).toLowerCase() : (userType || '').toLowerCase();
+
+    // Route decision: next param can force /reporte when appropriate
+    if (nextPage === 'reporte' && roleNormalized === 'ciudadano') {
       window.location.href = '/reporte';
-    } else if (userType === 'ciudadano') {
+    } else if (roleNormalized === 'ciudadano') {
       window.location.href = '/ciudadano';
-    } else if (userType === 'funcionario') {
+    } else if (roleNormalized === 'funcionario') {
       window.location.href = '/funcionario';
     } else {
-      window.location.href = '/ciudadano'; // default
+      // Fallback: if we don't know the role, send to ciudadano as before
+      window.location.href = '/ciudadano';
     }
   } catch (e) {
     if (e.status === 401) {
